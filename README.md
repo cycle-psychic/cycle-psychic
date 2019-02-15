@@ -1,6 +1,6 @@
 Set up
 
-Running the bootstrap should set up and activate an enviroment to run all of the code. 
+To set up a new environment use chmod 777 bootstrap.sh. Use ./bootstrap.sh to install anaconda
 
 Scraping
 

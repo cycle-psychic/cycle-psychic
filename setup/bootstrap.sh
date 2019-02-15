@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Install Anaconda
-wget 'https://repo.continuum.io/archive/Anaconda3-4.2.0-Linux-x86_64.sh'
-
 # Create an environment
 conda create --name venv3 pandas flask
 
