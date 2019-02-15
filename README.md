@@ -3,6 +3,7 @@ Set up
 Use chmod u+x * to update permissions of shell scripts. 
 Install Anaconda using anaconda shell script. You will need to agree to the licence. 
 Run the bootstrap file to set up the environment
+You may need to restart the instance to avoid conda errors
 
 Scraping
 

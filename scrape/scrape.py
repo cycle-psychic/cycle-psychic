@@ -13,7 +13,7 @@ r = requests.get(url=api_endpoint)
 bike_stations = r.json()
 
 # store bike staions to file locally
-with open('/home/ubuntu/src/dummyapp/data/' + ts + '.json', 'w') as outfile:
+with open('/home/ubuntu/cycle-psychic/scrape/data' + ts + '.json', 'w') as outfile:
     json.dump(bike_stations, outfile)
 
 # store bike stations to S3 - yet to be done

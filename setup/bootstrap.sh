@@ -4,7 +4,8 @@ export PATH=~/anaconda3/bin:$PATH
 
 # Change permissions on run file
 chmod u+x ../run.py
-chmod u+x ./app/*
+chmod u+x ../app/*
+chmod u+x ../scrape/*
 
 # Create an environment
 conda create --name venv3 pandas flask
