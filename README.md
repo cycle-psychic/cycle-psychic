@@ -1,6 +1,8 @@
 Set up
 
-To set up a new environment use chmod 777 bootstrap.sh. Use ./bootstrap.sh to install anaconda
+Use chmod u+x * to update permissions of shell scripts. 
+Install Anaconda using anaconda shell script. You will need to agree to the licence. 
+Run the bootstrap file to set up the environment
 
 Scraping
 
