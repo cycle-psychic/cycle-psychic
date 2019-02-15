@@ -14,11 +14,3 @@ conda install requests
 
 # Boto3 allows for interaction with Python between Amazon Web Services
 conda install boto3
-
-# Setup of folder structure
-mkdir src
-cd src
-mkdir cyclePsychic
-mkdir cyclePsychic/app
-mkdir cyclePsychic/static
-mkdir cyclePsychic/templates
