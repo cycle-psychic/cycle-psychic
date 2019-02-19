@@ -20,5 +20,6 @@ conda install requests
 conda install boto3
 
 # Install Python3
-sudo apt install python3
+conda install python3
+
 
