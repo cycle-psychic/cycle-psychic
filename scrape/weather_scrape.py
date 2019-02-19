@@ -16,13 +16,15 @@ r = requests.get(url=api_endpoint)
 weather_info = r.json()
 
 # store weather info to file locally
-path = '/home/ubuntu/cycle-psychic/scrape/weather/data'
-file_name = ts+'.json'
+path = '/home/ubuntu/cycle-psychic/scrape/weather/'
+file_name = 'data'+ts+'.json'
 with open(path+file_name, 'w') as outfile:
     json.dump(weather_info, outfile)
 
 # store weather info to S3
-s3_resource = boto3.resource('s3') 
+ 
+ #create resource using aws credentials
+s3_resource = boto3.resource('s3',aws_access_key_id='AKIAIM7ICSBKEMDK5JXA', aws_secret_access_key='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')
 s3_resource.Object('cycle-psychic-weather', file_name).upload_file(Filename=path+file_name)
 
 # store weather info to RDS - yet to be done
