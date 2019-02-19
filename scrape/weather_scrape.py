@@ -1,6 +1,7 @@
 import datetime
 import json
 import requests
+import boto3
 
 # Allows for timestamping - use as file name for ease of sorting
 ts = str(datetime.datetime.now()).split('.')[0].replace(" ", "")
@@ -15,9 +16,13 @@ r = requests.get(url=api_endpoint)
 weather_info = r.json()
 
 # store weather info to file locally
-with open('/home/ubuntu/cycle-psychic/scrape/weather/data' + ts + '.json', 'w') as outfile:
+path = '/home/ubuntu/cycle-psychic/scrape/weather/data'
+file_name = ts+'.json'
+with open(path+file_name, 'w') as outfile:
     json.dump(weather_info, outfile)
 
-# store weather info to S3 - yet to be done
+# store weather info to S3
+s3_resource = boto3.resource('s3') 
+s3_resource.Object('cycle-psychic-weather', file_name).upload_file(Filename=path+file_name)
 
 # store weather info to RDS - yet to be done
