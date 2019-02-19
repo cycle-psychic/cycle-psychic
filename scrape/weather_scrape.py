@@ -24,7 +24,8 @@ with open(path+file_name, 'w') as outfile:
 # store weather info to S3
  
  #create resource using aws credentials
-s3_resource = boto3.resource('s3',aws_access_key_id='AKIAIM7ICSBKEMDK5JXA', aws_secret_access_key='u+l6t36fDW7pICfUUAEz6CpQiOCDoNj1gK3KLhk6')
+ #enter your own AWS credentials here
+s3_resource = boto3.resource('s3',aws_access_key_id='1234567', aws_secret_access_key='12345678')
 s3_resource.Object('cycle-psychic-weather', file_name).upload_file(Filename=path+file_name)
 
 # store weather info to RDS - yet to be done
