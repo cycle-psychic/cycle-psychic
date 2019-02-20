@@ -19,4 +19,4 @@ The weather_scrape.py script is used for scraping information from the OpenWeath
 
 As such, the script should be scheduled to run every 10 minutes via the crontab:
 
-*/10 * * * * /usr/bin/python3 /home/ubuntu/scrape/weather_scrape.py
+*/10 * * * * /usr/bin/python3 /home/ubuntu/cycle-psychic/scrape/weather_scrape.py

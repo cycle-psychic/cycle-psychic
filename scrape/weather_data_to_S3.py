@@ -3,8 +3,7 @@
 import boto3
 import os
 
-#create resource using aws credentials
-s3_resource = boto3.resource('s3',aws_access_key_id='12345678', aws_secret_access_key='12345678')
+s3_resource = boto3.resource('s3')
 
 # data is the folder containing the files to upload to s3
 for name in os.listdir('weather'):
