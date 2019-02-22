@@ -22,4 +22,7 @@ conda install boto3
 # Install Python3
 conda install python3
 
+# Install mysql connector
+conda install -c anaconda mysql-connector-python
+
 
