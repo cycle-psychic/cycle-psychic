@@ -7,21 +7,16 @@ You may need to restart the instance to avoid conda errors
 
 Scraping
 
-Right click on instance and choose Attach/Replace IAM role. Change this to EMR_EC2_DefaultRole.
+Right click on instance and choose Attach/Replace IAM role from instance settings. Click create new IAM role and create new role for EC2 and select AmazonS3FullAccess to allow access to buckets in S3.
 
-The scrape.py is used for scraping the information about Dublin Bike stations. Ensure that any files or folder locations are correct for your project. 
+The scrape.py is used for scraping the information about Dublin Bike stations, backing this information up in S3 and saving to an RDS. Ensure that any files or folder locations are correct for your project. Also ensure that the connection details to the RDS are correct. 
 
-To schedule this information use crontab -e. For example: to set the interval of time to every five minutes use - 
+To use this script, schedule this information using crontab -e. For example: to set the interval of time to every five minutes use - 
 
-*/5 * * * * /home/ubuntu/anaconda3/bin/python3 /home/ubuntu/src/dummyapp/script/scrape.py
+*/5 * * * * /home/ubuntu/anaconda3/bin/python3 /home/ubuntu/cycle-psychic/script/scrape.py
 
-The * format represents minute hour day-of-month month day-of-week command. /usr/bin/python was needed to run the cronjob on a Python script. Finally, add the command you want to run.
+The * format represents minute hour day-of-month month day-of-week command. /usr/bin/python was needed to run the cronjob on a Python script. Finally, add the command you want to run which will be the scrape.py file.
 
+Scraped_data_to_rds
 
-
-
-mysql -h cyclepsychictest.c0mcnyge7xlx.us-east-1.rds.amazonaws.com -P 3306 -u cyclepsychictest -p cyclepsychictest
-
-
-pip install PyMySQL
-conda install pymysql
+This file copies any files saved locally to the database. INSERT IGNORE should allow duplicates to be ignored. Ensure that the file locations and connection details are correct before saving the details. This may take some time.
