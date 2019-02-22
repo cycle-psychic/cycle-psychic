@@ -23,35 +23,32 @@
   <body>
     <!-- div where the map will be displayed -->
     <div id="map"></div> 
-      
-    <!-- script for defining map details -->
-    <script>
-      var map;
     
-    //function that initialises the map and adds markers
-      function initMap() {
-        //create the map
-        map = new google.maps.Map(document.getElementById('map'), {
-        // map will be centred on these co-ordinates when it loads
-          center: {lat: 53.3453, lng: -6.2722},
-        // initial level of zoom when map loads - 15 is street level
-          zoom: 14
-        });
-        
-        //add markers that will be displayed when the map loads
-        var testmarker = new google.maps.Marker({
+    <!-- div for testing various output -->
+    <div><p id="test"></p></div> 
+      
+    <!-- script for generating the map -->
+    <script>
+        //variable for the Google Map
+        var map;  
+
+        // function that initialises the map
+        function initMap() {   
+            // create the map
+            map = new google.maps.Map(document.getElementById('map'), {
+            // map will be centred on these co-ordinates when it loads
+            center: {lat: 53.3453, lng: -6.2722},
+            // initial level of zoom when map loads - 15 is street level
+            zoom: 14,
+            mapTypeControl: false
+            });
+
+            var testmarker = new google.maps.Marker({
             position: {lat: 53.3453, lng: -6.2722}, //marker position
             map: map, //map that the marker will be placed on
-            title: 'Hello!' //text for marker tooltip
-//            label: '1', //label for marker
-//            icon: { //use a different icon
-//                url: 'http://maps.google.com/mapfiles/kml/paddle/blu-blank.png'
-//           }
-            
-        });
-        
+           });
         }
-        
+
     </script>  
       
     <!-- script for loading the Google Maps API -->
