@@ -20,3 +20,18 @@ The * format represents minute hour day-of-month month day-of-week command. /usr
 Scraped_data_to_rds
 
 This file copies any files saved locally to the database. INSERT IGNORE should allow duplicates to be ignored. Ensure that the file locations and connection details are correct before saving the details. This may take some time.
+
+
+Weather API Scraping
+
+The weather_scrape.py script is used for scraping information from the OpenWeather API. This is updated roughly every 30 minutes, but not necessarily on the hour/half-hour. 
+As such, the script should be scheduled to run every 20 minutes to avoid missing any updates. The cronjob should be formatted as follows:
+0,20,40 * * * * /home/ubuntu/anaconda3/bin/python3 /home/ubuntu/cycle-psychic/scrape/weather_scrape.py
+
+weather_data_to_S3.py
+
+This script copies any files saved in the 'weather' directory to the S3. Ensure that the file locations and connection details are correct before saving the details.
+
+weather_data_to_rds.py
+
+This script copies any files saved in the 'weather' directory to the database. INSERT IGNORE should allow duplicates to be ignored. Ensure that the file locations and connection details are correct before saving the details.

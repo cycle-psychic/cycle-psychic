@@ -8,7 +8,7 @@ from datetime import datetime
 connection = mysql.connector.connect(
   host='cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com',
   user='cyclepsychic',
-  password='CyclePsychic123',
+  password='putpasswordhere',
   db='cyclepsychic')
 
 cursor = connection.cursor()
@@ -119,7 +119,7 @@ for name in os.listdir('weather'):
       weather_id, weather_main, weather_description, weather_icon)
 
     #sql insert command
-    sql = "INSERT IGNORE INTO `city_weather_test` (`longitude`, `latitude`, `base`, `main_temp`, \
+    sql = "INSERT IGNORE INTO `city_weather` (`longitude`, `latitude`, `base`, `main_temp`, \
       `main_pressure`, `main_humidity`, `main_temp_min`, `main_temp_max`, `main_sea_level`, \
       `main_grnd_level`, `main_wind_speed`, `main_wind_direction`, `main_clouds`, `main_rain_volume_1h`, \
       `main_rain_volume_3h`, `main_snow_volume_1h`, `main_snow_volume_3h`, `last_update`, `sys_type`, \
