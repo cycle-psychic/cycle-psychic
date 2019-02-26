@@ -4,6 +4,8 @@
     <title>Cycle Psychic</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
+    <!-- The following line of code loads JQuery from the Google API -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
     /* create CSS file for styling? */
     /* styling for the map div */
@@ -26,34 +28,12 @@
     
     <!-- div for testing various output -->
     <div><p id="test"></p></div> 
-      
-    <!-- script for generating the map -->
-    <script>
-        //variable for the Google Map
-        var map;  
-
-        // function that initialises the map
-        function initMap() {   
-            // create the map
-            map = new google.maps.Map(document.getElementById('map'), {
-            // map will be centred on these co-ordinates when it loads
-            center: {lat: 53.3453, lng: -6.2722},
-            // initial level of zoom when map loads - 15 is street level
-            zoom: 14,
-            mapTypeControl: false
-            });
-
-            var testmarker = new google.maps.Marker({
-            position: {lat: 53.3453, lng: -6.2722}, //marker position
-            map: map, //map that the marker will be placed on
-           });
-        }
-
-    </script>  
-      
+  
     <!-- script for loading the Google Maps API -->
     <!-- keep this at the bottom of the page (i.e. before </body>) in case the API is slow to load -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8H1qaETdzMANNuXE4ARqZvW8aADkHpow&callback=initMap"
     ></script>
+    <!-- script for generating the map with the initial parameters-->
+    <script src="../static/initMap.js"></script>  
   </body>
 </html>
