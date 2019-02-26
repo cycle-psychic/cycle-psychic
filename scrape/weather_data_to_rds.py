@@ -63,6 +63,8 @@ for name in os.listdir('weather'):
       clouds_all = data["clouds"]["all"]  #main_clouds in db
     else:
       clouds_all = 'NULL'
+  else:
+    clouds_all = 'NULL'
 
   # rain data may not be in the JSON file
   if "rain" in data:
