@@ -1,0 +1,11 @@
+/* styling for the map div */
+#map {
+    height: 80%;
+    margin: 5%;
+    }
+/* styling for html & body */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    }
