@@ -1,5 +1,8 @@
-//variable for the Google Map
+// variable for the Google Map
 var map;  
+
+// url for the Dublin Bikes API
+var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
 
 // function that initialises the map
 function initMap() {   
@@ -13,7 +16,7 @@ function initMap() {
     });
 
     // call the Dublin Bikes API directly using JQuery
-    $.getJSON("https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259", null, function(data) {
+    $.getJSON(urlBikes, null, function(data) {
 
         // add markers to the map - loop through each station in the JSON object
         for (var i = 0; i < data.length; i++) {
