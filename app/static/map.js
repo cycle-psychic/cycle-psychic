@@ -46,34 +46,39 @@ function addMarkers(data) {
         // check which icon the marker should use based on percentage & payment types
         if (cardPayments == true) {
             if (percentAvailable >= 67) {
-                var urlIcon = "../icons/Marker-Green-euro.png";  // use the red marker with euro symbol
+                var urlIcon = "/static/icons/Marker-Green-euro.png";  // use the green marker with euro symbol
             }
             else if (percentAvailable >= 33) {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";  // use the orange marker with euro symbol
+                var urlIcon = "/static/icons/Marker-Orange-euro.png";  // use the orange marker with euro symbol
             }
             else {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";  // use the green marker with euro symbol
+                var urlIcon = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
             }
         }
         else {
             if (percentAvailable >= 67) {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/green.png";  // use the red marker without euro symbol
+                var urlIcon = "/static/icons/Marker-Green.png";  // use the green marker without euro symbol
             }
             else if (percentAvailable >= 33) {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/yellow.png";  // use the orange marker without euro symbol
+                var urlIcon = "/static/icons/Marker-Orange.png";  // use the orange marker without euro symbol
             }
             else {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/red.png";  // use the green marker without euro symbol
+                var urlIcon = "/static/icons/Marker-Red.png";  // use the red marker without euro symbol
             }
         }
+
+        var imageicon = {
+            url: urlIcon, // url
+            scaledSize: new google.maps.Size(50, 50), // scaled size
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(25, 50) // anchor
+        };
 
         // generate the marker for the station and place on the map
         var marker = new google.maps.Marker({
             position: latLng,
             map: map,
-            icon: {
-                url: urlIcon
-            }
+            icon: imageicon
         });
     };
 };
