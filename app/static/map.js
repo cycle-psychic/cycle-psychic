@@ -12,11 +12,16 @@ function initMap() {
     center: {lat: 53.347, lng: -6.268},
     // initial level of zoom when map loads - 15 is street level
     zoom: 13.5,
-    mapTypeControl: false
+    // turn off some default controls
+    mapTypeControl: false,
+    fullscreenControl: false
     });
+
+    
 
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
+        // call the addMarkers function
         addMarkers(data);
     });
 }
