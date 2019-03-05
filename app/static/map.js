@@ -17,6 +17,8 @@ function initMap() {
     fullscreenControl: false
     });
 
+    
+
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
         // call the addMarkers function
@@ -47,6 +49,7 @@ function addMarkers(data) {
         var cardPayments = data[i].banking;
 
         // check which icon the marker should use based on percentage & payment types
+
         // first check station if the station is closed
         if (stationStatus == 'CLOSED') {
             var urlIcon = "/static/icons/Marker-closed.png";  // use the grey marker
