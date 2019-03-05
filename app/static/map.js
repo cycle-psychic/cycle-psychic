@@ -36,6 +36,9 @@ function addMarkers(data) {
         var longitude = data[i].position.lng;
         var latLng = new google.maps.LatLng(latitude, longitude);
 
+        //get the station status i.e. open or closed
+        var stationStatus = data[i].status;
+
         // get the occupancy info for each station
         var totalStands = data[i].bike_stands;
         var availableBikes = data[i].available_bikes;
@@ -46,36 +49,52 @@ function addMarkers(data) {
         var cardPayments = data[i].banking;
 
         // check which icon the marker should use based on percentage & payment types
-        if (cardPayments == true) {
-            if (percentAvailable >= 67) {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";  // use the red marker with euro symbol
-            }
-            else if (percentAvailable >= 33) {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";  // use the orange marker with euro symbol
-            }
-            else {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";  // use the green marker with euro symbol
-            }
+
+        // first check station if the station is closed
+        if (stationStatus == 'CLOSED') {
+            var urlIcon = "/static/icons/Marker-closed.png";  // use the grey marker
         }
         else {
-            if (percentAvailable >= 67) {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/green.png";  // use the red marker without euro symbol
+            // if the station is not closed, check if it accepts card payments
+            // then check how many bikes are availble and assign marker
+            if (cardPayments == true) {
+                if (percentAvailable >= 67) {
+                    var urlIcon = "/static/icons/Marker-Green-euro.png";  // use the green marker with euro symbol
+                }
+                else if (percentAvailable >= 33) {
+                    var urlIcon = "/static/icons/Marker-Orange-euro.png";  // use the orange marker with euro symbol
+                }
+                else {
+                    var urlIcon = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
+                }
             }
-            else if (percentAvailable >= 33) {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/yellow.png";  // use the orange marker without euro symbol
-            }
+            // if the station doesn't accept card, check how many bikes are available and assing marker
             else {
-                var urlIcon = "http://maps.google.com/mapfiles/ms/icons/red.png";  // use the green marker without euro symbol
+                if (percentAvailable >= 67) {
+                    var urlIcon = "/static/icons/Marker-Green.png";  // use the green marker without euro symbol
+                }
+                else if (percentAvailable >= 33) {
+                    var urlIcon = "/static/icons/Marker-Orange.png";  // use the orange marker without euro symbol
+                }
+                else {
+                    var urlIcon = "/static/icons/Marker-Red.png";  // use the red marker without euro symbol
+                }
             }
         }
 
-        // generate the marker for the station and place on the map
+        // create an object for the image icon
+        var imageicon = {
+            url: urlIcon, // url for the image
+            scaledSize: new google.maps.Size(50, 50), // size of the image
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(25, 50) // anchor
+        };
+
+        // generate the marker object for the station and place on the map
         var marker = new google.maps.Marker({
             position: latLng,
             map: map,
-            icon: {
-                url: urlIcon
-            }
+            icon: imageicon
         });
     };
 };
