@@ -58,7 +58,10 @@ function addMarkers(data) {
             // if the station is not closed, check if it accepts card payments
             // then check how many bikes are availble and assign marker
             if (cardPayments == true) {
-                if (percentAvailable >= 67) {
+                if (availableBikes == 0) {
+                    var urlIcon = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
+                }
+                else if (percentAvailable >= 67) {
                     var urlIcon = "/static/icons/Marker-Green-euro.png";  // use the green marker with euro symbol
                 }
                 else if (percentAvailable >= 33) {
@@ -68,9 +71,12 @@ function addMarkers(data) {
                     var urlIcon = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
                 }
             }
-            // if the station doesn't accept card, check how many bikes are available and assing marker
+            // if the station doesn't accept card, check how many bikes are available and assign marker
             else {
-                if (percentAvailable >= 67) {
+                if (availableBikes == 0) {
+                    var urlIcon = "/static/icons/Marker-empty.png"; // use the empty marker without euro symbol
+                }
+                else if (percentAvailable >= 67) {
                     var urlIcon = "/static/icons/Marker-Green.png";  // use the green marker without euro symbol
                 }
                 else if (percentAvailable >= 33) {
