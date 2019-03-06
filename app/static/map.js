@@ -17,8 +17,6 @@ function initMap() {
     fullscreenControl: false
     });
 
-    
-
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
         // call the addMarkers function
@@ -36,20 +34,26 @@ function addMarkers(data) {
         var longitude = data[i].position.lng;
         var latLng = new google.maps.LatLng(latitude, longitude);
 
-        //get the station status i.e. open or closed
+        // get the station status i.e. open or closed
         var stationStatus = data[i].status;
+
+        // get the station name - for the pop-up
+        // using 'address' from the JSON file as the station address is 
+        // always the same as the station name but has correct capitalisation
+        var stationName = data[i].address;
 
         // get the occupancy info for each station
         var totalStands = data[i].bike_stands;
         var availableBikes = data[i].available_bikes;
+        var availableStands = data[i].available_bike_stands;
+
         // calculate the percentage of available bikes
         var percentAvailable = (availableBikes/totalStands)*100;
 
-        //get payment info for each station
+        // get payment info for each station
         var cardPayments = data[i].banking;
 
         // check which icon the marker should use based on percentage & payment types
-
         // first check station if the station is closed
         if (stationStatus == 'CLOSED') {
             var urlIcon = "/static/icons/Marker-closed.png";  // use the grey marker
@@ -91,10 +95,23 @@ function addMarkers(data) {
         // create an object for the image icon
         var imageicon = {
             url: urlIcon, // url for the image
-            scaledSize: new google.maps.Size(50, 50), // size of the image
+            scaledSize: new google.maps.Size(60, 60), // size of the image
             origin: new google.maps.Point(0, 0), // origin
-            anchor: new google.maps.Point(25, 50) // anchor
+            anchor: new google.maps.Point(30, 60) // anchor
         };
+
+        // create a variable to hold the content for the pop-up window
+        var content = '<div class="popup">' +
+            '<h1 class="popupHeader">' + stationName + '</h1>' +
+            '<p class="popupContent">' +
+            'Bikes: ' + availableBikes + ' Available' +
+            '<br>Stands: ' + availableStands + ' Available' +
+            '<br>Payments: ' + cardPayments +
+            '</p>' +
+            '</div>';
+
+        // create an object for the pop-up
+        var popup = new google.maps.InfoWindow();
 
         // generate the marker object for the station and place on the map
         var marker = new google.maps.Marker({
@@ -102,5 +119,13 @@ function addMarkers(data) {
             map: map,
             icon: imageicon
         });
+
+        // add a listener to the marker that displays the pop-up on click
+        google.maps.event.addListener(marker,'click', (function(marker, content, popup){ 
+            return function() {
+                popup.setContent(content);
+                popup.open(map,marker);
+            };
+        })(marker,content,popup));  
     };
 };
