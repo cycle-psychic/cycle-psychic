@@ -52,6 +52,13 @@ function addMarkers(data) {
 
         // get payment info for each station
         var cardPayments = data[i].banking;
+        // set text to display on pop-up
+        if (cardPayments) {  //if card payments are accepted
+            paymentText = "Credit Card Accepted"
+        }
+        else {
+            paymentText = "Credit Card Not Accepted"
+        }
 
         // check which icon the marker should use based on percentage & payment types
         // first check station if the station is closed
@@ -61,7 +68,7 @@ function addMarkers(data) {
         else {
             // if the station is not closed, check if it accepts card payments
             // then check how many bikes are availble and assign marker
-            if (cardPayments == true) {
+            if (cardPayments) {  //if card payments are accepted
                 if (availableBikes == 0) {
                     var urlIcon = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
                 }
@@ -101,14 +108,19 @@ function addMarkers(data) {
         };
 
         // create a variable to hold the content for the pop-up window
-        var content = '<div class="popup">' +
-            '<h1 class="popupHeader">' + stationName + '</h1>' +
-            '<p class="popupContent">' +
-            'Bikes: ' + availableBikes + ' Available' +
-            '<br>Stands: ' + availableStands + ' Available' +
-            '<br>Payments: ' + cardPayments +
-            '</p>' +
-            '</div>';
+        var content = '<div style="color:rgb(89, 89, 89); width: 220px;">' +
+            '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
+            '<div style="font-weight: bold; padding-bottom: 10px;">' + 
+            '<table><tr>' +
+            '<td style="width:40px;">' + 
+            '<img src="/static/icons/bicycle.png" style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + availableBikes + ' Available</td></tr>' +
+            '<td style="width:40px;">' +
+            '<img src="/static/icons/stands.png" style="width:30px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + availableStands + ' Free</td></tr>' +
+            '<td style="width:40px;">' +
+            '<img src="/static/icons/euro_symbol.png" style="width:25px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + paymentText + '</td></tr></table></div>';
 
         // create an object for the pop-up
         var popup = new google.maps.InfoWindow();
