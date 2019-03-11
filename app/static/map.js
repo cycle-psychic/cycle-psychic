@@ -131,9 +131,10 @@ function addMarkers(data) {
 
         // generate the marker object for the station and place on the map
         var marker = new google.maps.Marker({
-            position: latLng,
+            position: latLng,  
             map: map,
-            icon: imageicon
+            icon: imageicon,  
+            title: stationName //this will show the station name when user hovers over marker
         });
 
         // add a listener to the marker that displays the pop-up on click
