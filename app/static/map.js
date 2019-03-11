@@ -4,6 +4,10 @@ var map;
 // url for the Dublin Bikes API
 var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
 
+// global variable to track open pop-ups
+// set to false initially until a pop-up is opened
+var prevPopup = false;
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -135,6 +139,15 @@ function addMarkers(data) {
         // add a listener to the marker that displays the pop-up on click
         google.maps.event.addListener(marker,'click', (function(marker, content, popup){ 
             return function() {
+                // if a pop-up has already been opened, close it
+                if (prevPopup) {
+                    prevPopup.close();
+                }
+
+                // assign the current pop-up to the PrevPopup variable
+                prevPopup = popup;
+
+                // set the content and open the popup
                 popup.setContent(content);
                 popup.open(map,marker);
             };
