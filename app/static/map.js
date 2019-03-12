@@ -326,6 +326,13 @@ function StandFilter(controlDiv, map) {
 
 // function for hiding markers on the map
 function hideMarkers(type) {
+    // if a pop-up is open, close it
+    if (prevPopup) {
+        prevPopup.close();
+    }
+    // set PrevPopup to false as all pop-ups should be closed when filter button is clicked
+    prevPopup = false;
+
     if (type=="bike") {
         // loop through each marker in the markers array and set the map to null
         for (var i = 0; i < bikeMarkers.length; i++) {
