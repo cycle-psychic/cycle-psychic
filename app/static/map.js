@@ -8,6 +8,12 @@ var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=
 // set to false initially until a pop-up is opened
 var prevPopup = false;
 
+// set up arrays to store markers
+// these will be used later to add/remove markers from the map
+var bikeMarkers = [];
+var standMarkers = [];
+var markers = [];
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -21,30 +27,18 @@ function initMap() {
     fullscreenControl: false
     });
 
-    // create buttons to add to the map
-    // create a div to hold the button for the bike filter
-    var bikeFilterDiv = document.createElement('div');
-    // call the BikeFilter function to create the button
-    var bikeFilter = new BikeFilter(bikeFilterDiv, map);
-    // create a div to hold the button for the stand filter
-    var standFilterDiv = document.createElement('div');
-    // call the BikeFilter function to create the button
-    var standFilter = new StandFilter(standFilterDiv, map);
-
-    // set positions for the buttons
-    // bikeFilterDiv.index = 1;
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
-    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
+    //call the addButtons function to add buttons to the map
+    addButtons();
 
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
-        // call the addMarkers function
-        addMarkers(data);
+        // call the addMarkers function with type="bikes"
+        addMarkers(data, "bikes");
     });
 }
 
 // function for adding markers to the map
-function addMarkers(data) {
+function addMarkers(data, filter) {
     // add markers to the map - loop through each station in the JSON object
     for (var i = 0; i < data.length; i++) {
         
@@ -66,8 +60,9 @@ function addMarkers(data) {
         var availableBikes = data[i].available_bikes;
         var availableStands = data[i].available_bike_stands;
 
-        // calculate the percentage of available bikes
+        // calculate the percentage of available bikes & stands
         var percentAvailable = (availableBikes/totalStands)*100;
+        var percentFree = (availableStands/totalStands)*100;
 
         // get payment info for each station
         var cardPayments = data[i].banking;
@@ -79,15 +74,15 @@ function addMarkers(data) {
             paymentText = "Credit Card Not Accepted"
         }
 
-        // check which icon the marker should use based on percentage & payment types
-        // first check station if the station is closed
+        // check which icon should be use based on filter (bikes vs stands), percentage available & payment types
+        // first check if the station is closed
         if (stationStatus == 'CLOSED') {
             var urlIcon = "/static/icons/Marker-closed.png";  // use the grey marker
         }
         else {
-            // if the station is not closed, check if it accepts card payments
-            // then check how many bikes are availble and assign marker
-            if (cardPayments) {  //if card payments are accepted
+            // if the station is not closed, check filter (bikes vs stands) and if it accepts card payments
+            // then check how many bikes are available and assign marker
+            if (cardPayments && filter=="bikes") {  //if card payments are accepted
                 if (availableBikes == 0) {
                     var urlIcon = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
                 }
@@ -101,8 +96,22 @@ function addMarkers(data) {
                     var urlIcon = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
                 }
             }
-            // if the station doesn't accept card, check how many bikes are available and assign marker
-            else {
+            else if (cardPayments && filter=="stands") {  //if card payments are accepted
+                if (availableStands == 0) {
+                    var urlIcon = "/static/icons/Marker-empty-stands-euro.png"; // use the empty marker with euro symbol
+                }
+                else if (percentFree >= 67) {
+                    var urlIcon = "/static/icons/Marker-Green-stands-euro.png";  // use the green marker with euro symbol
+                }
+                else if (percentFree >= 33) {
+                    var urlIcon = "/static/icons/Marker-Orange-stands-euro.png";  // use the orange marker with euro symbol
+                }
+                else {
+                    var urlIcon = "/static/icons/Marker-Red-stands-euro.png";  // use the red marker with euro symbol
+                }
+            }
+            // if the station doesn't accept card, check how many bikes/stands are available and assign markers
+            else if (filter=="bikes") {  //if the filter is for bikes
                 if (availableBikes == 0) {
                     var urlIcon = "/static/icons/Marker-empty.png"; // use the empty marker without euro symbol
                 }
@@ -114,6 +123,20 @@ function addMarkers(data) {
                 }
                 else {
                     var urlIcon = "/static/icons/Marker-Red.png";  // use the red marker without euro symbol
+                }
+            }
+            else if (filter=="stands") {  //if the filter is for stands
+                if (availableStands == 0) {
+                    var urlIcon = "/static/icons/Marker-empty-stands.png"; // use the empty marker without euro symbol
+                }
+                else if (percentFree >= 67) {
+                    var urlIcon = "/static/icons/Marker-Green-stands.png";  // use the green marker without euro symbol
+                }
+                else if (percentFree >= 33) {
+                    var urlIcon = "/static/icons/Marker-Orange-stands.png";  // use the orange marker without euro symbol
+                }
+                else {
+                    var urlIcon = "/static/icons/Marker-Red-stands.png";  // use the red marker without euro symbol
                 }
             }
         }
@@ -167,9 +190,31 @@ function addMarkers(data) {
                 popup.setContent(content);
                 popup.open(map,marker);
             };
-        })(marker,content,popup));  
+        })(marker,content,popup));
+
+        // add the marker to the markers array
+        // this will be used later to remove markers from the map
+        markers.push(marker);
     };
 };
+
+// function that creates buttons to add to the map
+function addButtons() {
+    // create a div to hold the button for the bike filter
+    var bikeFilterDiv = document.createElement('div');
+    // call the BikeFilter function to create the button
+    var bikeFilter = new BikeFilter(bikeFilterDiv, map);
+
+    // create a div to hold the button for the stand filter
+    var standFilterDiv = document.createElement('div');
+    // call the BikeFilter function to create the button
+    var standFilter = new StandFilter(standFilterDiv, map);
+
+    // set positions for the buttons
+    // bikeFilterDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
+}
 
 // function for creating the bike filter button
 function BikeFilter(controlDiv, map) {
@@ -198,9 +243,15 @@ function BikeFilter(controlDiv, map) {
     controlUI.appendChild(controlImage);
 
     // On click, display markers showing bike availability
-    // controlUI.addEventListener('click', function() {
-    //     call function here
-    // });
+    controlUI.addEventListener('click', function() {
+        //remove current markers
+        removeMarkers();
+        // call the Dublin Bikes API directly using JQuery
+        $.getJSON(urlBikes, null, function(data) {
+            // call the addMarkers function with type="bikes"
+            addMarkers(data, "bikes");
+        });
+    });
 }
 
 // function for creating the stand filter button
@@ -230,7 +281,24 @@ function StandFilter(controlDiv, map) {
     controlUI.appendChild(controlImage);
 
     // On click, display markers showing stand availability
-    // controlUI.addEventListener('click', function() {
-    //     call function here
-    // });
+    controlUI.addEventListener('click', function() {
+        //remove current markers
+        removeMarkers();
+        // call the Dublin Bikes API directly using JQuery
+        $.getJSON(urlBikes, null, function(data) {
+            // call the addMarkers function with type="stands"
+            addMarkers(data, "stands");
+        });
+    });
+}
+
+// function for removing markers from the map
+// this is called each time a filter button is clicked so that old markers are removed before new ones are added
+function removeMarkers() {
+    // loop through each marker in the markers array and set the map to null
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+    // set the markers array to an empty array
+    markers = [];
 }
