@@ -4,6 +4,10 @@ var map;
 // url for the Dublin Bikes API
 var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
 
+// global variable to track open pop-ups
+// set to false initially until a pop-up is opened
+var prevPopup = false;
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -16,8 +20,6 @@ function initMap() {
     mapTypeControl: false,
     fullscreenControl: false
     });
-
-    
 
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
@@ -36,20 +38,33 @@ function addMarkers(data) {
         var longitude = data[i].position.lng;
         var latLng = new google.maps.LatLng(latitude, longitude);
 
-        //get the station status i.e. open or closed
+        // get the station status i.e. open or closed
         var stationStatus = data[i].status;
+
+        // get the station name - for the pop-up
+        // using 'address' from the JSON file as the station address is 
+        // always the same as the station name but has correct capitalisation
+        var stationName = data[i].address;
 
         // get the occupancy info for each station
         var totalStands = data[i].bike_stands;
         var availableBikes = data[i].available_bikes;
+        var availableStands = data[i].available_bike_stands;
+
         // calculate the percentage of available bikes
         var percentAvailable = (availableBikes/totalStands)*100;
 
-        //get payment info for each station
+        // get payment info for each station
         var cardPayments = data[i].banking;
+        // set text to display on pop-up
+        if (cardPayments) {  //if card payments are accepted
+            paymentText = "Credit Card Accepted"
+        }
+        else {
+            paymentText = "Credit Card Not Accepted"
+        }
 
         // check which icon the marker should use based on percentage & payment types
-
         // first check station if the station is closed
         if (stationStatus == 'CLOSED') {
             var urlIcon = "/static/icons/Marker-closed.png";  // use the grey marker
@@ -57,7 +72,7 @@ function addMarkers(data) {
         else {
             // if the station is not closed, check if it accepts card payments
             // then check how many bikes are availble and assign marker
-            if (cardPayments == true) {
+            if (cardPayments) {  //if card payments are accepted
                 if (availableBikes == 0) {
                     var urlIcon = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
                 }
@@ -91,16 +106,52 @@ function addMarkers(data) {
         // create an object for the image icon
         var imageicon = {
             url: urlIcon, // url for the image
-            scaledSize: new google.maps.Size(50, 50), // size of the image
+            scaledSize: new google.maps.Size(60, 60), // size of the image
             origin: new google.maps.Point(0, 0), // origin
-            anchor: new google.maps.Point(25, 50) // anchor
+            anchor: new google.maps.Point(30, 60) // anchor
         };
+
+        // create a variable to hold the content for the pop-up window
+        var content = '<div style="color:rgb(89, 89, 89); width: 220px;">' +
+            '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
+            '<div style="font-weight: bold; padding-bottom: 10px;">' + 
+            '<table><tr>' +
+            '<td style="width:40px;">' + 
+            '<img src="/static/icons/bicycle.png" style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + availableBikes + ' Available</td></tr>' +
+            '<td style="width:40px;">' +
+            '<img src="/static/icons/stands.png" style="width:30px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + availableStands + ' Free</td></tr>' +
+            '<td style="width:40px;">' +
+            '<img src="/static/icons/euro_symbol.png" style="width:25px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + paymentText + '</td></tr></table></div>';
+
+        // create an object for the pop-up
+        var popup = new google.maps.InfoWindow();
 
         // generate the marker object for the station and place on the map
         var marker = new google.maps.Marker({
-            position: latLng,
+            position: latLng,  
             map: map,
-            icon: imageicon
+            icon: imageicon,  
+            title: stationName //this will show the station name when user hovers over marker
         });
+
+        // add a listener to the marker that displays the pop-up on click
+        google.maps.event.addListener(marker,'click', (function(marker, content, popup){ 
+            return function() {
+                // if a pop-up has already been opened, close it
+                if (prevPopup) {
+                    prevPopup.close();
+                }
+
+                // assign the current pop-up to the PrevPopup variable
+                prevPopup = popup;
+
+                // set the content and open the popup
+                popup.setContent(content);
+                popup.open(map,marker);
+            };
+        })(marker,content,popup));  
     };
 };
