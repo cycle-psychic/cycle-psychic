@@ -21,6 +21,21 @@ function initMap() {
     fullscreenControl: false
     });
 
+    // create buttons to add to the map
+    // create a div to hold the button for the bike filter
+    var bikeFilterDiv = document.createElement('div');
+    // call the BikeFilter function to create the button
+    var bikeFilter = new BikeFilter(bikeFilterDiv, map);
+    // create a div to hold the button for the stand filter
+    var standFilterDiv = document.createElement('div');
+    // call the BikeFilter function to create the button
+    var standFilter = new StandFilter(standFilterDiv, map);
+
+    // set positions for the buttons
+    // bikeFilterDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
+
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
         // call the addMarkers function
@@ -28,7 +43,7 @@ function initMap() {
     });
 }
 
-//function for adding markers to the map
+// function for adding markers to the map
 function addMarkers(data) {
     // add markers to the map - loop through each station in the JSON object
     for (var i = 0; i < data.length; i++) {
@@ -155,3 +170,67 @@ function addMarkers(data) {
         })(marker,content,popup));  
     };
 };
+
+// function for creating the bike filter button
+function BikeFilter(controlDiv, map) {
+    // Set CSS for the button
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.borderRadius = '2px';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.2)';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.textAlign = 'center';
+    controlUI.style.width = '33px';
+    controlUI.style.height = '33px';
+    controlUI.style.marginRight = '8px';
+    controlUI.style.marginTop = '16px';
+    controlUI.style.marginBottom = '6px';
+    controlUI.style.display = 'flex';
+    controlUI.style.alignContent = 'center';
+    controlUI.style.justifyContent = 'center';
+    //controlUI.title = '...';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the button image
+    var controlImage = document.createElement('div');
+    controlImage.innerHTML = '<img src="/static/icons/bicycle.png" style="width:50px; padding-top:2px; padding-right:1px;">';
+    controlUI.appendChild(controlImage);
+
+    // On click, display markers showing bike availability
+    // controlUI.addEventListener('click', function() {
+    //     call function here
+    // });
+}
+
+// function for creating the stand filter button
+function StandFilter(controlDiv, map) {
+    // Set CSS for the button
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.borderRadius = '2px';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.2)';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.textAlign = 'center';
+    controlUI.style.width = '33px';
+    controlUI.style.height = '33px';
+    controlUI.style.marginRight = '8px';
+    //controlUI.style.marginTop = '16px';
+    controlUI.style.marginBottom = '6px';
+    controlUI.style.display = 'flex';
+    controlUI.style.alignContent = 'center';
+    controlUI.style.justifyContent = 'center';
+    //controlUI.title = '...';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the button image
+    var controlImage = document.createElement('div');
+    controlImage.innerHTML = '<img src="/static/icons/stands.png" style="width:38px; padding-top:4px; padding-left:1px;">';
+    controlUI.appendChild(controlImage);
+
+    // On click, display markers showing stand availability
+    // controlUI.addEventListener('click', function() {
+    //     call function here
+    // });
+}
