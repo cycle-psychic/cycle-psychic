@@ -261,7 +261,7 @@ function BikeFilter(controlDiv, map) {
     controlUI.style.backgroundColor = '#fff';
     controlUI.style.border = '2px solid #fff';
     controlUI.style.borderRadius = '2px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.2)';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
     controlUI.style.cursor = 'pointer';
     controlUI.style.textAlign = 'center';
     controlUI.style.width = '33px';
@@ -296,7 +296,7 @@ function StandFilter(controlDiv, map) {
     controlUI.style.backgroundColor = '#fff';
     controlUI.style.border = '2px solid #fff';
     controlUI.style.borderRadius = '2px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.2)';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
     controlUI.style.cursor = 'pointer';
     controlUI.style.textAlign = 'center';
     controlUI.style.width = '33px';
