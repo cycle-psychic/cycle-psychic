@@ -35,3 +35,7 @@ This script copies any files saved in the 'weather' directory to the S3. Ensure 
 weather_data_to_rds.py
 
 This script copies any files saved in the 'weather' directory to the database. INSERT IGNORE should allow duplicates to be ignored. Ensure that the file locations and connection details are correct before saving the details.
+
+Populate Station information
+
+This script inserts all the station information only (without data) and shall be used to query the database for the front-end.
