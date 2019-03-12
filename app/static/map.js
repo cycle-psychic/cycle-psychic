@@ -12,7 +12,6 @@ var prevPopup = false;
 // these will be used later to add/remove markers from the map
 var bikeMarkers = [];
 var standMarkers = [];
-var markers = [];
 
 // function that initialises the map
 function initMap() {   
@@ -32,13 +31,16 @@ function initMap() {
 
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
-        // call the addMarkers function with type="bikes"
-        addMarkers(data, "bikes");
+        // call the addMarkers function
+        addMarkers(data);
+        // call the showMarkers function with "bike" as input
+        // because bikes should be shown by default
+        showMarkers("bike");
     });
 }
 
 // function for adding markers to the map
-function addMarkers(data, filter) {
+function addMarkers(data) {
     // add markers to the map - loop through each station in the JSON object
     for (var i = 0; i < data.length; i++) {
         
@@ -74,82 +76,93 @@ function addMarkers(data, filter) {
             paymentText = "Credit Card Not Accepted"
         }
 
-        // check which icon should be use based on filter (bikes vs stands), percentage available & payment types
+        // check which icon should be use based on percentage available & payment types
         // first check if the station is closed
         if (stationStatus == 'CLOSED') {
-            var urlIcon = "/static/icons/Marker-closed.png";  // use the grey marker
+            // use the grey marker for bike and stand markers
+            var urlBikes = "/static/icons/Marker-closed.png";  
+            var urlStands = "/static/icons/Marker-closed.png"; 
         }
         else {
-            // if the station is not closed, check filter (bikes vs stands) and if it accepts card payments
+            // if the station is not closed, check if it accepts card payments
             // then check how many bikes are available and assign marker
-            if (cardPayments && filter=="bikes") {  //if card payments are accepted
+            if (cardPayments) {  
+                // if card payments are accepted, set images for bike markers
                 if (availableBikes == 0) {
-                    var urlIcon = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
+                    var urlBikes = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
                 }
                 else if (percentAvailable >= 67) {
-                    var urlIcon = "/static/icons/Marker-Green-euro.png";  // use the green marker with euro symbol
+                    var urlBikes = "/static/icons/Marker-Green-euro.png";  // use the green marker with euro symbol
                 }
                 else if (percentAvailable >= 33) {
-                    var urlIcon = "/static/icons/Marker-Orange-euro.png";  // use the orange marker with euro symbol
+                    var urlBikes = "/static/icons/Marker-Orange-euro.png";  // use the orange marker with euro symbol
                 }
                 else {
-                    var urlIcon = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
+                    var urlBikes = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
                 }
-            }
-            else if (cardPayments && filter=="stands") {  //if card payments are accepted
+                // then set images for stand markers
                 if (availableStands == 0) {
-                    var urlIcon = "/static/icons/Marker-empty-stands-euro.png"; // use the empty marker with euro symbol
+                    var urlStands = "/static/icons/Marker-empty-stands-euro.png"; // use the empty marker with euro symbol
                 }
                 else if (percentFree >= 67) {
-                    var urlIcon = "/static/icons/Marker-Green-stands-euro.png";  // use the green marker with euro symbol
+                    var urlStands = "/static/icons/Marker-Green-stands-euro.png";  // use the green marker with euro symbol
                 }
                 else if (percentFree >= 33) {
-                    var urlIcon = "/static/icons/Marker-Orange-stands-euro.png";  // use the orange marker with euro symbol
+                    var urlStands = "/static/icons/Marker-Orange-stands-euro.png";  // use the orange marker with euro symbol
                 }
                 else {
-                    var urlIcon = "/static/icons/Marker-Red-stands-euro.png";  // use the red marker with euro symbol
+                    var urlStands = "/static/icons/Marker-Red-stands-euro.png";  // use the red marker with euro symbol
                 }
             }
             // if the station doesn't accept card, check how many bikes/stands are available and assign markers
-            else if (filter=="bikes") {  //if the filter is for bikes
+            else { 
+                // set images for bike markers
                 if (availableBikes == 0) {
-                    var urlIcon = "/static/icons/Marker-empty.png"; // use the empty marker without euro symbol
+                    var urlBikes = "/static/icons/Marker-empty.png"; // use the empty marker without euro symbol
                 }
                 else if (percentAvailable >= 67) {
-                    var urlIcon = "/static/icons/Marker-Green.png";  // use the green marker without euro symbol
+                    var urlBikes = "/static/icons/Marker-Green.png";  // use the green marker without euro symbol
                 }
                 else if (percentAvailable >= 33) {
-                    var urlIcon = "/static/icons/Marker-Orange.png";  // use the orange marker without euro symbol
+                    var urlBikes = "/static/icons/Marker-Orange.png";  // use the orange marker without euro symbol
                 }
                 else {
-                    var urlIcon = "/static/icons/Marker-Red.png";  // use the red marker without euro symbol
+                    var urlBikes = "/static/icons/Marker-Red.png";  // use the red marker without euro symbol
                 }
-            }
-            else if (filter=="stands") {  //if the filter is for stands
+                // set images for stand markers
                 if (availableStands == 0) {
-                    var urlIcon = "/static/icons/Marker-empty-stands.png"; // use the empty marker without euro symbol
+                    var urlStands = "/static/icons/Marker-empty-stands.png"; // use the empty marker without euro symbol
                 }
                 else if (percentFree >= 67) {
-                    var urlIcon = "/static/icons/Marker-Green-stands.png";  // use the green marker without euro symbol
+                    var urlStands = "/static/icons/Marker-Green-stands.png";  // use the green marker without euro symbol
                 }
                 else if (percentFree >= 33) {
-                    var urlIcon = "/static/icons/Marker-Orange-stands.png";  // use the orange marker without euro symbol
+                    var urlStands = "/static/icons/Marker-Orange-stands.png";  // use the orange marker without euro symbol
                 }
                 else {
-                    var urlIcon = "/static/icons/Marker-Red-stands.png";  // use the red marker without euro symbol
+                    var urlStands = "/static/icons/Marker-Red-stands.png";  // use the red marker without euro symbol
                 }
             }
         }
 
-        // create an object for the image icon
-        var imageicon = {
-            url: urlIcon, // url for the image
+        // create an object for the bike icon
+        var bikeIcon = {
+            url: urlBikes, // url for the image
+            scaledSize: new google.maps.Size(60, 60), // size of the image
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(30, 60) // anchor
+        };
+
+        // create an object for the stand icon
+        var standIcon = {
+            url: urlStands, // url for the image
             scaledSize: new google.maps.Size(60, 60), // size of the image
             origin: new google.maps.Point(0, 0), // origin
             anchor: new google.maps.Point(30, 60) // anchor
         };
 
         // create a variable to hold the content for the pop-up window
+        // this will be the same for both types of markers
         var content = '<div style="color:rgb(89, 89, 89); width: 220px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
@@ -167,16 +180,24 @@ function addMarkers(data, filter) {
         // create an object for the pop-up
         var popup = new google.maps.InfoWindow();
 
-        // generate the marker object for the station and place on the map
-        var marker = new google.maps.Marker({
+        // generate a marker object for the station for bikes
+        var bikeMarker = new google.maps.Marker({
             position: latLng,  
-            map: map,
-            icon: imageicon,  
+            //map: map,
+            icon: bikeIcon,  
             title: stationName //this will show the station name when user hovers over marker
         });
 
-        // add a listener to the marker that displays the pop-up on click
-        google.maps.event.addListener(marker,'click', (function(marker, content, popup){ 
+        // generate a marker object for the station for stands
+        var standMarker = new google.maps.Marker({
+            position: latLng,  
+            //map: map,
+            icon: standIcon,  
+            title: stationName //this will show the station name when user hovers over marker
+        });
+
+        // add a listener to each type of marker that displays the pop-up on click
+        google.maps.event.addListener(bikeMarker,'click', (function(bikeMarker, content, popup){ 
             return function() {
                 // if a pop-up has already been opened, close it
                 if (prevPopup) {
@@ -188,13 +209,30 @@ function addMarkers(data, filter) {
 
                 // set the content and open the popup
                 popup.setContent(content);
-                popup.open(map,marker);
+                popup.open(map,bikeMarker);
             };
-        })(marker,content,popup));
+        })(bikeMarker,content,popup));
 
-        // add the marker to the markers array
-        // this will be used later to remove markers from the map
-        markers.push(marker);
+        google.maps.event.addListener(standMarker,'click', (function(standMarker, content, popup){ 
+            return function() {
+                // if a pop-up has already been opened, close it
+                if (prevPopup) {
+                    prevPopup.close();
+                }
+
+                // assign the current pop-up to the PrevPopup variable
+                prevPopup = popup;
+
+                // set the content and open the popup
+                popup.setContent(content);
+                popup.open(map,standMarker);
+            };
+        })(standMarker,content,popup));     
+
+        // add each marker to the relevant markers array
+        // this will be used later to add/remove markers from the map
+        bikeMarkers.push(bikeMarker);
+        standMarkers.push(standMarker);
     };
 };
 
@@ -244,13 +282,10 @@ function BikeFilter(controlDiv, map) {
 
     // On click, display markers showing bike availability
     controlUI.addEventListener('click', function() {
-        //remove current markers
-        removeMarkers();
-        // call the Dublin Bikes API directly using JQuery
-        $.getJSON(urlBikes, null, function(data) {
-            // call the addMarkers function with type="bikes"
-            addMarkers(data, "bikes");
-        });
+        // hide stand markers
+        hideMarkers("stand");
+        // show bike markers
+        showMarkers("bike");
     });
 }
 
@@ -282,23 +317,38 @@ function StandFilter(controlDiv, map) {
 
     // On click, display markers showing stand availability
     controlUI.addEventListener('click', function() {
-        //remove current markers
-        removeMarkers();
-        // call the Dublin Bikes API directly using JQuery
-        $.getJSON(urlBikes, null, function(data) {
-            // call the addMarkers function with type="stands"
-            addMarkers(data, "stands");
-        });
+        // hide bike markers
+        hideMarkers("bike");
+        // show stand markers
+        showMarkers("stand");
     });
 }
 
-// function for removing markers from the map
-// this is called each time a filter button is clicked so that old markers are removed before new ones are added
-function removeMarkers() {
-    // loop through each marker in the markers array and set the map to null
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(null);
+// function for hiding markers on the map
+function hideMarkers(type) {
+    if (type=="bike") {
+        // loop through each marker in the markers array and set the map to null
+        for (var i = 0; i < bikeMarkers.length; i++) {
+            bikeMarkers[i].setMap(null);
+        }
     }
-    // set the markers array to an empty array
-    markers = [];
+    else if (type=="stand") {
+        for (var i = 0; i < standMarkers.length; i++) {
+            standMarkers[i].setMap(null);
+        }
+    }
+}
+
+// function to show the relevant markers on the map
+function showMarkers(type) {
+    if (type=="bike") {
+        for (var i = 0; i < bikeMarkers.length; i++) {
+            bikeMarkers[i].setMap(map);
+        }
+    }
+    else if (type=="stand") {
+        for (var i = 0; i < standMarkers.length; i++) {
+            standMarkers[i].setMap(map);
+        }
+    }
 }
