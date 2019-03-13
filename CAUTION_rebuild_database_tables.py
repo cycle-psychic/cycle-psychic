@@ -130,8 +130,8 @@ def recreate():
                   `contract_name` VARCHAR(45) NULL DEFAULT NULL,
                   `name` VARCHAR(45) NULL DEFAULT NULL,
                   `address` VARCHAR(45) NULL DEFAULT NULL,
-                  `latitude` DECIMAL(11,8) NULL DEFAULT NULL,
-                  `longitude` DECIMAL(10,8) NULL DEFAULT NULL,
+                  `latitude` FLOAT NULL DEFAULT NULL,
+                  `longitude` FLOAT NULL DEFAULT NULL,
                   PRIMARY KEY (`station_number`))
                 ENGINE = InnoDB
                 DEFAULT CHARACTER SET = utf8mb4
