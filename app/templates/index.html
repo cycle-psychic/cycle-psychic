@@ -6,19 +6,59 @@
     <meta charset="utf-8">
     <!-- Link to the CSS file for the map -->
     <link rel="stylesheet" type="text/css" href="../static/map.css">
+    <!-- Link to css file for html elements 
+    <link rel="stylesheet" type="text/css" href="../static/html_js.css">
     <!-- The following line of code loads JQuery from the Google API -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- script for generating the map with the initial parameters-->
-    <script src="../static/map.js"></script> 
+    <script src="../static/map.js"></script>
+
   </head>
     
   <body>
+    <!-- sidebar div -->  
+    <div id="mySidebar" class="sidebar">
+        
+        <!-- side bar element for weather information -->
+        <div class="sidebarElement">
+            <p class="sidebartext">Placeholder for weather information</p>
+        </div>
+        
+        <!-- This div holds all NON-weather sidebar elements -->
+        <div id="nonWeatherElements">
+            <!-- form element for users to select the station they want -->
+            <div id="form">
+                <form id="selectStation" onchange="goToStation()">
+                    <select id="station"></select>
+                </form>
+            </div>
+            <!-- side bar elements for graphs -->
+            <div class="graphs">
+                <p class="sidebartext">Placeholder for graph 1</p>
+                <br><br>
+                <p class="sidebartext">Placeholder for graph 2</p>
+                <br><br>
+                <p class="sidebartext">Placeholder for graph 3</p>
+                <br><br>
+            </div>  
+        </div>
+        
+    </div>
+
     <!-- div where the map will be displayed -->
     <div id="map"></div> 
     
     <!-- div for testing various output -->
-    <div><p id="test"></p></div> 
-  
+    <div><p id="test"></p></div>     
+       
+    <!-- open the side bar menu -->
+    <div id="main">
+      <button id="openbtn" class="openbtn" onclick="navBar()">&#9776;</button>
+    </div>
+    
+    <!-- script for side bar and api operations -->
+    <script src="../static/html_js.js"></script> 
+      
     <!-- script for loading the Google Maps API -->
     <!-- keep this at the bottom of the page (i.e. before </body>) in case the API is slow to load -->
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8H1qaETdzMANNuXE4ARqZvW8aADkHpow&callback=initMap"
