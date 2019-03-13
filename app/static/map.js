@@ -13,6 +13,12 @@ var prevPopup = false;
 var bikeMarkers = [];
 var standMarkers = [];
 
+// declare variables for the buttons (so that they have global scope)
+var bikeFilterDiv;
+var bikeFilter;
+var standFilterDiv;
+var standFilter;
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -239,17 +245,16 @@ function addMarkers(data) {
 // function that creates buttons to add to the map
 function addButtons() {
     // create a div to hold the button for the bike filter
-    var bikeFilterDiv = document.createElement('div');
+    bikeFilterDiv = document.createElement('div');
     // call the BikeFilter function to create the button
-    var bikeFilter = new BikeFilter(bikeFilterDiv, map);
+    bikeFilter = new BikeFilter(bikeFilterDiv, map);
 
     // create a div to hold the button for the stand filter
-    var standFilterDiv = document.createElement('div');
+    standFilterDiv = document.createElement('div');
     // call the BikeFilter function to create the button
-    var standFilter = new StandFilter(standFilterDiv, map);
+    standFilter = new StandFilter(standFilterDiv, map);
 
     // set positions for the buttons
-    // bikeFilterDiv.index = 1;
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
 }
@@ -259,6 +264,10 @@ function BikeFilter(controlDiv, map) {
     // Set CSS for the button
     var controlUI = document.createElement('div');
     controlUI.style.backgroundColor = '#fff';
+    controlUI.style.backgroundImage = 'url("/static/icons/bicycle.png")';
+    controlUI.style.backgroundSize = '48px';
+    controlUI.style.backgroundPosition = 'center';
+    controlUI.style.backgroundRepeat = 'no-repeat';
     controlUI.style.border = '2px solid #fff';
     controlUI.style.borderRadius = '2px';
     controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
@@ -275,17 +284,12 @@ function BikeFilter(controlDiv, map) {
     //controlUI.title = '...';
     controlDiv.appendChild(controlUI);
 
-    // Set CSS for the button image
-    var controlImage = document.createElement('div');
-    controlImage.innerHTML = '<img src="/static/icons/bicycle.png" style="width:50px; padding-top:2px; padding-right:1px;">';
-    controlUI.appendChild(controlImage);
-
     // on hover, change icon colour to black
     controlDiv.addEventListener('mouseenter', function() {
-        controlImage.innerHTML = '<img src="/static/icons/bicycle-black.png" style="width:50px; padding-top:2px; padding-right:1px;">';
+        controlUI.style.backgroundImage = 'url("/static/icons/bicycle-black.png")';
     });
     controlDiv.addEventListener('mouseleave', function() {
-        controlImage.innerHTML = '<img src="/static/icons/bicycle.png" style="width:50px; padding-top:2px; padding-right:1px;">';
+        controlUI.style.backgroundImage = 'url("/static/icons/bicycle.png")';
     });
 
     // On click, display markers showing bike availability
@@ -302,6 +306,10 @@ function StandFilter(controlDiv, map) {
     // Set CSS for the button
     var controlUI = document.createElement('div');
     controlUI.style.backgroundColor = '#fff';
+    controlUI.style.backgroundImage = 'url("/static/icons/stands.png")';
+    controlUI.style.backgroundSize = '38px';
+    controlUI.style.backgroundPosition = 'center';
+    controlUI.style.backgroundRepeat = 'no-repeat';
     controlUI.style.border = '2px solid #fff';
     controlUI.style.borderRadius = '2px';
     controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
@@ -318,17 +326,12 @@ function StandFilter(controlDiv, map) {
     //controlUI.title = '...';
     controlDiv.appendChild(controlUI);
 
-    // Set CSS for the button image
-    var controlImage = document.createElement('div');
-    controlImage.innerHTML = '<img src="/static/icons/stands.png" style="width:38px; padding-top:4px; padding-left:1px;">';
-    controlUI.appendChild(controlImage);
-
     // on hover, change icon colour to black
     controlDiv.addEventListener('mouseenter', function() {
-        controlImage.innerHTML = '<img src="/static/icons/stands-black.png" style="width:38px; padding-top:4px; padding-left:1px;">';
+        controlUI.style.backgroundImage = 'url("/static/icons/stands-black.png")';
     });
     controlDiv.addEventListener('mouseleave', function() {
-        controlImage.innerHTML = '<img src="/static/icons/stands.png" style="width:38px; padding-top:4px; padding-left:1px;">';
+        controlUI.style.backgroundImage = 'url("/static/icons/stands.png")';
     });
 
     // On click, display markers showing stand availability
