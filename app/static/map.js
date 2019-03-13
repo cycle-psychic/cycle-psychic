@@ -8,6 +8,11 @@ var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=
 // set to false initially until a pop-up is opened
 var prevPopup = false;
 
+// set up arrays to store markers
+// these will be used later to add/remove markers from the map
+var bikeMarkers = [];
+var standMarkers = [];
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -21,14 +26,20 @@ function initMap() {
     fullscreenControl: false
     });
 
+    //call the addButtons function to add buttons to the map
+    addButtons();
+
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
         // call the addMarkers function
         addMarkers(data);
+        // call the showMarkers function with "bike" as input
+        // because bikes should be shown by default
+        showMarkers("bike");
     });
 }
 
-//function for adding markers to the map
+// function for adding markers to the map
 function addMarkers(data) {
     // add markers to the map - loop through each station in the JSON object
     for (var i = 0; i < data.length; i++) {
@@ -51,8 +62,9 @@ function addMarkers(data) {
         var availableBikes = data[i].available_bikes;
         var availableStands = data[i].available_bike_stands;
 
-        // calculate the percentage of available bikes
+        // calculate the percentage of available bikes & stands
         var percentAvailable = (availableBikes/totalStands)*100;
+        var percentFree = (availableStands/totalStands)*100;
 
         // get payment info for each station
         var cardPayments = data[i].banking;
@@ -64,54 +76,93 @@ function addMarkers(data) {
             paymentText = "Credit Card Not Accepted"
         }
 
-        // check which icon the marker should use based on percentage & payment types
-        // first check station if the station is closed
+        // check which icon should be use based on percentage available & payment types
+        // first check if the station is closed
         if (stationStatus == 'CLOSED') {
-            var urlIcon = "/static/icons/Marker-closed.png";  // use the grey marker
+            // use the grey marker for bike and stand markers
+            var urlBikes = "/static/icons/Marker-closed.png";  
+            var urlStands = "/static/icons/Marker-closed.png"; 
         }
         else {
             // if the station is not closed, check if it accepts card payments
-            // then check how many bikes are availble and assign marker
-            if (cardPayments) {  //if card payments are accepted
+            // then check how many bikes are available and assign marker
+            if (cardPayments) {  
+                // if card payments are accepted, set images for bike markers
                 if (availableBikes == 0) {
-                    var urlIcon = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
+                    var urlBikes = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
                 }
                 else if (percentAvailable >= 67) {
-                    var urlIcon = "/static/icons/Marker-Green-euro.png";  // use the green marker with euro symbol
+                    var urlBikes = "/static/icons/Marker-Green-euro.png";  // use the green marker with euro symbol
                 }
                 else if (percentAvailable >= 33) {
-                    var urlIcon = "/static/icons/Marker-Orange-euro.png";  // use the orange marker with euro symbol
+                    var urlBikes = "/static/icons/Marker-Orange-euro.png";  // use the orange marker with euro symbol
                 }
                 else {
-                    var urlIcon = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
+                    var urlBikes = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
+                }
+                // then set images for stand markers
+                if (availableStands == 0) {
+                    var urlStands = "/static/icons/Marker-empty-stands-euro.png"; // use the empty marker with euro symbol
+                }
+                else if (percentFree >= 67) {
+                    var urlStands = "/static/icons/Marker-Green-stands-euro.png";  // use the green marker with euro symbol
+                }
+                else if (percentFree >= 33) {
+                    var urlStands = "/static/icons/Marker-Orange-stands-euro.png";  // use the orange marker with euro symbol
+                }
+                else {
+                    var urlStands = "/static/icons/Marker-Red-stands-euro.png";  // use the red marker with euro symbol
                 }
             }
-            // if the station doesn't accept card, check how many bikes are available and assign marker
-            else {
+            // if the station doesn't accept card, check how many bikes/stands are available and assign markers
+            else { 
+                // set images for bike markers
                 if (availableBikes == 0) {
-                    var urlIcon = "/static/icons/Marker-empty.png"; // use the empty marker without euro symbol
+                    var urlBikes = "/static/icons/Marker-empty.png"; // use the empty marker without euro symbol
                 }
                 else if (percentAvailable >= 67) {
-                    var urlIcon = "/static/icons/Marker-Green.png";  // use the green marker without euro symbol
+                    var urlBikes = "/static/icons/Marker-Green.png";  // use the green marker without euro symbol
                 }
                 else if (percentAvailable >= 33) {
-                    var urlIcon = "/static/icons/Marker-Orange.png";  // use the orange marker without euro symbol
+                    var urlBikes = "/static/icons/Marker-Orange.png";  // use the orange marker without euro symbol
                 }
                 else {
-                    var urlIcon = "/static/icons/Marker-Red.png";  // use the red marker without euro symbol
+                    var urlBikes = "/static/icons/Marker-Red.png";  // use the red marker without euro symbol
+                }
+                // set images for stand markers
+                if (availableStands == 0) {
+                    var urlStands = "/static/icons/Marker-empty-stands.png"; // use the empty marker without euro symbol
+                }
+                else if (percentFree >= 67) {
+                    var urlStands = "/static/icons/Marker-Green-stands.png";  // use the green marker without euro symbol
+                }
+                else if (percentFree >= 33) {
+                    var urlStands = "/static/icons/Marker-Orange-stands.png";  // use the orange marker without euro symbol
+                }
+                else {
+                    var urlStands = "/static/icons/Marker-Red-stands.png";  // use the red marker without euro symbol
                 }
             }
         }
 
-        // create an object for the image icon
-        var imageicon = {
-            url: urlIcon, // url for the image
+        // create an object for the bike icon
+        var bikeIcon = {
+            url: urlBikes, // url for the image
+            scaledSize: new google.maps.Size(60, 60), // size of the image
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(30, 60) // anchor
+        };
+
+        // create an object for the stand icon
+        var standIcon = {
+            url: urlStands, // url for the image
             scaledSize: new google.maps.Size(60, 60), // size of the image
             origin: new google.maps.Point(0, 0), // origin
             anchor: new google.maps.Point(30, 60) // anchor
         };
 
         // create a variable to hold the content for the pop-up window
+        // this will be the same for both types of markers
         var content = '<div style="color:rgb(89, 89, 89); width: 220px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
@@ -129,16 +180,24 @@ function addMarkers(data) {
         // create an object for the pop-up
         var popup = new google.maps.InfoWindow();
 
-        // generate the marker object for the station and place on the map
-        var marker = new google.maps.Marker({
+        // generate a marker object for the station for bikes
+        var bikeMarker = new google.maps.Marker({
             position: latLng,  
-            map: map,
-            icon: imageicon,  
+            //map: map,
+            icon: bikeIcon,  
             title: stationName //this will show the station name when user hovers over marker
         });
 
-        // add a listener to the marker that displays the pop-up on click
-        google.maps.event.addListener(marker,'click', (function(marker, content, popup){ 
+        // generate a marker object for the station for stands
+        var standMarker = new google.maps.Marker({
+            position: latLng,  
+            //map: map,
+            icon: standIcon,  
+            title: stationName //this will show the station name when user hovers over marker
+        });
+
+        // add a listener to each type of marker that displays the pop-up on click
+        google.maps.event.addListener(bikeMarker,'click', (function(bikeMarker, content, popup){ 
             return function() {
                 // if a pop-up has already been opened, close it
                 if (prevPopup) {
@@ -150,8 +209,153 @@ function addMarkers(data) {
 
                 // set the content and open the popup
                 popup.setContent(content);
-                popup.open(map,marker);
+                popup.open(map,bikeMarker);
             };
-        })(marker,content,popup));  
+        })(bikeMarker,content,popup));
+
+        google.maps.event.addListener(standMarker,'click', (function(standMarker, content, popup){ 
+            return function() {
+                // if a pop-up has already been opened, close it
+                if (prevPopup) {
+                    prevPopup.close();
+                }
+
+                // assign the current pop-up to the PrevPopup variable
+                prevPopup = popup;
+
+                // set the content and open the popup
+                popup.setContent(content);
+                popup.open(map,standMarker);
+            };
+        })(standMarker,content,popup));     
+
+        // add each marker to the relevant markers array
+        // this will be used later to add/remove markers from the map
+        bikeMarkers.push(bikeMarker);
+        standMarkers.push(standMarker);
     };
 };
+
+// function that creates buttons to add to the map
+function addButtons() {
+    // create a div to hold the button for the bike filter
+    var bikeFilterDiv = document.createElement('div');
+    // call the BikeFilter function to create the button
+    var bikeFilter = new BikeFilter(bikeFilterDiv, map);
+
+    // create a div to hold the button for the stand filter
+    var standFilterDiv = document.createElement('div');
+    // call the BikeFilter function to create the button
+    var standFilter = new StandFilter(standFilterDiv, map);
+
+    // set positions for the buttons
+    // bikeFilterDiv.index = 1;
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
+}
+
+// function for creating the bike filter button
+function BikeFilter(controlDiv, map) {
+    // Set CSS for the button
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.borderRadius = '2px';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.textAlign = 'center';
+    controlUI.style.width = '33px';
+    controlUI.style.height = '33px';
+    controlUI.style.marginRight = '8px';
+    controlUI.style.marginTop = '16px';
+    controlUI.style.marginBottom = '6px';
+    controlUI.style.display = 'flex';
+    controlUI.style.alignContent = 'center';
+    controlUI.style.justifyContent = 'center';
+    //controlUI.title = '...';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the button image
+    var controlImage = document.createElement('div');
+    controlImage.innerHTML = '<img src="/static/icons/bicycle.png" style="width:50px; padding-top:2px; padding-right:1px;">';
+    controlUI.appendChild(controlImage);
+
+    // On click, display markers showing bike availability
+    controlUI.addEventListener('click', function() {
+        // hide stand markers
+        hideMarkers("stand");
+        // show bike markers
+        showMarkers("bike");
+    });
+}
+
+// function for creating the stand filter button
+function StandFilter(controlDiv, map) {
+    // Set CSS for the button
+    var controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.borderRadius = '2px';
+    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.textAlign = 'center';
+    controlUI.style.width = '33px';
+    controlUI.style.height = '33px';
+    controlUI.style.marginRight = '8px';
+    //controlUI.style.marginTop = '16px';
+    controlUI.style.marginBottom = '6px';
+    controlUI.style.display = 'flex';
+    controlUI.style.alignContent = 'center';
+    controlUI.style.justifyContent = 'center';
+    //controlUI.title = '...';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the button image
+    var controlImage = document.createElement('div');
+    controlImage.innerHTML = '<img src="/static/icons/stands.png" style="width:38px; padding-top:4px; padding-left:1px;">';
+    controlUI.appendChild(controlImage);
+
+    // On click, display markers showing stand availability
+    controlUI.addEventListener('click', function() {
+        // hide bike markers
+        hideMarkers("bike");
+        // show stand markers
+        showMarkers("stand");
+    });
+}
+
+// function for hiding markers on the map
+function hideMarkers(type) {
+    // if a pop-up is open, close it
+    if (prevPopup) {
+        prevPopup.close();
+    }
+    // set PrevPopup to false as all pop-ups should be closed when filter button is clicked
+    prevPopup = false;
+
+    if (type=="bike") {
+        // loop through each marker in the markers array and set the map to null
+        for (var i = 0; i < bikeMarkers.length; i++) {
+            bikeMarkers[i].setMap(null);
+        }
+    }
+    else if (type=="stand") {
+        for (var i = 0; i < standMarkers.length; i++) {
+            standMarkers[i].setMap(null);
+        }
+    }
+}
+
+// function to show the relevant markers on the map
+function showMarkers(type) {
+    if (type=="bike") {
+        for (var i = 0; i < bikeMarkers.length; i++) {
+            bikeMarkers[i].setMap(map);
+        }
+    }
+    else if (type=="stand") {
+        for (var i = 0; i < standMarkers.length; i++) {
+            standMarkers[i].setMap(map);
+        }
+    }
+}
