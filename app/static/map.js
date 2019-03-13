@@ -16,17 +16,23 @@ var standMarkers = [];
 // declare variables for the buttons (so that they have global scope)
 var bikeFilterDiv;
 var bikeFilter;
+var bikeFilterUI;
 var standFilterDiv;
 var standFilter;
+var standFilterUI;
+
+// declare variables to track which filter is on
+var bikeFilterOn = true;
+var standFilterOn = false;
 
 // function that initialises the map
 function initMap() {   
     // create the map
     map = new google.maps.Map(document.getElementById('map'), {
     // map will be centred on these co-ordinates when it loads
-    center: {lat: 53.347, lng: -6.268},
+    center: {lat: 53.3465, lng: -6.268},
     // initial level of zoom when map loads - 15 is street level
-    zoom: 13.5,
+    zoom: 14,
     // turn off some default controls
     mapTypeControl: false,
     fullscreenControl: false
@@ -247,12 +253,12 @@ function addButtons() {
     // create a div to hold the button for the bike filter
     bikeFilterDiv = document.createElement('div');
     // call the BikeFilter function to create the button
-    bikeFilter = new BikeFilter(bikeFilterDiv, map);
+    bikeFilter = new BikeFilter();
 
     // create a div to hold the button for the stand filter
     standFilterDiv = document.createElement('div');
     // call the BikeFilter function to create the button
-    standFilter = new StandFilter(standFilterDiv, map);
+    standFilter = new StandFilter();
 
     // set positions for the buttons
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
@@ -260,87 +266,64 @@ function addButtons() {
 }
 
 // function for creating the bike filter button
-function BikeFilter(controlDiv, map) {
+function BikeFilter() {
     // Set CSS for the button
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#fff';
-    controlUI.style.backgroundImage = 'url("/static/icons/bicycle.png")';
-    controlUI.style.backgroundSize = '48px';
-    controlUI.style.backgroundPosition = 'center';
-    controlUI.style.backgroundRepeat = 'no-repeat';
-    controlUI.style.border = '2px solid #fff';
-    controlUI.style.borderRadius = '2px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.textAlign = 'center';
-    controlUI.style.width = '33px';
-    controlUI.style.height = '33px';
-    controlUI.style.marginRight = '8px';
-    controlUI.style.marginTop = '16px';
-    controlUI.style.marginBottom = '6px';
-    controlUI.style.display = 'flex';
-    controlUI.style.alignContent = 'center';
-    controlUI.style.justifyContent = 'center';
-    //controlUI.title = '...';
-    controlDiv.appendChild(controlUI);
-
-    // on hover, change icon colour to black
-    controlDiv.addEventListener('mouseenter', function() {
-        controlUI.style.backgroundImage = 'url("/static/icons/bicycle-black.png")';
-    });
-    controlDiv.addEventListener('mouseleave', function() {
-        controlUI.style.backgroundImage = 'url("/static/icons/bicycle.png")';
-    });
+    bikeFilterUI = document.createElement('div');
+    bikeFilterUI.style.backgroundColor = '#464646';
+    bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle-light.png")';
+    bikeFilterUI.style.backgroundSize = '48px';
+    bikeFilterUI.style.backgroundPosition = 'center';
+    bikeFilterUI.style.backgroundRepeat = 'no-repeat';
+    bikeFilterUI.style.border = '2px solid #464646';
+    bikeFilterUI.style.borderRadius = '2px';
+    bikeFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
+    bikeFilterUI.style.cursor = 'pointer';
+    bikeFilterUI.style.textAlign = 'center';
+    bikeFilterUI.style.width = '33px';
+    bikeFilterUI.style.height = '33px';
+    bikeFilterUI.style.marginRight = '8px';
+    bikeFilterUI.style.marginTop = '16px';
+    bikeFilterUI.style.marginBottom = '6px';
+    bikeFilterUI.style.display = 'flex';
+    bikeFilterUI.style.alignContent = 'center';
+    bikeFilterUI.style.justifyContent = 'center';
+    //bikeFilterUI.title = '...';
+    bikeFilterDiv.appendChild(bikeFilterUI);
 
     // On click, display markers showing bike availability
-    controlUI.addEventListener('click', function() {
-        // hide stand markers
-        hideMarkers("stand");
-        // show bike markers
-        showMarkers("bike");
-    });
+    bikeFilterUI.addEventListener('click', bikeClick);
 }
 
 // function for creating the stand filter button
-function StandFilter(controlDiv, map) {
+function StandFilter() {
     // Set CSS for the button
-    var controlUI = document.createElement('div');
-    controlUI.style.backgroundColor = '#fff';
-    controlUI.style.backgroundImage = 'url("/static/icons/stands.png")';
-    controlUI.style.backgroundSize = '38px';
-    controlUI.style.backgroundPosition = 'center';
-    controlUI.style.backgroundRepeat = 'no-repeat';
-    controlUI.style.border = '2px solid #fff';
-    controlUI.style.borderRadius = '2px';
-    controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
-    controlUI.style.cursor = 'pointer';
-    controlUI.style.textAlign = 'center';
-    controlUI.style.width = '33px';
-    controlUI.style.height = '33px';
-    controlUI.style.marginRight = '8px';
-    //controlUI.style.marginTop = '16px';
-    controlUI.style.marginBottom = '6px';
-    controlUI.style.display = 'flex';
-    controlUI.style.alignContent = 'center';
-    controlUI.style.justifyContent = 'center';
-    //controlUI.title = '...';
-    controlDiv.appendChild(controlUI);
+    standFilterUI = document.createElement('div');
+    standFilterUI.style.backgroundColor = '#fff';
+    standFilterUI.style.backgroundImage = 'url("/static/icons/stands.png")';
+    standFilterUI.style.backgroundSize = '38px';
+    standFilterUI.style.backgroundPosition = 'center';
+    standFilterUI.style.backgroundRepeat = 'no-repeat';
+    standFilterUI.style.border = '2px solid #fff';
+    standFilterUI.style.borderRadius = '2px';
+    standFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
+    standFilterUI.style.cursor = 'pointer';
+    standFilterUI.style.textAlign = 'center';
+    standFilterUI.style.width = '33px';
+    standFilterUI.style.height = '33px';
+    standFilterUI.style.marginRight = '8px';
+    standFilterUI.style.marginBottom = '6px';
+    standFilterUI.style.display = 'flex';
+    standFilterUI.style.alignContent = 'center';
+    standFilterUI.style.justifyContent = 'center';
+    //standFilterUI.title = '...';
+    standFilterDiv.appendChild(standFilterUI);
 
-    // on hover, change icon colour to black
-    controlDiv.addEventListener('mouseenter', function() {
-        controlUI.style.backgroundImage = 'url("/static/icons/stands-black.png")';
-    });
-    controlDiv.addEventListener('mouseleave', function() {
-        controlUI.style.backgroundImage = 'url("/static/icons/stands.png")';
-    });
+    // add listeners for the stand filter button
+    // this will cause the icon to turn black on hover
+    addListeners("stand");
 
     // On click, display markers showing stand availability
-    controlUI.addEventListener('click', function() {
-        // hide bike markers
-        hideMarkers("bike");
-        // show stand markers
-        showMarkers("stand");
-    });
+    standFilterUI.addEventListener('click', standClick);
 }
 
 // function for hiding markers on the map
@@ -377,4 +360,120 @@ function showMarkers(type) {
             standMarkers[i].setMap(map);
         }
     }
+}
+
+// function that controls what happens when the bike button is clicked
+function bikeClick() {
+    // if the stand filter is already on, perform the following updates
+    if (standFilterOn) {
+        // update CSS for bike button
+        bikeFilterUI.style.backgroundColor = '#464646';
+        bikeFilterUI.style.border = '2px solid #464646';
+        bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle-light.png")';
+
+        // update CSS for the stand button
+        standFilterUI.style.backgroundColor = '#fff';
+        standFilterUI.style.border = '2px solid #fff';
+        standFilterUI.style.backgroundImage = 'url("/static/icons/stands.png")';
+
+        // add listeners for the bike filter button
+        // this will cause the icon to turn black on hover
+        addListeners("stand");
+
+        // remove listeners for the bike filter button
+        // this will stop the icon changing colour on hover
+        removeListeners("bike");
+
+        // hide stand markers
+        hideMarkers("stand");
+        // show bike markers
+        showMarkers("bike");
+
+        // update the variables that track the filter
+        bikeFilterOn = true;
+        standFilterOn = false;
+    }
+}
+
+// function that controls what happens when the stand button is clicked
+function standClick() {
+    // if the bike filter is already on, perform the following updates
+    if (bikeFilterOn) {
+        // update CSS for stand button
+        standFilterUI.style.backgroundColor = '#464646';
+        standFilterUI.style.border = '2px solid #464646';
+        standFilterUI.style.backgroundImage = 'url("/static/icons/stands-light.png")';
+
+        // update CSS for the bike button
+        bikeFilterUI.style.backgroundColor = '#fff';
+        bikeFilterUI.style.border = '2px solid #fff';
+        bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle.png")';
+
+        // add listeners for the bike filter button
+        // this will cause the icon to turn black on hover
+        addListeners("bike");
+
+        // remove listeners for the stand filter button
+        // this will stop the icon changing colour on hover
+        removeListeners("stand");
+
+        // hide stand markers
+        hideMarkers("bike");
+        // show bike markers
+        showMarkers("stand");
+
+        // update the variables that track the filter
+        bikeFilterOn = false;
+        standFilterOn = true;
+    }
+}
+
+// function for adding listeners to the buttons
+function addListeners(type) {
+    // check which type of listener should be added: bike or stand
+    if (type == "bike") {
+        // on hover, change icon colour to black
+        bikeFilterDiv.addEventListener('mouseenter', bikeListenerEnter);
+        bikeFilterDiv.addEventListener('mouseleave', bikeListenerLeave);
+    }
+    else if (type == "stand") {
+        // on hover, change icon colour to black
+        standFilterDiv.addEventListener('mouseenter', standListenerEnter);
+        standFilterDiv.addEventListener('mouseleave', standListenerLeave);
+    }
+}
+
+// function for removing listeners from the buttons
+function removeListeners(type) {
+    // check which type of listener should be removed: bike or stand
+    if (type == "bike") {
+        // removing listeners will stop icon colour changing on hover
+        bikeFilterDiv.removeEventListener('mouseenter', bikeListenerEnter);
+        bikeFilterDiv.removeEventListener('mouseleave', bikeListenerLeave);
+    }
+    else if (type == "stand") {
+        // removing listeners will stop icon colour changing on hover
+        standFilterDiv.removeEventListener('mouseenter', standListenerEnter);
+        standFilterDiv.removeEventListener('mouseleave', standListenerLeave);
+    }
+}
+
+// function that defines what happens when a bike button listener is added
+function bikeListenerEnter() {
+    bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle-black.png")';
+}
+
+// function that defines what happens when a bike button listener is added
+function bikeListenerLeave() {
+    bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle.png")';
+}
+
+// function that defines what happens when a stand button listener is added
+function standListenerEnter() {
+    standFilterUI.style.backgroundImage = 'url("/static/icons/stands-black.png")';
+}
+
+// function that defines what happens when a stand button listener is added
+function standListenerLeave() {
+    standFilterUI.style.backgroundImage = 'url("/static/icons/stands.png")';
 }
