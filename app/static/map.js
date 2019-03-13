@@ -280,6 +280,14 @@ function BikeFilter(controlDiv, map) {
     controlImage.innerHTML = '<img src="/static/icons/bicycle.png" style="width:50px; padding-top:2px; padding-right:1px;">';
     controlUI.appendChild(controlImage);
 
+    // on hover, change icon colour to black
+    controlDiv.addEventListener('mouseenter', function() {
+        controlImage.innerHTML = '<img src="/static/icons/bicycle-black.png" style="width:50px; padding-top:2px; padding-right:1px;">';
+    });
+    controlDiv.addEventListener('mouseleave', function() {
+        controlImage.innerHTML = '<img src="/static/icons/bicycle.png" style="width:50px; padding-top:2px; padding-right:1px;">';
+    });
+
     // On click, display markers showing bike availability
     controlUI.addEventListener('click', function() {
         // hide stand markers
@@ -314,6 +322,14 @@ function StandFilter(controlDiv, map) {
     var controlImage = document.createElement('div');
     controlImage.innerHTML = '<img src="/static/icons/stands.png" style="width:38px; padding-top:4px; padding-left:1px;">';
     controlUI.appendChild(controlImage);
+
+    // on hover, change icon colour to black
+    controlDiv.addEventListener('mouseenter', function() {
+        controlImage.innerHTML = '<img src="/static/icons/stands-black.png" style="width:38px; padding-top:4px; padding-left:1px;">';
+    });
+    controlDiv.addEventListener('mouseleave', function() {
+        controlImage.innerHTML = '<img src="/static/icons/stands.png" style="width:38px; padding-top:4px; padding-left:1px;">';
+    });
 
     // On click, display markers showing stand availability
     controlUI.addEventListener('click', function() {
