@@ -28,3 +28,12 @@ conda install -c anaconda mysql-connector-python
 # Install jsonify
 conda install jsonify
 
+# Install requirements for data analysis
+conda install pandas
+
+conda install numpy
+
+conda install matplotlib
+
+conda install seaborn
+
