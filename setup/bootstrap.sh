@@ -25,4 +25,6 @@ conda install python3
 # Install mysql connector
 conda install -c anaconda mysql-connector-python
 
+# Install jsonify
+conda install jsonify
 
