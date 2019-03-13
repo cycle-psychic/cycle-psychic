@@ -27,6 +27,3 @@ conda install -c anaconda mysql-connector-python
 
 # Pip install mysql-connector-python for cross-platform compatability issues during development.
 pip install mysql-connector-python==8.0.15
-
-# Install Flask to run our app
-conda install flask
