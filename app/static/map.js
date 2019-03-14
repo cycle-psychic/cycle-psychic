@@ -11,7 +11,9 @@ var prevPopup = false;
 // set up arrays to store markers
 // these will be used later to add/remove markers from the map
 var bikeMarkers = [];
+var bikeMarkersCard = [];
 var standMarkers = [];
+var standMarkersCard = [];
 
 // declare variables for the buttons (so that they have global scope)
 var bikeFilterDiv;
@@ -248,8 +250,14 @@ function addMarkers(data) {
 
         // add each marker to the relevant markers array
         // this will be used later to add/remove markers from the map
-        bikeMarkers.push(bikeMarker);
-        standMarkers.push(standMarker);
+        if (cardPayments) {  //if card payments are accepted
+            bikeMarkersCard.push(bikeMarker);
+            standMarkersCard.push(standMarker);
+        }
+        else {
+            bikeMarkers.push(bikeMarker);
+            standMarkers.push(standMarker);
+        }
     };
 };
 
@@ -379,12 +387,28 @@ function hideMarkers(type) {
     prevPopup = false;
 
     if (type=="bike") {
-        // loop through each marker in the markers array and set the map to null
+        // loop through each marker in the markers arrays and set the map to null
         for (var i = 0; i < bikeMarkers.length; i++) {
             bikeMarkers[i].setMap(null);
         }
+        for (var i = 0; i < bikeMarkersCard.length; i++) {
+            bikeMarkersCard[i].setMap(null);
+        }
     }
     else if (type=="stand") {
+        // loop through each marker in the markers arrays and set the map to null
+        for (var i = 0; i < standMarkers.length; i++) {
+            standMarkers[i].setMap(null);
+        }
+        for (var i = 0; i < standMarkersCard.length; i++) {
+            standMarkersCard[i].setMap(null);
+        }
+    }
+    else if (type=="card") {
+        // if type is card, hide all stations that don't accept card
+        for (var i = 0; i < bikeMarkers.length; i++) {
+            bikeMarkers[i].setMap(null);
+        }
         for (var i = 0; i < standMarkers.length; i++) {
             standMarkers[i].setMap(null);
         }
@@ -394,13 +418,39 @@ function hideMarkers(type) {
 // function to show the relevant markers on the map
 function showMarkers(type) {
     if (type=="bike") {
-        for (var i = 0; i < bikeMarkers.length; i++) {
-            bikeMarkers[i].setMap(map);
+        // if type is bike always show stations that accept card
+        for (var i = 0; i < bikeMarkersCard.length; i++) {
+            bikeMarkersCard[i].setMap(map);
+        }
+        if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
+            for (var i = 0; i < bikeMarkers.length; i++) {
+                bikeMarkers[i].setMap(map);
+            }
         }
     }
     else if (type=="stand") {
-        for (var i = 0; i < standMarkers.length; i++) {
-            standMarkers[i].setMap(map);
+        // if type is bike always show stations that accept card
+        for (var i = 0; i < standMarkersCard.length; i++) {
+            standMarkersCard[i].setMap(map);
+        }
+        if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
+            for (var i = 0; i < standMarkers.length; i++) {
+                standMarkers[i].setMap(map);
+            }
+        }
+    }
+    else if (type=="card") {
+        // if type is card, check which filter is currently selected (bike vs. stands)
+        // and show the appropriate stations
+        if (bikeFilterOn) {
+            for (var i = 0; i < bikeMarkers.length; i++) {
+                bikeMarkers[i].setMap(map);
+            }
+        }
+        else if (cardFilterOn) {
+            for (var i = 0; i < standMarkers.length; i++) {
+                standMarkers[i].setMap(map);
+            }
         }
     }
 }
@@ -484,10 +534,8 @@ function cardClick() {
         // this will stop the icon changing colour on hover
         removeListeners("card");
 
-        // // hide stand markers
-        // hideMarkers("bike");
-        // // show bike markers
-        // showMarkers("stand");
+        // hide stations that don't accept card
+        hideMarkers("card");
 
         // update the variable that tracks the filter
         cardFilterOn = true;
@@ -502,10 +550,8 @@ function cardClick() {
         // this will cause the icon to turn black on hover
         addListeners("card");
 
-        // // hide stand markers
-        // hideMarkers("bike");
-        // // show bike markers
-        // showMarkers("stand");
+        // show stations that don't accept card (bike or stand markers depending on which filter is selected)
+        showMarkers("card");
 
         // update the variable that tracks the filter
         cardFilterOn = false;
