@@ -27,6 +27,7 @@ var euroSymbolLight = "/static/icons/euro_symbol-light.png";
 var bicycleBlack = "/static/icons/bicycle-black.png";
 var standsBlack = "/static/icons/stands-black.png";
 var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
+var crystalBall = "/static/icons/crystal-ball.png";
 
 // variable for the Google Map
 var map;  
@@ -55,6 +56,9 @@ var standFilterUI;
 var cardFilterDiv;
 var cardFilter;
 var cardFilterUI;
+var predictionFilterDiv;
+var predictionFilter;
+var predictionFilterUI;
 
 // declare variables to track which filter is on
 // bike filter is on by default, stand and card filters are off by default
@@ -308,10 +312,16 @@ function addButtons() {
     // call the CardFilter function to create the button
     cardFilter = new CardFilter();
 
+    // create a div to hold the button for the prediction button
+    predictionFilterDiv = document.createElement('div');
+    // call the PredictionButton function to create the button
+    predictionFilter = new PredictionButton();
+
     // set positions for the buttons
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(cardFilterDiv);
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(predictionFilterDiv);
 }
 
 // function for creating the bike filter button
@@ -399,12 +409,44 @@ function CardFilter() {
     //cardFilterUI.title = '...';
     cardFilterDiv.appendChild(cardFilterUI);
 
-    // add listeners for the stand filter button
+    // add listeners for the card filter button
     // this will cause the icon to turn black on hover
     addListeners("card");
 
     // On click, filter to show only stations that accept card
     cardFilterUI.addEventListener('click', cardClick);
+}
+
+// function for creating the prediction button
+function PredictionButton() {
+    // Set CSS for the button
+    predictionFilterUI = document.createElement('div');
+    predictionFilterUI.style.backgroundColor = '#fff';
+    predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
+    predictionFilterUI.style.backgroundSize = '32px';
+    predictionFilterUI.style.backgroundPosition = 'center';
+    predictionFilterUI.style.backgroundRepeat = 'no-repeat';
+    predictionFilterUI.style.border = '2px solid #fff';
+    predictionFilterUI.style.borderRadius = '2px';
+    predictionFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
+    predictionFilterUI.style.cursor = 'pointer';
+    predictionFilterUI.style.textAlign = 'center';
+    predictionFilterUI.style.width = '33px';
+    predictionFilterUI.style.height = '33px';
+    predictionFilterUI.style.marginRight = '8px';
+    predictionFilterUI.style.marginBottom = '6px';
+    predictionFilterUI.style.display = 'flex';
+    predictionFilterUI.style.alignContent = 'center';
+    predictionFilterUI.style.justifyContent = 'center';
+    //predictionFilterUI.title = '...';
+    predictionFilterDiv.appendChild(predictionFilterUI);
+
+    // add listeners for the stand filter button
+    // this will cause the icon to turn black on hover
+    // addListeners("card");
+
+    // On click, filter to show only stations that accept card
+    // cardFilterUI.addEventListener('click', cardClick);
 }
 
 // function for hiding markers on the map
