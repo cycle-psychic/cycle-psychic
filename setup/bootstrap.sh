@@ -37,3 +37,7 @@ conda install matplotlib
 
 conda install seaborn
 
+# Install scikit learn for machine learning
+
+conda install scikit-learn
+
