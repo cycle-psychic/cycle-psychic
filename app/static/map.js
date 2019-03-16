@@ -1,3 +1,33 @@
+//load all required images for markers
+var markerClosed = "/static/icons/Marker-closed.png";
+var markerEmptyEuro = "/static/icons/Marker-empty-euro1.png";
+var markerGreenEuro = "/static/icons/Marker-Green-euro.png";
+var markerOrangeEuro = "/static/icons/Marker-Orange-euro.png";
+var markerRedEuro = "/static/icons/Marker-Red-euro.png";
+var markerEmptyStandsEuro = "/static/icons/Marker-empty-stands-euro.png";
+var markerGreenStandsEuro = "/static/icons/Marker-Green-stands-euro.png";
+var markerOrangeStandsEuro = "/static/icons/Marker-Orange-stands-euro.png";
+var markerRedStandsEuro = "/static/icons/Marker-Red-stands-euro.png";
+var markerEmpty = "/static/icons/Marker-empty.png";
+var markerGreen = "/static/icons/Marker-Green.png";
+var markerOrange = "/static/icons/Marker-Orange.png";
+var markerRed = "/static/icons/Marker-Red.png";
+var markerEmptyStands = "/static/icons/Marker-empty-stands.png";
+var markerGreenStands = "/static/icons/Marker-Green-stands.png";
+var markerOrangeStands = "/static/icons/Marker-Orange-stands.png";
+var markerRedStands = "/static/icons/Marker-Red-stands.png";
+
+//load all required images for buttons
+var bicycle = "/static/icons/bicycle.png";
+var stands = "/static/icons/stands.png";
+var euroSymbol = "/static/icons/euro_symbol.png";
+var bicycleLight = "/static/icons/bicycle-light.png";
+var standsLight = "/static/icons/stands-light.png";
+var euroSymbolLight = "/static/icons/euro_symbol-light.png";
+var bicycleBlack = "/static/icons/bicycle-black.png";
+var standsBlack = "/static/icons/stands-black.png";
+var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
+
 // variable for the Google Map
 var map;  
 
@@ -11,7 +41,9 @@ var prevPopup = false;
 // set up arrays to store markers
 // these will be used later to add/remove markers from the map
 var bikeMarkers = [];
+var bikeMarkersCard = [];
 var standMarkers = [];
+var standMarkersCard = [];
 
 // declare variables for the buttons (so that they have global scope)
 var bikeFilterDiv;
@@ -20,10 +52,15 @@ var bikeFilterUI;
 var standFilterDiv;
 var standFilter;
 var standFilterUI;
+var cardFilterDiv;
+var cardFilter;
+var cardFilterUI;
 
 // declare variables to track which filter is on
+// bike filter is on by default, stand and card filters are off by default
 var bikeFilterOn = true;
 var standFilterOn = false;
+var cardFilterOn = false;
 
 // function that initialises the map
 function initMap() {   
@@ -92,8 +129,8 @@ function addMarkers(data) {
         // first check if the station is closed
         if (stationStatus == 'CLOSED') {
             // use the grey marker for bike and stand markers
-            var urlBikes = "/static/icons/Marker-closed.png";  
-            var urlStands = "/static/icons/Marker-closed.png"; 
+            var urlBikes = markerClosed;  
+            var urlStands = markerClosed; 
         }
         else {
             // if the station is not closed, check if it accepts card payments
@@ -101,58 +138,58 @@ function addMarkers(data) {
             if (cardPayments) {  
                 // if card payments are accepted, set images for bike markers
                 if (availableBikes == 0) {
-                    var urlBikes = "/static/icons/Marker-empty-euro1.png"; // use the empty marker with euro symbol
+                    var urlBikes = markerEmptyEuro; // use the empty marker with euro symbol
                 }
                 else if (percentAvailable >= 67) {
-                    var urlBikes = "/static/icons/Marker-Green-euro.png";  // use the green marker with euro symbol
+                    var urlBikes = markerGreenEuro;  // use the green marker with euro symbol
                 }
                 else if (percentAvailable >= 33) {
-                    var urlBikes = "/static/icons/Marker-Orange-euro.png";  // use the orange marker with euro symbol
+                    var urlBikes = markerOrangeEuro;  // use the orange marker with euro symbol
                 }
                 else {
-                    var urlBikes = "/static/icons/Marker-Red-euro.png";  // use the red marker with euro symbol
+                    var urlBikes = markerRedEuro;  // use the red marker with euro symbol
                 }
                 // then set images for stand markers
                 if (availableStands == 0) {
-                    var urlStands = "/static/icons/Marker-empty-stands-euro.png"; // use the empty marker with euro symbol
+                    var urlStands = markerEmptyStandsEuro; // use the empty marker with euro symbol
                 }
                 else if (percentFree >= 67) {
-                    var urlStands = "/static/icons/Marker-Green-stands-euro.png";  // use the green marker with euro symbol
+                    var urlStands = markerGreenStandsEuro;  // use the green marker with euro symbol
                 }
                 else if (percentFree >= 33) {
-                    var urlStands = "/static/icons/Marker-Orange-stands-euro.png";  // use the orange marker with euro symbol
+                    var urlStands = markerOrangeStandsEuro;  // use the orange marker with euro symbol
                 }
                 else {
-                    var urlStands = "/static/icons/Marker-Red-stands-euro.png";  // use the red marker with euro symbol
+                    var urlStands = markerRedStandsEuro;  // use the red marker with euro symbol
                 }
             }
             // if the station doesn't accept card, check how many bikes/stands are available and assign markers
             else { 
                 // set images for bike markers
                 if (availableBikes == 0) {
-                    var urlBikes = "/static/icons/Marker-empty.png"; // use the empty marker without euro symbol
+                    var urlBikes = markerEmpty; // use the empty marker without euro symbol
                 }
                 else if (percentAvailable >= 67) {
-                    var urlBikes = "/static/icons/Marker-Green.png";  // use the green marker without euro symbol
+                    var urlBikes = markerGreen;  // use the green marker without euro symbol
                 }
                 else if (percentAvailable >= 33) {
-                    var urlBikes = "/static/icons/Marker-Orange.png";  // use the orange marker without euro symbol
+                    var urlBikes = markerOrange;  // use the orange marker without euro symbol
                 }
                 else {
-                    var urlBikes = "/static/icons/Marker-Red.png";  // use the red marker without euro symbol
+                    var urlBikes = markerRed;  // use the red marker without euro symbol
                 }
                 // set images for stand markers
                 if (availableStands == 0) {
-                    var urlStands = "/static/icons/Marker-empty-stands.png"; // use the empty marker without euro symbol
+                    var urlStands = markerEmptyStands; // use the empty marker without euro symbol
                 }
                 else if (percentFree >= 67) {
-                    var urlStands = "/static/icons/Marker-Green-stands.png";  // use the green marker without euro symbol
+                    var urlStands = markerGreenStands;  // use the green marker without euro symbol
                 }
                 else if (percentFree >= 33) {
-                    var urlStands = "/static/icons/Marker-Orange-stands.png";  // use the orange marker without euro symbol
+                    var urlStands = markerOrangeStands;  // use the orange marker without euro symbol
                 }
                 else {
-                    var urlStands = "/static/icons/Marker-Red-stands.png";  // use the red marker without euro symbol
+                    var urlStands = markerRedStands;  // use the red marker without euro symbol
                 }
             }
         }
@@ -180,13 +217,13 @@ function addMarkers(data) {
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
             '<table><tr>' +
             '<td style="width:40px;">' + 
-            '<img src="/static/icons/bicycle.png" style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<img src=' + bicycle + ' style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
             '<td>' + availableBikes + ' Available</td></tr>' +
             '<td style="width:40px;">' +
-            '<img src="/static/icons/stands.png" style="width:30px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<img src=' + stands + ' style="width:30px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
             '<td>' + availableStands + ' Free</td></tr>' +
             '<td style="width:40px;">' +
-            '<img src="/static/icons/euro_symbol.png" style="width:25px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<img src=' + euroSymbol + ' style="width:25px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
             '<td>' + paymentText + '</td></tr></table></div>';
 
         // create an object for the pop-up
@@ -243,8 +280,14 @@ function addMarkers(data) {
 
         // add each marker to the relevant markers array
         // this will be used later to add/remove markers from the map
-        bikeMarkers.push(bikeMarker);
-        standMarkers.push(standMarker);
+        if (cardPayments) {  //if card payments are accepted
+            bikeMarkersCard.push(bikeMarker);
+            standMarkersCard.push(standMarker);
+        }
+        else {
+            bikeMarkers.push(bikeMarker);
+            standMarkers.push(standMarker);
+        }
     };
 };
 
@@ -260,9 +303,15 @@ function addButtons() {
     // call the BikeFilter function to create the button
     standFilter = new StandFilter();
 
+    // create a div to hold the button for the card filter
+    cardFilterDiv = document.createElement('div');
+    // call the CardFilter function to create the button
+    cardFilter = new CardFilter();
+
     // set positions for the buttons
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(cardFilterDiv);
 }
 
 // function for creating the bike filter button
@@ -270,7 +319,7 @@ function BikeFilter() {
     // Set CSS for the button
     bikeFilterUI = document.createElement('div');
     bikeFilterUI.style.backgroundColor = '#464646';
-    bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle-light.png")';
+    bikeFilterUI.style.backgroundImage = 'url(' + bicycleLight + ')';
     bikeFilterUI.style.backgroundSize = '48px';
     bikeFilterUI.style.backgroundPosition = 'center';
     bikeFilterUI.style.backgroundRepeat = 'no-repeat';
@@ -299,7 +348,7 @@ function StandFilter() {
     // Set CSS for the button
     standFilterUI = document.createElement('div');
     standFilterUI.style.backgroundColor = '#fff';
-    standFilterUI.style.backgroundImage = 'url("/static/icons/stands.png")';
+    standFilterUI.style.backgroundImage = 'url(' + stands + ')';
     standFilterUI.style.backgroundSize = '38px';
     standFilterUI.style.backgroundPosition = 'center';
     standFilterUI.style.backgroundRepeat = 'no-repeat';
@@ -326,6 +375,38 @@ function StandFilter() {
     standFilterUI.addEventListener('click', standClick);
 }
 
+// function for creating the card filter button
+function CardFilter() {
+    // Set CSS for the button
+    cardFilterUI = document.createElement('div');
+    cardFilterUI.style.backgroundColor = '#fff';
+    cardFilterUI.style.backgroundImage = 'url(' + euroSymbol + ')';
+    cardFilterUI.style.backgroundSize = '35px';
+    cardFilterUI.style.backgroundPosition = 'center';
+    cardFilterUI.style.backgroundRepeat = 'no-repeat';
+    cardFilterUI.style.border = '2px solid #fff';
+    cardFilterUI.style.borderRadius = '2px';
+    cardFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
+    cardFilterUI.style.cursor = 'pointer';
+    cardFilterUI.style.textAlign = 'center';
+    cardFilterUI.style.width = '33px';
+    cardFilterUI.style.height = '33px';
+    cardFilterUI.style.marginRight = '8px';
+    cardFilterUI.style.marginBottom = '6px';
+    cardFilterUI.style.display = 'flex';
+    cardFilterUI.style.alignContent = 'center';
+    cardFilterUI.style.justifyContent = 'center';
+    //cardFilterUI.title = '...';
+    cardFilterDiv.appendChild(cardFilterUI);
+
+    // add listeners for the stand filter button
+    // this will cause the icon to turn black on hover
+    addListeners("card");
+
+    // On click, filter to show only stations that accept card
+    cardFilterUI.addEventListener('click', cardClick);
+}
+
 // function for hiding markers on the map
 function hideMarkers(type) {
     // if a pop-up is open, close it
@@ -336,12 +417,28 @@ function hideMarkers(type) {
     prevPopup = false;
 
     if (type=="bike") {
-        // loop through each marker in the markers array and set the map to null
+        // loop through each marker in the markers arrays and set the map to null
         for (var i = 0; i < bikeMarkers.length; i++) {
             bikeMarkers[i].setMap(null);
         }
+        for (var i = 0; i < bikeMarkersCard.length; i++) {
+            bikeMarkersCard[i].setMap(null);
+        }
     }
     else if (type=="stand") {
+        // loop through each marker in the markers arrays and set the map to null
+        for (var i = 0; i < standMarkers.length; i++) {
+            standMarkers[i].setMap(null);
+        }
+        for (var i = 0; i < standMarkersCard.length; i++) {
+            standMarkersCard[i].setMap(null);
+        }
+    }
+    else if (type=="card") {
+        // if type is card, hide all stations that don't accept card
+        for (var i = 0; i < bikeMarkers.length; i++) {
+            bikeMarkers[i].setMap(null);
+        }
         for (var i = 0; i < standMarkers.length; i++) {
             standMarkers[i].setMap(null);
         }
@@ -351,13 +448,45 @@ function hideMarkers(type) {
 // function to show the relevant markers on the map
 function showMarkers(type) {
     if (type=="bike") {
-        for (var i = 0; i < bikeMarkers.length; i++) {
-            bikeMarkers[i].setMap(map);
+        // if type is bike always show stations that accept card
+        for (var i = 0; i < bikeMarkersCard.length; i++) {
+            bikeMarkersCard[i].setMap(map);
+        }
+        if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
+            for (var i = 0; i < bikeMarkers.length; i++) {
+                bikeMarkers[i].setMap(map);
+            }
         }
     }
     else if (type=="stand") {
-        for (var i = 0; i < standMarkers.length; i++) {
-            standMarkers[i].setMap(map);
+        // if type is bike always show stations that accept card
+        for (var i = 0; i < standMarkersCard.length; i++) {
+            standMarkersCard[i].setMap(map);
+        }
+        if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
+            for (var i = 0; i < standMarkers.length; i++) {
+                standMarkers[i].setMap(map);
+            }
+        }
+    }
+    else if (type=="card") {
+        // first close any open pop-ups 
+        if (prevPopup) {
+            prevPopup.close();
+        }
+        // set PrevPopup to false as all pop-ups should be closed when filter button is clicked
+        prevPopup = false;
+        // if type is card, check which filter is currently selected (bike vs. stands)
+        // and show the appropriate stations
+        if (bikeFilterOn) {
+            for (var i = 0; i < bikeMarkers.length; i++) {
+                bikeMarkers[i].setMap(map);
+            }
+        }
+        else if (cardFilterOn) {
+            for (var i = 0; i < standMarkers.length; i++) {
+                standMarkers[i].setMap(map);
+            }
         }
     }
 }
@@ -369,12 +498,12 @@ function bikeClick() {
         // update CSS for bike button
         bikeFilterUI.style.backgroundColor = '#464646';
         bikeFilterUI.style.border = '2px solid #464646';
-        bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle-light.png")';
+        bikeFilterUI.style.backgroundImage = 'url(' + bicycleLight + ')';
 
         // update CSS for the stand button
         standFilterUI.style.backgroundColor = '#fff';
         standFilterUI.style.border = '2px solid #fff';
-        standFilterUI.style.backgroundImage = 'url("/static/icons/stands.png")';
+        standFilterUI.style.backgroundImage = 'url(' + stands + ')';
 
         // add listeners for the bike filter button
         // this will cause the icon to turn black on hover
@@ -402,12 +531,12 @@ function standClick() {
         // update CSS for stand button
         standFilterUI.style.backgroundColor = '#464646';
         standFilterUI.style.border = '2px solid #464646';
-        standFilterUI.style.backgroundImage = 'url("/static/icons/stands-light.png")';
+        standFilterUI.style.backgroundImage = 'url(' + standsLight + ')';
 
         // update CSS for the bike button
         bikeFilterUI.style.backgroundColor = '#fff';
         bikeFilterUI.style.border = '2px solid #fff';
-        bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle.png")';
+        bikeFilterUI.style.backgroundImage = 'url(' + bicycle + ')';
 
         // add listeners for the bike filter button
         // this will cause the icon to turn black on hover
@@ -428,6 +557,43 @@ function standClick() {
     }
 }
 
+// function that controls what happens when the card button is clicked
+function cardClick() {
+    // if the card filter is not already on, perform the following updates
+    if (!cardFilterOn) {
+        // update CSS for card button
+        cardFilterUI.style.backgroundColor = '#464646';
+        cardFilterUI.style.border = '2px solid #464646';
+        cardFilterUI.style.backgroundImage = 'url(' + euroSymbolLight + ')';
+
+        // remove listeners for the card filter button
+        // this will stop the icon changing colour on hover
+        removeListeners("card");
+
+        // hide stations that don't accept card
+        hideMarkers("card");
+
+        // update the variable that tracks the filter
+        cardFilterOn = true;
+    }
+    else if (cardFilterOn) {
+        // update CSS for card button
+        cardFilterUI.style.backgroundColor = '#fff';
+        cardFilterUI.style.border = '2px solid #fff';
+        cardFilterUI.style.backgroundImage = 'url(' + euroSymbol + ')';
+
+        // add listeners for the card filter button
+        // this will cause the icon to turn black on hover
+        addListeners("card");
+
+        // show stations that don't accept card (bike or stand markers depending on which filter is selected)
+        showMarkers("card");
+
+        // update the variable that tracks the filter
+        cardFilterOn = false;
+    }
+}
+
 // function for adding listeners to the buttons
 function addListeners(type) {
     // check which type of listener should be added: bike or stand
@@ -440,6 +606,11 @@ function addListeners(type) {
         // on hover, change icon colour to black
         standFilterDiv.addEventListener('mouseenter', standListenerEnter);
         standFilterDiv.addEventListener('mouseleave', standListenerLeave);
+    }
+    else if (type == "card") {
+        // on hover, change icon colour to black
+        cardFilterDiv.addEventListener('mouseenter', cardListenerEnter);
+        cardFilterDiv.addEventListener('mouseleave', cardListenerLeave);
     }
 }
 
@@ -456,24 +627,39 @@ function removeListeners(type) {
         standFilterDiv.removeEventListener('mouseenter', standListenerEnter);
         standFilterDiv.removeEventListener('mouseleave', standListenerLeave);
     }
+    else if (type == "card") {
+        // removing listeners will stop icon colour changing on hover
+        cardFilterDiv.removeEventListener('mouseenter', cardListenerEnter);
+        cardFilterDiv.removeEventListener('mouseleave', cardListenerLeave);
+    }
 }
 
 // function that defines what happens when a bike button listener is added
 function bikeListenerEnter() {
-    bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle-black.png")';
+    bikeFilterUI.style.backgroundImage = 'url(' + bicycleBlack + ')';
 }
 
 // function that defines what happens when a bike button listener is added
 function bikeListenerLeave() {
-    bikeFilterUI.style.backgroundImage = 'url("/static/icons/bicycle.png")';
+    bikeFilterUI.style.backgroundImage = 'url(' + bicycle + ')';
 }
 
 // function that defines what happens when a stand button listener is added
 function standListenerEnter() {
-    standFilterUI.style.backgroundImage = 'url("/static/icons/stands-black.png")';
+    standFilterUI.style.backgroundImage = 'url(' + standsBlack +')';
 }
 
 // function that defines what happens when a stand button listener is added
 function standListenerLeave() {
-    standFilterUI.style.backgroundImage = 'url("/static/icons/stands.png")';
+    standFilterUI.style.backgroundImage = 'url('+ stands + ')';
+}
+
+// function that defines what happens when a card button listener is added
+function cardListenerEnter() {
+    cardFilterUI.style.backgroundImage = 'url(' + euroSymbolBlack + ')';
+}
+
+// function that defines what happens when a card button listener is added
+function cardListenerLeave() {
+    cardFilterUI.style.backgroundImage = 'url(' + euroSymbol + ')';
 }
