@@ -2,3 +2,5 @@
 .DS_Store
 .vscode
 __pycache__
+ml/scaler.sav
+ml/model.sav
