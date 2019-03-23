@@ -11,13 +11,13 @@ connection = mysql.connector.connect(
 
 cursor = connection.cursor()
 
-query = "SELECT * FROM cyclepsychic.all_station_info WHERE last_update BETWEEN '2019-03-05' and '2019-03-13';"
+query = "SELECT * FROM cyclepsychic.all_station_info;"
 
 cursor.execute(query)
 result=cursor.fetchall()
-week_of_results = csv.writer(open("05-13-03-19_results.csv", "w"))
+results = csv.writer(open("results_to_23_03_19.csv", "w"))
 
 for row in result:
-  week_of_results.writerow(row)
+  results.writerow(row)
 
 connection.close()
