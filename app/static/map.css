@@ -9,7 +9,7 @@ html, body {
     padding: 0;
     }
 
- /* The sidebar menu */
+ /* The sidebar menu -- Code adapted from W3Schools and edited*/
 .sidebar {
   height: 100%; /* 100% Full-height */
   width: 50px; /* 0 width - change this with JavaScript */
@@ -19,8 +19,8 @@ html, body {
   left: 0;
   background-color: #111; /* Black*/
   overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 60px; /* Place content 60px from the top */
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  padding-top: 10px; /* Place content 60px from the top */
+  transition: 0.4s; /* 0.5 second transition effect to slide in the sidebar */
 }
 
 /* The sidebar links */
@@ -46,7 +46,6 @@ html, body {
     color: white;
     padding: 10px 15px;
     border: none;
-    margin-left:50px;
     transition:margin-left .5s;
 }
 
@@ -72,18 +71,29 @@ html, body {
 
 .openbtn {
     position:absolute;
-    top:45%;
 }
 
 .graphs {
     color:white;
     margin-left:10%;
-    margin-top:70%;
+    margin-top:20%;
 }
 
 .sidebartext {
     color:white;
     margin-left:10%;
+}
+
+#weather {
+    color:white;
+    margin-left:10%;
+}
+
+#weatherElement {
+    position:relative;
+    margin-top:38px;
+    color:white;
+    margin-left:3%;
 }
 
 #nonWeatherElements {
