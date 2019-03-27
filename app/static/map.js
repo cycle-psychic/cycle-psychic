@@ -28,6 +28,7 @@ var bicycleBlack = "/static/icons/bicycle-black.png";
 var standsBlack = "/static/icons/stands-black.png";
 var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
 var crystalBall = "/static/icons/crystal-ball.png";
+var crystalBallBlack = "/static/icons/crystal-ball-black.png";
 
 // variable for the Google Map
 var map;  
@@ -441,12 +442,12 @@ function PredictionButton() {
     //predictionFilterUI.title = '...';
     predictionFilterDiv.appendChild(predictionFilterUI);
 
-    // add listeners for the stand filter button
+    // add listeners for the predictive filter button
     // this will cause the icon to turn black on hover
-    // addListeners("card");
+    addListeners("predictive");
 
-    // On click, filter to show only stations that accept card
-    // cardFilterUI.addEventListener('click', cardClick);
+    // On click, pop up form for prediction input
+    // to be added...
 }
 
 // function for hiding markers on the map
@@ -654,6 +655,11 @@ function addListeners(type) {
         cardFilterDiv.addEventListener('mouseenter', cardListenerEnter);
         cardFilterDiv.addEventListener('mouseleave', cardListenerLeave);
     }
+    else if (type == "predictive") {
+        // on hover, change icon colour to black
+        predictionFilterDiv.addEventListener('mouseenter', predictiveListenerEnter);
+        predictionFilterDiv.addEventListener('mouseleave', predictiveListenerLeave);
+    }
 }
 
 // function for removing listeners from the buttons
@@ -704,4 +710,14 @@ function cardListenerEnter() {
 // function that defines what happens when a card button listener is added
 function cardListenerLeave() {
     cardFilterUI.style.backgroundImage = 'url(' + euroSymbol + ')';
+}
+
+// function that defines what happens when a predictive button listener is added
+function predictiveListenerEnter() {
+    predictionFilterUI.style.backgroundImage = 'url(' + crystalBallBlack + ')';
+}
+
+// function that defines what happens when a predictive button listener is added
+function predictiveListenerLeave() {
+    predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
 }
