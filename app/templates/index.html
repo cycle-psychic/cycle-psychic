@@ -19,19 +19,25 @@
     <!-- sidebar div -->  
     <div id="mySidebar" class="sidebar">
         
+         <!-- open the side bar menu -->
+        <div id="main">
+          <button id="openbtn" class="openbtn" onclick="navBar()">&#9776;</button>
+        </div>
+        
         <!-- side bar element for weather information -->
-        <div class="sidebarElement">
-            <p class="sidebartext">Placeholder for weather information</p>
+        <div id="weatherElement">
         </div>
         
         <!-- This div holds all NON-weather sidebar elements -->
         <div id="nonWeatherElements">
+            
             <!-- form element for users to select the station they want -->
             <div id="form">
                 <form id="selectStation" onchange="goToStation()">
                     <select id="station"></select>
                 </form>
             </div>
+            
             <!-- side bar elements for graphs -->
             <div class="graphs">
                 <p class="sidebartext">Placeholder for graph 1</p>
@@ -41,6 +47,7 @@
                 <p class="sidebartext">Placeholder for graph 3</p>
                 <br><br>
             </div>  
+            
         </div>
         
     </div>
@@ -50,11 +57,6 @@
     
     <!-- div for testing various output -->
     <div><p id="test"></p></div>     
-       
-    <!-- open the side bar menu -->
-    <div id="main">
-      <button id="openbtn" class="openbtn" onclick="navBar()">&#9776;</button>
-    </div>
     
     <!-- script for side bar and api operations -->
     <script src="../static/html_js.js"></script> 
