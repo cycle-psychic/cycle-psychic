@@ -4,22 +4,25 @@ ROOT = window.location.origin;
 const getLocation = ROOT + '/getlocation/';
 // constructed url to get JSON
 const dropDownUrl = ROOT + '/dropdown';
+// constructed URL for current weather info
+const weatherInfo = ROOT + '/weather';
 // get element id
 var dropdown = $('#station');
 
-// This function opens and closes the navigation bar and makes the button move correctly alongside it.
+// This function opens and closes the navigation bar
 function navBar() {
   var getWidth = document.getElementById("mySidebar");
     if (getWidth.style.width === "250px") {
         document.getElementById("mySidebar").style.width = "50px";
         document.getElementById("main").style.marginLeft = "50px";
-        $("#nonWeatherElements").fadeOut();
+        document.getElementById("openbtn").style.marginLeft = "0px";
+        document.getElementById("main").style.marginLeft = "0px";
+        $("#nonWeatherElements").fadeOut("fast");
 
     } else {
         document.getElementById("mySidebar").style.width = "250px";
-        document.getElementById("main").style.marginLeft = "250px";
-        document.getElementById("openbtn").style.marginLeft = "0px";
-        $("#nonWeatherElements").fadeIn();
+        document.getElementById("openbtn").style.marginLeft = "75%";
+        $("#nonWeatherElements").fadeIn("slow");
     }
 }
 
@@ -42,3 +45,10 @@ function goToStation() {
     });
 
 }
+
+
+$.getJSON(weatherInfo, function (data) {
+    console.log(data);
+    $("#weatherElement").html("<img style=\"margin-left: -3px;\" src="+data.iconURL+">");
+    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -19px; position: absolute;\" >" + data.Summary + "</p");
+});
