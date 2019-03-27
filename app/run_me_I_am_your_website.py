@@ -1,7 +1,17 @@
 from flask import Flask,render_template,jsonify
 import mysql.connector
+# import pickle to load in the machine learning model
+import pickle
+from sklearn.linear_model import ElasticNetCV
+from sklearn.preprocessing import StandardScaler
+import math
+import datetime
 
 app = Flask(__name__)
+
+# Load the model and the scaler for predictions
+model = pickle.load(open('model.sav', 'rb'))
+scaler = pickle.load(open('scaler.sav', 'rb'))
 
 # build engine for databasee
 dbEngine = mysql.connector.connect(
@@ -63,6 +73,21 @@ def getStationLocation(station_id):
         locationReturn["lng"] = i[1]
 
     return jsonify(locationReturn)
+
+@app.route('/predict/<station_id>/<time_date>')
+def predict(station_id, time_date):
+    # Assume data and time will come in as ISO 8601 standard
+    # Example: futureDate = (new Date()).toJSON() - "2019-03-23T21:10:58.831Z"
+    # Use the selected station and selected date and time to get prediction
+    date_time_obj = datetime.datetime.strptime('2019-01-04T16:41:24+0200', "%Y-%m-%dT%H:%M:%S%z")
+    weekday = date_time_obj.weekday()
+    hour = date_time_obj.hour
+    minute = date_time_obj.minute
+    features = [[int(station_id), weekday, hour, minute]]
+    scaled_predict = scaler.transform(features)
+    prediction = model.predict(scaled_predict)
+    print("PREDICTION:", prediction)
+    return jsonify({"prediction": math.floor(prediction[0])})
 
 if __name__ == "__main__":
     app.run(debug=True)
