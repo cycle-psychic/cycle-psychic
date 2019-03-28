@@ -222,7 +222,7 @@ function addMarkers(data) {
 
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:rgb(89, 89, 89); width: 220px;">' +
+        var content = '<div style="color:#464646; width: 220px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
             '<table><tr>' +
