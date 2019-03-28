@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <!-- Link to the CSS file for the map -->
     <link rel="stylesheet" type="text/css" href="../static/map.css">
-    <!-- Link to css file for html elements 
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <!-- Link to css file for html elements -->
     <link rel="stylesheet" type="text/css" href="../static/html_js.css">
     <!-- The following line of code loads JQuery from the Google API -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -47,6 +48,19 @@
 
     <!-- div where the map will be displayed -->
     <div id="map"></div> 
+
+    <!-- div for the prediction form -->
+    <div id="predictionForm">
+      <div id="innerForm">
+        <form>
+          <label for="time">Time: </label><br>
+          <input type="time" name="time"><br>
+          <label for="date">Date: </label><br>
+          <input type="date" name="date"><br>
+          <input type="button" value="Go!">
+        </form>
+      </div>
+    </div>
     
     <!-- div for testing various output -->
     <div><p id="test"></p></div>     

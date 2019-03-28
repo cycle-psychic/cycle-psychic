@@ -60,12 +60,17 @@ var cardFilterUI;
 var predictionFilterDiv;
 var predictionFilter;
 var predictionFilterUI;
+var predictionFormDiv;
+var predictionForm;
+var predictionFormUI;
 
 // declare variables to track which filter is on
 // bike filter is on by default, stand and card filters are off by default
 var bikeFilterOn = true;
 var standFilterOn = false;
 var cardFilterOn = false;
+// prediction mode is off by default
+var predictionMode = false;
 
 // function that initialises the map
 function initMap() {   
@@ -339,9 +344,9 @@ function BikeFilter() {
     bikeFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
     bikeFilterUI.style.cursor = 'pointer';
     bikeFilterUI.style.textAlign = 'center';
-    bikeFilterUI.style.width = '33px';
-    bikeFilterUI.style.height = '33px';
-    bikeFilterUI.style.marginRight = '8px';
+    bikeFilterUI.style.width = '36px';
+    bikeFilterUI.style.height = '36px';
+    bikeFilterUI.style.marginRight = '10px';
     bikeFilterUI.style.marginTop = '16px';
     bikeFilterUI.style.marginBottom = '6px';
     bikeFilterUI.style.display = 'flex';
@@ -368,9 +373,9 @@ function StandFilter() {
     standFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
     standFilterUI.style.cursor = 'pointer';
     standFilterUI.style.textAlign = 'center';
-    standFilterUI.style.width = '33px';
-    standFilterUI.style.height = '33px';
-    standFilterUI.style.marginRight = '8px';
+    standFilterUI.style.width = '36px';
+    standFilterUI.style.height = '36px';
+    standFilterUI.style.marginRight = '10px';
     standFilterUI.style.marginBottom = '6px';
     standFilterUI.style.display = 'flex';
     standFilterUI.style.alignContent = 'center';
@@ -400,9 +405,9 @@ function CardFilter() {
     cardFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
     cardFilterUI.style.cursor = 'pointer';
     cardFilterUI.style.textAlign = 'center';
-    cardFilterUI.style.width = '33px';
-    cardFilterUI.style.height = '33px';
-    cardFilterUI.style.marginRight = '8px';
+    cardFilterUI.style.width = '36px';
+    cardFilterUI.style.height = '36px';
+    cardFilterUI.style.marginRight = '10px';
     cardFilterUI.style.marginBottom = '6px';
     cardFilterUI.style.display = 'flex';
     cardFilterUI.style.alignContent = 'center';
@@ -420,7 +425,7 @@ function CardFilter() {
 
 // function for creating the prediction button
 function PredictionButton() {
-    // Set CSS for the button
+    // create div for the button image and add CSS
     predictionFilterUI = document.createElement('div');
     predictionFilterUI.style.backgroundColor = '#fff';
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
@@ -432,22 +437,22 @@ function PredictionButton() {
     predictionFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
     predictionFilterUI.style.cursor = 'pointer';
     predictionFilterUI.style.textAlign = 'center';
-    predictionFilterUI.style.width = '33px';
-    predictionFilterUI.style.height = '33px';
-    predictionFilterUI.style.marginRight = '8px';
+    predictionFilterUI.style.width = '36px';
+    predictionFilterUI.style.height = '36px';
+    predictionFilterUI.style.marginRight = '10px';
     predictionFilterUI.style.marginBottom = '6px';
     predictionFilterUI.style.display = 'flex';
     predictionFilterUI.style.alignContent = 'center';
     predictionFilterUI.style.justifyContent = 'center';
     //predictionFilterUI.title = '...';
-    predictionFilterDiv.appendChild(predictionFilterUI);
+    predictionFilterDiv.appendChild(predictionFilterUI);  // append image div to the main button div
 
     // add listeners for the predictive filter button
     // this will cause the icon to turn black on hover
     addListeners("predictive");
 
     // On click, pop up form for prediction input
-    // to be added...
+    predictionFilterUI.addEventListener('click', predictionClick);
 }
 
 // function for hiding markers on the map
@@ -637,6 +642,22 @@ function cardClick() {
     }
 }
 
+// function that controls what happens when the prediction button is clicked
+function predictionClick() {
+    // if the map isn't in prediction mode, perform the following updates
+    if (!predictionMode) {
+        // show the predictive form
+        var form = document.getElementById("predictionForm");
+
+        if (form.style.display == "block") {
+            form.style.display = "none";
+        } 
+        else {
+            form.style.display = "block";
+        }
+    }
+}
+
 // function for adding listeners to the buttons
 function addListeners(type) {
     // check which type of listener should be added: bike or stand
@@ -657,8 +678,8 @@ function addListeners(type) {
     }
     else if (type == "predictive") {
         // on hover, change icon colour to black
-        predictionFilterDiv.addEventListener('mouseenter', predictiveListenerEnter);
-        predictionFilterDiv.addEventListener('mouseleave', predictiveListenerLeave);
+        predictionFilterUI.addEventListener('mouseenter', predictiveListenerEnter);
+        predictionFilterUI.addEventListener('mouseleave', predictiveListenerLeave);
     }
 }
 
