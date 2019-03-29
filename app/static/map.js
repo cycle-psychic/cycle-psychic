@@ -481,76 +481,153 @@ function hideMarkers(type) {
     // set PrevPopup to false as all pop-ups should be closed when filter button is clicked
     prevPopup = false;
 
-    if (type=="bike") {
-        // loop through each marker in the markers arrays and set the map to null
-        for (var i = 0; i < bikeMarkers.length; i++) {
-            bikeMarkers[i].setMap(null);
+    if (!predictionMode) {  // if the map is not in prediction mode
+        if (type=="bike") {
+            // loop through each marker in the markers arrays and set the map to null
+            for (var i = 0; i < bikeMarkers.length; i++) {
+                bikeMarkers[i].setMap(null);
+            }
+            for (var i = 0; i < bikeMarkersCard.length; i++) {
+                bikeMarkersCard[i].setMap(null);
+            }
         }
-        for (var i = 0; i < bikeMarkersCard.length; i++) {
-            bikeMarkersCard[i].setMap(null);
+        else if (type=="stand") {
+            // loop through each marker in the markers arrays and set the map to null
+            for (var i = 0; i < standMarkers.length; i++) {
+                standMarkers[i].setMap(null);
+            }
+            for (var i = 0; i < standMarkersCard.length; i++) {
+                standMarkersCard[i].setMap(null);
+            }
+        }
+        else if (type=="card") {
+            // if type is card, hide all stations that don't accept card
+            for (var i = 0; i < bikeMarkers.length; i++) {
+                bikeMarkers[i].setMap(null);
+            }
+            for (var i = 0; i < standMarkers.length; i++) {
+                standMarkers[i].setMap(null);
+            }
         }
     }
-    else if (type=="stand") {
-        // loop through each marker in the markers arrays and set the map to null
-        for (var i = 0; i < standMarkers.length; i++) {
-            standMarkers[i].setMap(null);
+    else { // if the map is in prediction mode
+        if (type=="bike") {
+            // loop through each marker in the markers arrays and set the map to null
+            for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+                bikeMarkersPredictive[i].setMap(null);
+            }
+            for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
+                bikeMarkersCardPredictive[i].setMap(null);
+            }
         }
-        for (var i = 0; i < standMarkersCard.length; i++) {
-            standMarkersCard[i].setMap(null);
+        else if (type=="stand") {
+            // loop through each marker in the markers arrays and set the map to null
+            for (var i = 0; i < standMarkersPredictive.length; i++) {
+                standMarkersPredictive[i].setMap(null);
+            }
+            for (var i = 0; i < standMarkersCardPredictive.length; i++) {
+                standMarkersCardPredictive[i].setMap(null);
+            }
         }
-    }
-    else if (type=="card") {
-        // if type is card, hide all stations that don't accept card
-        for (var i = 0; i < bikeMarkers.length; i++) {
-            bikeMarkers[i].setMap(null);
-        }
-        for (var i = 0; i < standMarkers.length; i++) {
-            standMarkers[i].setMap(null);
+        else if (type=="card") {
+            // if type is card, hide all stations that don't accept card
+            for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+                bikeMarkersPredictive[i].setMap(null);
+            }
+            for (var i = 0; i < standMarkersPredictive.length; i++) {
+                standMarkersPredictive[i].setMap(null);
+            }
         }
     }
 }
 
 // function to show the relevant markers on the map
 function showMarkers(type) {
-    if (type=="bike") {
-        // if type is bike always show stations that accept card
-        for (var i = 0; i < bikeMarkersCard.length; i++) {
-            bikeMarkersCard[i].setMap(map);
+    if (!predictionMode) {  // if the map is not in prediction mode
+        if (type=="bike") {
+            // if type is bike always show stations that accept card
+            for (var i = 0; i < bikeMarkersCard.length; i++) {
+                bikeMarkersCard[i].setMap(map);
+            }
+            if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
+                for (var i = 0; i < bikeMarkers.length; i++) {
+                    bikeMarkers[i].setMap(map);
+                }
+            }
         }
-        if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
-            for (var i = 0; i < bikeMarkers.length; i++) {
-                bikeMarkers[i].setMap(map);
+        else if (type=="stand") {
+            // if type is bike always show stations that accept card
+            for (var i = 0; i < standMarkersCard.length; i++) {
+                standMarkersCard[i].setMap(map);
+            }
+            if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
+                for (var i = 0; i < standMarkers.length; i++) {
+                    standMarkers[i].setMap(map);
+                }
+            }
+        }
+        else if (type=="card") {
+            // first close any open pop-ups 
+            if (prevPopup) {
+                prevPopup.close();
+            }
+            // set PrevPopup to false as all pop-ups should be closed when filter button is clicked
+            prevPopup = false;
+            // if type is card, check which filter is currently selected (bike vs. stands)
+            // and show the appropriate stations
+            if (bikeFilterOn) {
+                for (var i = 0; i < bikeMarkers.length; i++) {
+                    bikeMarkers[i].setMap(map);
+                }
+            }
+            else if (cardFilterOn) {
+                for (var i = 0; i < standMarkers.length; i++) {
+                    standMarkers[i].setMap(map);
+                }
             }
         }
     }
-    else if (type=="stand") {
-        // if type is bike always show stations that accept card
-        for (var i = 0; i < standMarkersCard.length; i++) {
-            standMarkersCard[i].setMap(map);
-        }
-        if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
-            for (var i = 0; i < standMarkers.length; i++) {
-                standMarkers[i].setMap(map);
+    else {
+        if (type=="bike") {
+            // if type is bike always show stations that accept card
+            for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
+                bikeMarkersCardPredictive[i].setMap(map);
+            }
+            if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
+                for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+                    bikeMarkersPredictive[i].setMap(map);
+                }
             }
         }
-    }
-    else if (type=="card") {
-        // first close any open pop-ups 
-        if (prevPopup) {
-            prevPopup.close();
-        }
-        // set PrevPopup to false as all pop-ups should be closed when filter button is clicked
-        prevPopup = false;
-        // if type is card, check which filter is currently selected (bike vs. stands)
-        // and show the appropriate stations
-        if (bikeFilterOn) {
-            for (var i = 0; i < bikeMarkers.length; i++) {
-                bikeMarkers[i].setMap(map);
+        else if (type=="stand") {
+            // if type is bike always show stations that accept card
+            for (var i = 0; i < standMarkersCardPredictive.length; i++) {
+                standMarkersCardPredictive[i].setMap(map);
+            }
+            if (!cardFilterOn) { // if the card filter is off, also show stations that don't accept card
+                for (var i = 0; i < standMarkersPredictive.length; i++) {
+                    standMarkersPredictive[i].setMap(map);
+                }
             }
         }
-        else if (cardFilterOn) {
-            for (var i = 0; i < standMarkers.length; i++) {
-                standMarkers[i].setMap(map);
+        else if (type=="card") {
+            // first close any open pop-ups 
+            if (prevPopup) {
+                prevPopup.close();
+            }
+            // set PrevPopup to false as all pop-ups should be closed when filter button is clicked
+            prevPopup = false;
+            // if type is card, check which filter is currently selected (bike vs. stands)
+            // and show the appropriate stations
+            if (bikeFilterOn) {
+                for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+                    bikeMarkersPredictive[i].setMap(map);
+                }
+            }
+            else if (cardFilterOn) {
+                for (var i = 0; i < standMarkersPredictive.length; i++) {
+                    standMarkersPredictive[i].setMap(map);
+                }
             }
         }
     }
@@ -825,7 +902,7 @@ function addPredictiveMarkers(data) {
         // get payment info for each station
         var cardPayments = entry.banking;
         // set text to display on pop-up
-        if (cardPayments) {  //if card payments are accepted
+        if (cardPayments == "true") {  //if card payments are accepted
             paymentText = "Credit Card Accepted"
         }
         else {
@@ -835,7 +912,7 @@ function addPredictiveMarkers(data) {
         // check which icon should be use based on percentage available & payment types
         // check if the station accepts card payments
         // if so, check how many bikes are available and assign marker
-        if (cardPayments) {  
+        if (cardPayments == "true") {  
             // if card payments are accepted, set images for bike markers
             if (availableBikes == 0) {
                 var urlBikes = markerEmptyEuro; // use the empty marker with euro symbol
@@ -979,7 +1056,7 @@ function addPredictiveMarkers(data) {
 
         // add each marker to the relevant markers array
         // this will be used later to add/remove markers from the map
-        if (cardPayments) {  //if card payments are accepted
+        if (cardPayments == "true") {  //if card payments are accepted
             bikeMarkersCardPredictive.push(bikeMarker);
             standMarkersCardPredictive.push(standMarker);
         }

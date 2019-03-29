@@ -114,7 +114,11 @@ def predictall(datetime):
         station["lat"] = row[2]
         station["lng"] = row[3]
         station["bike_stands"] = row[4]
-        station["banking"] = row[5]
+        # check value of "banking" and assign it a true or false value
+        if row[5] == '1':
+            station["banking"] = "true"
+        else:
+            station["banking"] = "false"
 
         # call predict() to get the prediction for this station
         prediction = predict(row[0], datetime)
