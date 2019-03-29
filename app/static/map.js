@@ -857,21 +857,22 @@ function makePrediction() {
 
     $.getJSON(predictionURL, function (data) {
         addPredictiveMarkers(data);
-
+        
         // hide the non-predictive markers
         hideMarkers("bike");
         hideMarkers("stand");
 
-        // show the predictive markers
-        for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
-            bikeMarkersCardPredictive[i].setMap(map);
-        }
-        for (var i = 0; i < bikeMarkersPredictive.length; i++) {
-            bikeMarkersPredictive[i].setMap(map);
-        }
-
         // update predictionMode variable to true
         predictionMode = true;
+
+        // show the predictive markers
+        // check which filters are currently on
+        if (bikeFilterOn) {
+            showMarkers("bike");
+        }
+        else {
+            showMarkers("stand");
+        }
 
         // close the form window
         document.getElementById("predictionForm").style.display = "none";
