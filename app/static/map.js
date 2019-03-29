@@ -16,6 +16,19 @@ var markerEmptyStands = "/static/icons/Marker-empty-stands.png";
 var markerGreenStands = "/static/icons/Marker-Green-stands.png";
 var markerOrangeStands = "/static/icons/Marker-Orange-stands.png";
 var markerRedStands = "/static/icons/Marker-Red-stands.png";
+// predictive markers
+var markerGreenEuroP = "/static/icons/Marker-Predictive-euro.png";
+var markerOrangeEuroP = "/static/icons/Marker-Predictive-half-euro.png";
+var markerRedEuroP = "/static/icons/Marker-Predictive-empty-euro.png";
+var markerGreenStandsEuroP = "/static/icons/Marker-Predictive-stands-euro1.png";
+var markerOrangeStandsEuroP = "/static/icons/Marker-Predictive-half-stands-euro.png";
+var markerRedStandsEuroP = "/static/icons/Marker-Predictive-empty-stands-euro.png";
+var markerGreenP = "/static/icons/Marker-Predictive.png";
+var markerOrangeP = "/static/icons/Marker-Predictive-half.png";
+var markerRedP = "/static/icons/Marker-Predictive-empty.png";
+var markerGreenStandsP = "/static/icons/Marker-Predictive-stands.png";
+var markerOrangeStandsP = "/static/icons/Marker-Orange-stands.png";
+var markerRedStandsP = "/static/icons/Marker-Predictive-empty-stands.png";
 
 //load all required images for buttons
 var bicycle = "/static/icons/bicycle.png";
@@ -46,6 +59,10 @@ var bikeMarkers = [];
 var bikeMarkersCard = [];
 var standMarkers = [];
 var standMarkersCard = [];
+var bikeMarkersCardPredictive = [];
+var standMarkersCardPredictive = [];
+var bikeMarkersPredictive = [];
+var standMarkersPredictive = [];
 
 // declare variables for the buttons (so that they have global scope)
 var bikeFilterDiv;
@@ -644,17 +661,14 @@ function cardClick() {
 
 // function that controls what happens when the prediction button is clicked
 function predictionClick() {
-    // if the map isn't in prediction mode, perform the following updates
-    if (!predictionMode) {
-        // show the predictive form
-        var form = document.getElementById("predictionForm");
+    // show the predictive form
+    var form = document.getElementById("predictionForm");
 
-        if (form.style.display == "block") {
-            form.style.display = "none";
-        } 
-        else {
-            form.style.display = "block";
-        }
+    if (form.style.display == "block") {
+        form.style.display = "none";
+    } 
+    else {
+        form.style.display = "block";
     }
 }
 
@@ -742,3 +756,237 @@ function predictiveListenerEnter() {
 function predictiveListenerLeave() {
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
 }
+
+// function that deals with prediction requests - called when the submit button on the prediction form is pressed
+function makePrediction() {
+    //get values from form fields to pass to subsequent functions
+    var predict = document.getElementById("predictionFormFields");
+    var time = predict[0].value;
+    var date = predict[1].value;
+    // split time out into hours and minutes
+    var hour = time.slice(0,2);
+    var min = time.slice(3);
+    // split the date out into year, month, day
+    var year = date.slice(0,4);
+    var month = date.slice(5,7) - 1; // -1 because months go from 0-11 for date object
+    var day = date.slice(8,10);
+    // create datetime object 
+    var datetime = new Date(year, month, day, hour, min);
+    // convert object to ISO 8601 standard for the Flask function
+    var dateConverted = datetime.toISOString();
+
+    // call Flask function with the relevant date and time
+    var predictionURL = ROOT + '/predictall/' + dateConverted;
+
+    $.getJSON(predictionURL, function (data) {
+        addPredictiveMarkers(data);
+
+        // hide the non-predictive markers
+        hideMarkers("bike");
+        hideMarkers("stand");
+
+        // show the predictive markers
+        for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
+            bikeMarkersCardPredictive[i].setMap(map);
+        }
+        for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+            bikeMarkersPredictive[i].setMap(map);
+        }
+
+        // update predictionMode variable to true
+        predictionMode = true;
+
+        // close the form window
+        document.getElementById("predictionForm").style.display = "none";
+    });
+}
+
+// function for adding predictive markers for the map
+function addPredictiveMarkers(data) {
+    // add markers to the map - loop through each station in the JSON object
+    $.each(data, function (key, entry) {
+        // get the latitude and longitude for the station
+        var latitude = entry.lat;
+        document.getElementById("test2").innerHTML = entry.available_bikes;
+        var longitude = entry.lng;
+        var latLng = new google.maps.LatLng(latitude, longitude);
+
+        // get the station address - for the pop-up
+        var stationName = entry.address;
+
+        // get the occupancy info for each station
+        var totalStands = entry.bike_stands;
+        var availableBikes = entry.available_bikes;
+        var availableStands = entry.available_bike_stands;
+
+        // calculate the percentage of available bikes & stands
+        var percentAvailable = (availableBikes/totalStands)*100;
+        var percentFree = (availableStands/totalStands)*100;
+
+        // get payment info for each station
+        var cardPayments = entry.banking;
+        // set text to display on pop-up
+        if (cardPayments) {  //if card payments are accepted
+            paymentText = "Credit Card Accepted"
+        }
+        else {
+            paymentText = "Credit Card Not Accepted"
+        }
+
+        // check which icon should be use based on percentage available & payment types
+        // check if the station accepts card payments
+        // if so, check how many bikes are available and assign marker
+        if (cardPayments) {  
+            // if card payments are accepted, set images for bike markers
+            if (availableBikes == 0) {
+                var urlBikes = markerEmptyEuro; // use the empty marker with euro symbol
+            }
+            else if (percentAvailable >= 67) {
+                var urlBikes = markerGreenEuroP;  // use the green marker with euro symbol
+            }
+            else if (percentAvailable >= 33) {
+                var urlBikes = markerOrangeEuroP;  // use the orange marker with euro symbol
+            }
+            else {
+                var urlBikes = markerRedEuroP;  // use the red marker with euro symbol
+            }
+            // then set images for stand markers
+            if (availableStands == 0) {
+                var urlStands = markerEmptyStandsEuro; // use the empty marker with euro symbol
+            }
+            else if (percentFree >= 67) {
+                var urlStands = markerGreenStandsEuroP;  // use the green marker with euro symbol
+            }
+            else if (percentFree >= 33) {
+                var urlStands = markerOrangeStandsEuroP;  // use the orange marker with euro symbol
+            }
+            else {
+                var urlStands = markerRedStandsEuroP;  // use the red marker with euro symbol
+            }
+        }
+        // if the station doesn't accept card, check how many bikes/stands are available and assign markers
+        else { 
+            // set images for bike markers
+            if (availableBikes == 0) {
+                var urlBikes = markerEmpty; // use the empty marker without euro symbol
+            }
+            else if (percentAvailable >= 67) {
+                var urlBikes = markerGreenP;  // use the green marker without euro symbol
+            }
+            else if (percentAvailable >= 33) {
+                var urlBikes = markerOrangeP;  // use the orange marker without euro symbol
+            }
+            else {
+                var urlBikes = markerRedP;  // use the red marker without euro symbol
+            }
+            // set images for stand markers
+            if (availableStands == 0) {
+                var urlStands = markerEmptyStands; // use the empty marker without euro symbol
+            }
+            else if (percentFree >= 67) {
+                var urlStands = markerGreenStandsP;  // use the green marker without euro symbol
+            }
+            else if (percentFree >= 33) {
+                var urlStands = markerOrangeStandsP;  // use the orange marker without euro symbol
+            }
+            else {
+                var urlStands = markerRedStandsP;  // use the red marker without euro symbol
+            }
+        }
+
+        // create an object for the bike icon
+        var bikeIcon = {
+            url: urlBikes, // url for the image
+            scaledSize: new google.maps.Size(60, 60), // size of the image
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(30, 60) // anchor
+        };
+
+        // create an object for the stand icon
+        var standIcon = {
+            url: urlStands, // url for the image
+            scaledSize: new google.maps.Size(60, 60), // size of the image
+            origin: new google.maps.Point(0, 0), // origin
+            anchor: new google.maps.Point(30, 60) // anchor
+        };
+
+        // create a variable to hold the content for the pop-up window
+        // this will be the same for both types of markers
+        var content = '<div style="color:#464646; width: 220px;">' +
+            '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
+            '<div style="font-weight: bold; padding-bottom: 10px;">' + 
+            '<table><tr>' +
+            '<td style="width:40px;">' + 
+            '<img src=' + bicycle + ' style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + availableBikes + ' Available</td></tr>' +
+            '<td style="width:40px;">' +
+            '<img src=' + stands + ' style="width:30px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + availableStands + ' Free</td></tr>' +
+            '<td style="width:40px;">' +
+            '<img src=' + euroSymbol + ' style="width:25px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + paymentText + '</td></tr></table></div>';
+
+        // create an object for the pop-up
+        var popup = new google.maps.InfoWindow();
+
+        // generate a marker object for the station for bikes
+        var bikeMarker = new google.maps.Marker({
+            position: latLng,  
+            //map: map,
+            icon: bikeIcon,  
+            title: stationName //this will show the station name when user hovers over marker
+        });
+
+        // generate a marker object for the station for stands
+        var standMarker = new google.maps.Marker({
+            position: latLng,  
+            //map: map,
+            icon: standIcon,  
+            title: stationName //this will show the station name when user hovers over marker
+        });
+
+        // add a listener to each type of marker that displays the pop-up on click
+        google.maps.event.addListener(bikeMarker,'click', (function(bikeMarker, content, popup){ 
+            return function() {
+                // if a pop-up has already been opened, close it
+                if (prevPopup) {
+                    prevPopup.close();
+                }
+
+                // assign the current pop-up to the PrevPopup variable
+                prevPopup = popup;
+
+                // set the content and open the popup
+                popup.setContent(content);
+                popup.open(map,bikeMarker);
+            };
+        })(bikeMarker,content,popup));
+
+        google.maps.event.addListener(standMarker,'click', (function(standMarker, content, popup){ 
+            return function() {
+                // if a pop-up has already been opened, close it
+                if (prevPopup) {
+                    prevPopup.close();
+                }
+
+                // assign the current pop-up to the PrevPopup variable
+                prevPopup = popup;
+
+                // set the content and open the popup
+                popup.setContent(content);
+                popup.open(map,standMarker);
+            };
+        })(standMarker,content,popup));     
+
+        // add each marker to the relevant markers array
+        // this will be used later to add/remove markers from the map
+        if (cardPayments) {  //if card payments are accepted
+            bikeMarkersCardPredictive.push(bikeMarker);
+            standMarkersCardPredictive.push(standMarker);
+        }
+        else {
+            bikeMarkersPredictive.push(bikeMarker);
+            standMarkersPredictive.push(standMarker);
+        }
+    });
+}  

@@ -52,19 +52,17 @@
     <!-- div for the prediction form -->
     <div id="predictionForm">
       <div id="innerForm">
-        <form>
+        <form id="predictionFormFields">
           <label for="time">Time: </label><br>
           <input type="time" name="time"><br>
           <label for="date">Date: </label><br>
           <input type="date" name="date"><br>
-          <input type="button" value="Go!">
+          <input type="button" value="Go!" onclick="makePrediction()">
         </form>
+        <div><p id="test2"></p></div>  <!-- test div for debugging-->
       </div>
     </div>
-    
-    <!-- div for testing various output -->
-    <div><p id="test"></p></div>     
-       
+
     <!-- open the side bar menu -->
     <div id="main">
       <button id="openbtn" class="openbtn" onclick="navBar()">&#9776;</button>

@@ -87,7 +87,48 @@ def predict(station_id, time_date):
     scaled_predict = scaler.transform(features)
     prediction = model.predict(scaled_predict)
     print("PREDICTION:", prediction)
-    return jsonify({"prediction": math.floor(prediction[0])})
+   # return jsonify({"prediction": math.floor(prediction[0])})
+    return math.floor(prediction[0])
+
+@app.route('/predictall/<datetime>')
+def predictall(datetime):
+    """This function takes a datetime object as input (should be in ISO 8601 standard format).
+    The function then calls the database to get some station information: ID, latitude, longitude, stands, card payments.
+    It then loops through all stations and requests a prediction using the predict() function.
+    Station information is then almagated with the prediction and returned as a JSON object.
+    """
+    # declare a dictionary to store station data
+    data = {}
+    # call the database to get the static information
+    cursor.execute("select distinct s.station_number, s.address, s.latitude, s.longitude, a.bike_stands, a.banking \
+    from station_information s, all_station_info a \
+    where s.station_number = a.number;")
+    rows=cursor.fetchall()
+    # loop through each row returned
+    for row in rows:
+        # create a dictionary for the station
+        station = {}
+        # add static data to the dictionary
+        station["id"] = row[0]
+        station["address"] = row[1]
+        station["lat"] = row[2]
+        station["lng"] = row[3]
+        station["bike_stands"] = row[4]
+        station["banking"] = row[5]
+
+        # call predict() to get the prediction for this station
+        prediction = predict(row[0], datetime)
+
+        # add predicted bike number to the dictionary
+        station["available_bikes"] = prediction
+        # subtract bike prediction from total stands at station to get stand prediction
+        station["available_bike_stands"] = row[4] - prediction
+
+        # add the current station dictionary to the data list
+        data[row[0]] = station
+
+    # return the data as a JSON object
+    return jsonify(data)
 
 if __name__ == "__main__":
     app.run(debug=True)
