@@ -856,11 +856,19 @@ function makePrediction() {
     var predictionURL = ROOT + '/predictall/' + dateConverted;
 
     $.getJSON(predictionURL, function (data) {
-        addPredictiveMarkers(data);
-        
-        // hide the non-predictive markers
+        // hide the existing markers
         hideMarkers("bike");
         hideMarkers("stand");
+
+        // reset the predictive marker arrays to empty
+        // this is done so that the number of markers doesn't keep increasing each time a new prediction is requested
+        bikeMarkersCardPredictive = [];
+        standMarkersCardPredictive = [];
+        bikeMarkersPredictive = [];
+        standMarkersPredictive = [];
+
+        // add predictive markers
+        addPredictiveMarkers(data);
 
         // update predictionMode variable to true
         predictionMode = true;
