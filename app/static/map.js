@@ -807,7 +807,6 @@ function addPredictiveMarkers(data) {
     $.each(data, function (key, entry) {
         // get the latitude and longitude for the station
         var latitude = entry.lat;
-        document.getElementById("test2").innerHTML = entry.available_bikes;
         var longitude = entry.lng;
         var latLng = new google.maps.LatLng(latitude, longitude);
 

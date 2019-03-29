@@ -79,7 +79,7 @@ def predict(station_id, time_date):
     # Assume data and time will come in as ISO 8601 standard
     # Example: futureDate = (new Date()).toJSON() - "2019-03-23T21:10:58.831Z"
     # Use the selected station and selected date and time to get prediction
-    date_time_obj = datetime.datetime.strptime('2019-01-04T16:41:24+0200', "%Y-%m-%dT%H:%M:%S%z")
+    date_time_obj = datetime.datetime.strptime(time_date, "%Y-%m-%dT%H:%M:%S.%fZ") # changed %z to .%fZ
     weekday = date_time_obj.weekday()
     hour = date_time_obj.hour
     minute = date_time_obj.minute
