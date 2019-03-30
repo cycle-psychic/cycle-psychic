@@ -4,3 +4,10 @@
 __pycache__
 ml/scaler.sav
 ml/model.sav
+ml/.ipynb_checkpoints/data_to-23-02-19-checkpoint.ipynb
+ml/.ipynb_checkpoints/data_to-23-02-19-One_station_only-checkpoint.ipynb
+ml/.ipynb_checkpoints/data_to-28-03-19-bike+weather-checkpoint.ipynb
+ml/.ipynb_checkpoints/machine-learning_to-28-03-19-bike+weather-checkpoint.ipynb
+ml/.ipynb_checkpoints/data_to-23-02-19-checkpoint.ipynb
+ml/.ipynb_checkpoints/data_to-23-02-19-One_station_only-checkpoint.ipynb
+*.csv
