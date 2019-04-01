@@ -89,6 +89,9 @@ var cardFilterOn = false;
 // prediction mode is off by default
 var predictionMode = false;
 
+// variable to store current prediction date
+var predictionDate;
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -851,6 +854,8 @@ function makePrediction() {
     var datetime = new Date(year, month, day, hour, min);
     // convert object to ISO 8601 standard for the Flask function
     var dateConverted = new Date(datetime.getTime() - (datetime.getTimezoneOffset() * 60000)).toISOString();
+    // store the date in the global predictionDate variable
+    predictionDate = datetime;
 
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
@@ -998,11 +1003,24 @@ function addPredictiveMarkers(data) {
             anchor: new google.maps.Point(30, 60) // anchor
         };
 
+        // get hours and minutes in the correct format
+        var mins = predictionDate.getMinutes();
+        if (mins < 10) {
+            mins = "0" + mins;
+        }   
+
+        var hours = predictionDate.getHours();
+        if (hours < 10) {
+            hours = "0" + hours;
+        }   
+
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
         var content = '<div style="color:#464646; width: 220px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
+            '<p style="padding-left:8px; padding-right:8px;">Predicted occupancy for ' + hours + ':' + mins +
+            ' on ' + predictionDate.toDateString() + '.</p>' +
             '<table><tr>' +
             '<td style="width:40px;">' + 
             '<img src=' + bicycle + ' style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
