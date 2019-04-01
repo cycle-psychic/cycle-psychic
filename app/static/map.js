@@ -882,6 +882,9 @@ function makePrediction() {
             showMarkers("stand");
         }
 
+        // clear the form fields
+        predict.reset();
+
         // close the form window
         document.getElementById("predictionForm").style.display = "none";
     });
