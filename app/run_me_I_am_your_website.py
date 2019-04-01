@@ -1,4 +1,4 @@
-from flask import Flask,render_template,jsonify
+from flask import Flask, render_template, jsonify
 import requests
 import mysql.connector
 # import pickle to load in the machine learning model
@@ -25,21 +25,23 @@ dbEngine = mysql.connector.connect(
 # prepare to execute statements
 cursor = dbEngine.cursor()
 
-#OpenWeather API key
-api_key= "cb4ffd84a250fbcb399c9c29cca40597"
+# OpenWeather API key
+api_key = "cb4ffd84a250fbcb399c9c29cca40597"
 
 # URL to call the API using the ID for Dublin Ciy: 7778677
 api_endpoint = "http://api.openweathermap.org/data/2.5/weather?id=7778677&APPID=" + api_key + "&units=metric"
+
 
 @app.route("/")
 def root():
     return render_template('index.html')
 
+
 @app.route('/dropdown')
 def getStationInfo():
     stations_info = {}
     cursor.execute("SELECT * from station_information;")
-    rows=cursor.fetchall()
+    rows = cursor.fetchall()
     for row in rows:
         # create object of key:value pairs
         this_station = {}
@@ -56,6 +58,7 @@ def getStationInfo():
 
     return jsonify(stations_info)
 
+
 @app.route("/weather")
 def getWeather():
     # retrieve weather information from OpenWeather API - returns as text file so convert to JSON
@@ -66,7 +69,7 @@ def getWeather():
     currentWeather = {}
 
     # get the data we want out of the response
-    currentWeather["Temperature"] = round(data["main"]["temp"]) # round to the nearest INT
+    currentWeather["Temperature"] = round(data["main"]["temp"])  # round to the nearest INT
     currentWeather["High"] = round(data["main"]["temp_max"])
     currentWeather["Low"] = round(data["main"]["temp_min"])
     currentWeather["Wind"] = data["wind"]["speed"]
@@ -76,6 +79,7 @@ def getWeather():
 
     return jsonify(currentWeather)
 
+
 @app.route('/getlocation/<station_id>')
 def getStationLocation(station_id):
     # store the data to send back to front end
@@ -84,7 +88,7 @@ def getStationLocation(station_id):
     # define our query
     locationSelect = "SELECT latitude, longitude FROM station_information WHERE station_number = "
     locationVariable = str(station_id)
-    locationQuery =  locationSelect+locationVariable
+    locationQuery = locationSelect + locationVariable
 
     # execute our query
     cursor.execute(locationQuery)
@@ -96,6 +100,7 @@ def getStationLocation(station_id):
         locationReturn["lng"] = i[1]
 
     return jsonify(locationReturn)
+
 
 # @app.route('/predict/<station_id>/<time_date>')
 # def predict(station_id, time_date):
@@ -111,6 +116,25 @@ def getStationLocation(station_id):
 #     prediction = model.predict(scaled_predict)
 #     print("PREDICTION:", prediction)
 #     return jsonify({"prediction": math.floor(prediction[0])})
+
+@app.route('/avgchart/<station_address>')
+def avgChartData(station_address):
+    # get current date
+    date = datetime.datetime.now()
+    day = date.strftime("%A")
+
+    # Holds average bikes organised by hour
+    averageByHour = {}
+
+    # command to code below
+    cursor.execute("SELECT AVG(available_bikes),last_update FROM all_station_info WHERE WEEKDAY(last_update)=\""+day+"\" AND address=\"Blessington Street\" GROUP BY hour(last_update);")
+    rows = cursor.fetchall()
+
+    for row in rows:
+        hour = row[1].strftime("%H")
+        averageByHour[hour] = int(round(row[0]))
+
+    return jsonify(averageByHour)
 
 if __name__ == "__main__":
     app.run(debug=True)
