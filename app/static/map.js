@@ -850,7 +850,7 @@ function makePrediction() {
     // create datetime object 
     var datetime = new Date(year, month, day, hour, min);
     // convert object to ISO 8601 standard for the Flask function
-    var dateConverted = datetime.toISOString();
+    var dateConverted = new Date(datetime.getTime() - (datetime.getTimezoneOffset() * 60000)).toISOString();
 
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
