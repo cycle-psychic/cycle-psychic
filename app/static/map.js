@@ -17,18 +17,18 @@ var markerGreenStands = "/static/icons/Marker-Green-stands.png";
 var markerOrangeStands = "/static/icons/Marker-Orange-stands.png";
 var markerRedStands = "/static/icons/Marker-Red-stands.png";
 // predictive markers
-var markerGreenEuroP = "/static/icons/Marker-Predictive-euro.png";
-var markerOrangeEuroP = "/static/icons/Marker-Predictive-half-euro.png";
-var markerRedEuroP = "/static/icons/Marker-Predictive-empty-euro.png";
-var markerGreenStandsEuroP = "/static/icons/Marker-Predictive-stands-euro1.png";
-var markerOrangeStandsEuroP = "/static/icons/Marker-Predictive-half-stands-euro.png";
-var markerRedStandsEuroP = "/static/icons/Marker-Predictive-empty-stands-euro.png";
-var markerGreenP = "/static/icons/Marker-Predictive.png";
-var markerOrangeP = "/static/icons/Marker-Predictive-half.png";
-var markerRedP = "/static/icons/Marker-Predictive-empty.png";
-var markerGreenStandsP = "/static/icons/Marker-Predictive-stands.png";
-var markerOrangeStandsP = "/static/icons/Marker-Orange-stands.png";
-var markerRedStandsP = "/static/icons/Marker-Predictive-empty-stands.png";
+var markerPredictEuro = "/static/icons/Marker-Predictive-euro.png";
+var markerPredictHalfEuro = "/static/icons/Marker-Predictive-half-euro.png";
+var markerPredictEmptyEuro = "/static/icons/Marker-Predictive-empty-euro.png";
+var markerPredictStandsEuro= "/static/icons/Marker-Predictive-stands-euro1.png";
+var markerPredictHalfStandsEuro = "/static/icons/Marker-Predictive-half-stands-euro.png";
+var markerPredictEmptyStandsEuro = "/static/icons/Marker-Predictive-empty-stands-euro.png";
+var markerPredict = "/static/icons/Marker-Predictive.png";
+var markerPredictHalf = "/static/icons/Marker-Predictive-half.png";
+var markerPredictEmpty = "/static/icons/Marker-Predictive-empty.png";
+var markerPredictStands = "/static/icons/Marker-Predictive-stands.png";
+var markerPredictHalfStands = "/static/icons/Marker-Predictive-half-stands.png";
+var markerPredictEmptyStands = "/static/icons/Marker-Predictive-empty-stands.png";
 
 //load all required images for buttons
 var bicycle = "/static/icons/bicycle.png";
@@ -928,26 +928,26 @@ function addPredictiveMarkers(data) {
                 var urlBikes = markerEmptyEuro; // use the empty marker with euro symbol
             }
             else if (percentAvailable >= 67) {
-                var urlBikes = markerGreenEuroP;  // use the green marker with euro symbol
+                var urlBikes = markerPredictEuro;  // use the full marker with euro symbol
             }
             else if (percentAvailable >= 33) {
-                var urlBikes = markerOrangeEuroP;  // use the orange marker with euro symbol
+                var urlBikes = markerPredictHalfEuro;  // use the half marker with euro symbol
             }
             else {
-                var urlBikes = markerRedEuroP;  // use the red marker with euro symbol
+                var urlBikes = markerPredictEmptyEuro;  // use the nearly empty marker with euro symbol
             }
             // then set images for stand markers
             if (availableStands == 0) {
                 var urlStands = markerEmptyStandsEuro; // use the empty marker with euro symbol
             }
             else if (percentFree >= 67) {
-                var urlStands = markerGreenStandsEuroP;  // use the green marker with euro symbol
+                var urlStands = markerPredictStandsEuro;  // use the full marker with euro symbol
             }
             else if (percentFree >= 33) {
-                var urlStands = markerOrangeStandsEuroP;  // use the orange marker with euro symbol
+                var urlStands = markerPredictHalfStandsEuro;  // use the half marker with euro symbol
             }
             else {
-                var urlStands = markerRedStandsEuroP;  // use the red marker with euro symbol
+                var urlStands = markerPredictEmptyStandsEuro;  // use the nearly empty marker with euro symbol
             }
         }
         // if the station doesn't accept card, check how many bikes/stands are available and assign markers
@@ -957,26 +957,26 @@ function addPredictiveMarkers(data) {
                 var urlBikes = markerEmpty; // use the empty marker without euro symbol
             }
             else if (percentAvailable >= 67) {
-                var urlBikes = markerGreenP;  // use the green marker without euro symbol
+                var urlBikes = markerPredict;  // use the full marker without euro symbol
             }
             else if (percentAvailable >= 33) {
-                var urlBikes = markerOrangeP;  // use the orange marker without euro symbol
+                var urlBikes = markerPredictHalf;  // use the half marker without euro symbol
             }
             else {
-                var urlBikes = markerRedP;  // use the red marker without euro symbol
+                var urlBikes = markerPredictEmpty;  // use the nearly empty marker without euro symbol
             }
             // set images for stand markers
             if (availableStands == 0) {
                 var urlStands = markerEmptyStands; // use the empty marker without euro symbol
             }
             else if (percentFree >= 67) {
-                var urlStands = markerGreenStandsP;  // use the green marker without euro symbol
+                var urlStands = markerPredictStands;  // use the full marker without euro symbol
             }
             else if (percentFree >= 33) {
-                var urlStands = markerOrangeStandsP;  // use the orange marker without euro symbol
+                var urlStands = markerPredictHalfStands;  // use the half marker without euro symbol
             }
             else {
-                var urlStands = markerRedStandsP;  // use the red marker without euro symbol
+                var urlStands = markerPredictEmptyStands;  // use the nearly empty marker without euro symbol
             }
         }
 
