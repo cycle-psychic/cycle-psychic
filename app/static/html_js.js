@@ -49,6 +49,35 @@ function goToStation() {
 
 $.getJSON(weatherInfo, function (data) {
     console.log(data);
-    $("#weatherElement").html("<img style=\"margin-left: -3px;\" src="+data.iconURL+">");
-    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -19px; position: absolute;\" >" + data.Summary + "</p");
+    $("#weatherElement").html("<img style=\"margin-left: -3px; padding:10%;\" src="+data.iconURL+">");
+    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -20px; margin-left:5px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
+});
+
+var ctx = $('#myChart');
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Red'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            fill:false,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        },
+    }
 });
