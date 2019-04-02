@@ -39,19 +39,33 @@ function goToStation() {
 
     $.getJSON(getLocation+ID, function(data) {
         var latLng = new google.maps.LatLng(data.lat, data.lng);
-        console.log(latLng);
         map.setCenter(latLng);
         map.setZoom(17.5);
     });
 
 }
 
-
+// get current weather information and display it in the DIV element in the sidebar.
 $.getJSON(weatherInfo, function (data) {
-    console.log(data);
     $("#weatherElement").html("<img style=\"margin-left: -3px; padding:10%;\" src="+data.iconURL+">");
     $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -20px; margin-left:5px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
 });
+
+// Get the station name from drop down menu and send request to avgchart to get data.
+var currentSelectedText = "";
+
+$(document).on("change", "#station", function() {
+    currentSelectedText = $(this).find("option:selected").text();
+    console.log(currentSelectedText);
+});
+
+
+//$.getJSON(getLocation+ID, function(data) {
+//    var latLng = new google.maps.LatLng(data.lat, data.lng);
+//    console.log(latLng);
+//    map.setCenter(latLng);
+//    map.setZoom(17.5);
+//});
 
 var ctx = $('#myChart');
 var myChart = new Chart(ctx, {
