@@ -96,11 +96,11 @@ html, body {
   border: 2px solid #fff;
   border-radius: 2px;
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
-  width: 180px;
-  height: 155px;
+  width: 300px;
+  height: 36px;
   position: fixed;
-  top: 200px;
-  right: 55px;
+  top: 16px;
+  right: 50px;
   z-index: 2;
   display: none;
   color: #464646;

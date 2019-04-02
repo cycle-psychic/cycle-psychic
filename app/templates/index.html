@@ -53,11 +53,8 @@
     <div id="predictionForm">
       <div id="innerForm">
         <form id="predictionFormFields">
-          <label for="time">Time: </label><br>
-          <input type="time" name="time"><br>
-          <label for="date">Date: </label><br>
-          <input type="date" name="date"><br>
-          <input type="button" value="Go!" onclick="makePrediction()">
+          <input type="datetime-local" name="time"> 
+          <input type="button" value="Predict" onclick="makePrediction()">
         </form>
         <div><p id="test2"></p></div>  <!-- test div for debugging-->
       </div>

@@ -344,10 +344,10 @@ function addButtons() {
     predictionFilter = new PredictionButton();
 
     // set positions for the buttons
-    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(bikeFilterDiv);
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(predictionFilterDiv);
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(bikeFilterDiv);  
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(cardFilterDiv);
-    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(predictionFilterDiv);
 }
 
 // function for creating the bike filter button
@@ -367,7 +367,7 @@ function BikeFilter() {
     bikeFilterUI.style.width = '36px';
     bikeFilterUI.style.height = '36px';
     bikeFilterUI.style.marginRight = '10px';
-    bikeFilterUI.style.marginTop = '16px';
+    //bikeFilterUI.style.marginTop = '16px';
     bikeFilterUI.style.marginBottom = '6px';
     bikeFilterUI.style.display = 'flex';
     bikeFilterUI.style.alignContent = 'center';
@@ -459,6 +459,7 @@ function PredictionButton() {
     predictionFilterUI.style.textAlign = 'center';
     predictionFilterUI.style.width = '36px';
     predictionFilterUI.style.height = '36px';
+    predictionFilterUI.style.marginTop = '16px';
     predictionFilterUI.style.marginRight = '10px';
     predictionFilterUI.style.marginBottom = '6px';
     predictionFilterUI.style.display = 'flex';
@@ -841,21 +842,13 @@ function predictiveListenerLeave() {
 function makePrediction() {
     //get values from form fields to pass to subsequent functions
     var predict = document.getElementById("predictionFormFields");
-    var time = predict[0].value;
-    var date = predict[1].value;
-    // split time out into hours and minutes
-    var hour = time.slice(0,2);
-    var min = time.slice(3);
-    // split the date out into year, month, day
-    var year = date.slice(0,4);
-    var month = date.slice(5,7) - 1; // -1 because months go from 0-11 for date object
-    var day = date.slice(8,10);
+    var inputDateTime = predict[0].value;
     // create datetime object 
-    var datetime = new Date(year, month, day, hour, min);
+    var dateTime = new Date(inputDateTime);
     // convert object to ISO 8601 standard for the Flask function
-    var dateConverted = new Date(datetime.getTime() - (datetime.getTimezoneOffset() * 60000)).toISOString();
+    var dateConverted = new Date(dateTime.getTime() - (dateTime.getTimezoneOffset() * 60000)).toISOString();
     // store the date in the global predictionDate variable
-    predictionDate = datetime;
+    predictionDate = dateTime;
 
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
