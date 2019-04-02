@@ -10,6 +10,8 @@
     <link rel="stylesheet" type="text/css" href="../static/html_js.css">
     <!-- The following line of code loads JQuery from the Google API -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Script for using chartJS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"></script>
     <!-- script for generating the map with the initial parameters-->
     <script src="../static/map.js"></script>
 
@@ -40,7 +42,7 @@
             
             <!-- side bar elements for graphs -->
             <div class="graphs">
-                <p class="sidebartext">Placeholder for graph 1</p>
+                <canvas id="myChart" width="400" height="400"></canvas>                
                 <br><br>
                 <p class="sidebartext">Placeholder for graph 2</p>
                 <br><br>
