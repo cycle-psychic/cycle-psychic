@@ -99,3 +99,7 @@ html, body {
 #nonWeatherElements {
     display:none;
 }
+
+#myChart {
+    margin-left:-5%;
+}
