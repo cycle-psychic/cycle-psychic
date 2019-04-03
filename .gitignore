@@ -11,3 +11,8 @@ ml/.ipynb_checkpoints/machine-learning_to-28-03-19-bike+weather-checkpoint.ipynb
 ml/.ipynb_checkpoints/data_to-23-02-19-checkpoint.ipynb
 ml/.ipynb_checkpoints/data_to-23-02-19-One_station_only-checkpoint.ipynb
 *.csv
+ml/.results_to_23_03_19.csv.icloud
+ml/.05-13-03-19_results_cleaned.csv.icloud
+*.icloud
+ml/results_to_23_03_19.csv
+ml/to_23_03_19.csv
