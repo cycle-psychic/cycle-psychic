@@ -76,6 +76,12 @@ def getStationLocation(station_id):
 
 @app.route('/predict/<station_id>/<time_date>')
 def predict(station_id, time_date):
+    # Required fields: number, hour, minute, main_temp, main_wind_speed,
+    # main_rain_volume_1h, main_snow_volume_1h, Monday, Tuesday,
+    # Wednesday, Thursday, Friday, Saturday, Sunday, clouds(800 -899),
+    # atmosphere (700-799), snow(600-699), light_rain(500), rain(501-599), light_drizzle(300),
+    # drizzle (301 - 399), thunderstorm (200 - 299)
+    
     # Assume data and time will come in as ISO 8601 standard
     # Example: futureDate = (new Date()).toJSON() - "2019-03-23T21:10:58.831Z"
     # Use the selected station and selected date and time to get prediction
