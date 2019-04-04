@@ -6,6 +6,8 @@ const getLocation = ROOT + '/getlocation/';
 const dropDownUrl = ROOT + '/dropdown';
 // constructed URL for current weather info
 const weatherInfo = ROOT + '/weather';
+// constructed URL for avgChart
+const avgChart = ROOT + '/avgchart/'
 // get element id
 var dropdown = $('#station');
 
@@ -57,6 +59,11 @@ var currentSelectedText = "";
 $(document).on("change", "#station", function() {
     currentSelectedText = $(this).find("option:selected").text();
     console.log(currentSelectedText);
+    currentSelectedText = currentSelectedText.replace(" ","_");
+    console.log(currentSelectedText);
+    $.getJSON(avgChart+currentSelectedText, function(data) {
+        console.log(data);
+    })
 });
 
 
