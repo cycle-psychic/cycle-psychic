@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify
 import requests
 import mysql.connector
 from sklearn.preprocessing import StandardScaler
+import pickle
 import math
 
 import datetime
