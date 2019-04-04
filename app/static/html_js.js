@@ -17,13 +17,13 @@ function navBar() {
     if (getWidth.style.width === "250px") {
         document.getElementById("mySidebar").style.width = "50px";
         document.getElementById("main").style.marginLeft = "50px";
-        document.getElementById("openbtn").style.marginLeft = "0px";
+        //document.getElementById("openbtn").style.marginLeft = "0px"; // makes button move with sidebar
         document.getElementById("main").style.marginLeft = "0px";
         $("#nonWeatherElements").fadeOut("fast");
 
     } else {
         document.getElementById("mySidebar").style.width = "250px";
-        document.getElementById("openbtn").style.marginLeft = "75%";
+        //document.getElementById("openbtn").style.marginLeft = "75%";
         $("#nonWeatherElements").fadeIn("slow");
     }
 }
@@ -49,13 +49,13 @@ function goToStation() {
 
 // get current weather information and display it in the DIV element in the sidebar.
 $.getJSON(weatherInfo, function (data) {
-    $("#weatherElement").html("<img style=\"margin-left: -3px; padding:10%;\" src="+data.iconURL+">");
-    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -20px; margin-left:5px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
+    $("#weatherElement").html("<img style=\"margin-left: -3px; padding:1%;\" src="+data.iconURL+">");
+    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -14px; margin-left:6px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
 });
 
 // Get the station name from drop down menu and send request to avgchart to get data.
 var currentSelectedText = "";
-
+var graphArray = []
 $(document).on("change", "#station", function() {
     currentSelectedText = $(this).find("option:selected").text();
     console.log(currentSelectedText);
@@ -65,14 +65,6 @@ $(document).on("change", "#station", function() {
         console.log(data);
     })
 });
-
-
-//$.getJSON(getLocation+ID, function(data) {
-//    var latLng = new google.maps.LatLng(data.lat, data.lng);
-//    console.log(latLng);
-//    map.setCenter(latLng);
-//    map.setZoom(17.5);
-//});
 
 var ctx = $('#myChart');
 var myChart = new Chart(ctx, {
