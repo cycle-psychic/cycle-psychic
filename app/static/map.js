@@ -744,12 +744,13 @@ function cardClick() {
 function predictionClick() {
     // show the predictive form
     var form = document.getElementById("predictionForm");
-
-    if (form.style.display == "block") {
-        form.style.display = "none";
-    } 
-    else {
-        form.style.display = "block";
+    if (!predictionMode) {
+        if (form.style.display == "block") {
+            form.style.display = "none";
+        } 
+        else {
+            form.style.display = "block";
+        }
     }
 }
 
@@ -879,12 +880,6 @@ function makePrediction() {
         else {
             showMarkers("stand");
         }
-
-        // clear the form fields
-        predict.reset();
-
-        // close the form window
-        document.getElementById("predictionForm").style.display = "none";
     });
 }
 
