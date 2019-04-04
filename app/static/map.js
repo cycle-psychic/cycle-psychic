@@ -1012,9 +1012,12 @@ function addPredictiveMarkers(data) {
         var content = '<div style="color:#464646; width: 220px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
-            '<p style="padding-left:8px; padding-right:8px;">Predicted occupancy for ' + hours + ':' + mins +
-            ' on ' + predictionDate.toDateString() + '.</p>' +
+            // '<p style="padding-left:8px; padding-right:8px;">Predicted occupancy for ' + hours + ':' + mins +
+            // ' on ' + predictionDate.toDateString() + '.</p>' +
             '<table><tr>' +
+            '<td style="width:40px;">' + 
+            '<img src=' + crystalBall + ' style="width:22px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
+            '<td>' + hours + ':' + mins + ' ' + predictionDate.toDateString() + '</td></tr>' +
             '<td style="width:40px;">' + 
             '<img src=' + bicycle + ' style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
             '<td>' + availableBikes + ' Available</td></tr>' +
