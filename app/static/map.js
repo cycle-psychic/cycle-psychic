@@ -40,8 +40,9 @@ var euroSymbolLight = "/static/icons/euro_symbol-light.png";
 var bicycleBlack = "/static/icons/bicycle-black.png";
 var standsBlack = "/static/icons/stands-black.png";
 var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
-var crystalBall = "/static/icons/crystal-ball.png";
-var crystalBallBlack = "/static/icons/crystal-ball-black.png";
+var crystalBall = "/static/icons/crystal-ball-purple.png";
+var crystalBallBlack = "/static/icons/crystal-ball-purple-dark.png";
+var crystalBallInverted = "/static/icons/crystal-ball-purple-inverted.png";
 
 // variable for the Google Map
 var map;  
@@ -774,8 +775,8 @@ function addListeners(type) {
     }
     else if (type == "predictive") {
         // on hover, change icon colour to black
-        predictionFilterUI.addEventListener('mouseenter', predictiveListenerEnter);
-        predictionFilterUI.addEventListener('mouseleave', predictiveListenerLeave);
+        predictionFilterDiv.addEventListener('mouseenter', predictiveListenerEnter);
+        predictionFilterDiv.addEventListener('mouseleave', predictiveListenerLeave);
     }
 }
 
@@ -796,6 +797,11 @@ function removeListeners(type) {
         // removing listeners will stop icon colour changing on hover
         cardFilterDiv.removeEventListener('mouseenter', cardListenerEnter);
         cardFilterDiv.removeEventListener('mouseleave', cardListenerLeave);
+    }
+    else if (type == "predictive") {
+        // removing listeners will stop icon colour changing on hover
+        predictionFilterDiv.removeEventListener('mouseenter', predictiveListenerEnter);
+        predictionFilterDiv.removeEventListener('mouseleave', predictiveListenerLeave);
     }
 }
 
@@ -851,6 +857,11 @@ function makePrediction() {
     // store the date in the global predictionDate variable
     predictionDate = dateTime;
 
+    // if prediction mode isn't already on, then call function to invert colours on the button
+    if (!predictionMode) {
+        invertPredictiveButton();
+    }
+
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
 
@@ -880,6 +891,8 @@ function makePrediction() {
         else {
             showMarkers("stand");
         }
+
+
     });
 }
 
@@ -1087,3 +1100,14 @@ function addPredictiveMarkers(data) {
         }
     });
 }  
+
+// function to invert colours on the predictive button when form is submitted
+function invertPredictiveButton() {
+    // update CSS for the predictive button
+    predictionFilterUI.style.backgroundColor = '#4a1a52';
+    predictionFilterUI.style.border = '2px solid #4a1a52';
+    predictionFilterUI.style.backgroundImage = 'url(' + crystalBallInverted + ')';
+
+    // remove listeners for the predictive button
+    removeListeners("predictive");
+}
