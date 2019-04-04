@@ -448,12 +448,12 @@ function CardFilter() {
 function PredictionButton() {
     // create div for the button image and add CSS
     predictionFilterUI = document.createElement('div');
-    predictionFilterUI.style.backgroundColor = '#fff';
+    predictionFilterUI.style.backgroundColor = '#feeffe';
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
     predictionFilterUI.style.backgroundSize = '32px';
     predictionFilterUI.style.backgroundPosition = 'center';
     predictionFilterUI.style.backgroundRepeat = 'no-repeat';
-    predictionFilterUI.style.border = '2px solid #fff';
+    predictionFilterUI.style.border = '2px solid #feeffe';
     predictionFilterUI.style.borderRadius = '2px';
     predictionFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
     predictionFilterUI.style.cursor = 'pointer';
@@ -745,6 +745,7 @@ function cardClick() {
 function predictionClick() {
     // show the predictive form
     var form = document.getElementById("predictionForm");
+    // if prediction mode is not on, hide or show the form
     if (!predictionMode) {
         if (form.style.display == "block") {
             form.style.display = "none";
@@ -752,6 +753,32 @@ function predictionClick() {
         else {
             form.style.display = "block";
         }
+    }
+    // if prediction mode is on...
+    else if (predictionMode) {
+        // update button CSS
+        predictionFilterUI.style.backgroundColor = '#feeffe';
+        predictionFilterUI.style.border = '2px solid #feeffe';
+        predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
+
+        // add listeners to the button
+        addListeners("predictive");
+
+        // hide form
+        form.style.display = "none";
+
+        // clear form fields
+        var predict = document.getElementById("predictionFormFields");
+        predict.reset();
+
+        // set prediction mode to false
+        predictionMode = false;
+
+        // remove predictive markers
+        
+
+        // add non-predictive markers
+
     }
 }
 
@@ -891,8 +918,6 @@ function makePrediction() {
         else {
             showMarkers("stand");
         }
-
-
     });
 }
 
@@ -1104,8 +1129,8 @@ function addPredictiveMarkers(data) {
 // function to invert colours on the predictive button when form is submitted
 function invertPredictiveButton() {
     // update CSS for the predictive button
-    predictionFilterUI.style.backgroundColor = '#4a1a52';
-    predictionFilterUI.style.border = '2px solid #4a1a52';
+    predictionFilterUI.style.backgroundColor = '#692b7a';
+    predictionFilterUI.style.border = '2px solid #692b7a';
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBallInverted + ')';
 
     // remove listeners for the predictive button
