@@ -1,7 +1,7 @@
 #Import pandas and scikitlearn for Machine Learning Models
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import BaggingRegressor
+from sklearn.ensemble import ExtraTreesRegressor
 
 # Pickle saves the model
 import pickle
@@ -35,7 +35,7 @@ def train_station(station_df):
   scaler.fit(train_features)
   scaled_train_features = scaler.transform(train_features)
 
-  estimator = BaggingRegressor()
+  estimator = ExtraTreesRegressor()
   estimator.fit(scaled_train_features, train_targets)
 
   return scaler, estimator
@@ -43,10 +43,13 @@ def train_station(station_df):
 
 # Cycle through station numbers 2 to 115
 for station in range (2,116):
-  print('Training station: ' , str(station))
-  scaler, estimator = train_station(df.loc[df['number'] == station])
-  print('Saving model and scaler for station: ' , str(station))
-  filename_est = '../app/models/model'+str(station)+'.sav'
-  filename_scaler = '../app/models/scaler'+str(station)+'.sav'
-  pickle.dump(estimator, open(filename_est, 'wb'))
-  pickle.dump(scaler, open(filename_scaler, 'wb'))
+  if station != 20:  
+    print('Training station: ' , str(station))
+    df = pd.read_csv('./bike+weather_to_28_03_19.csv')
+    df = df.loc[df['number'] == station]
+    scaler, estimator = train_station(df)
+    print('Saving model and scaler for station: ' , str(station))
+    filename_est = '../app/models/model'+str(station)+'.sav'
+    filename_scaler = '../app/models/scaler'+str(station)+'.sav'
+    pickle.dump(estimator, open(filename_est, 'wb'))
+    pickle.dump(scaler, open(filename_scaler, 'wb'))
