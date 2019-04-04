@@ -69,10 +69,6 @@ html, body {
     margin-top:20%;
 }
 
-/* .openbtn {
-    position:absolute;
-} */
-
 .graphs {
     color:white;
     margin-left:10%;
@@ -91,7 +87,7 @@ html, body {
 
 #weatherElement {
     position:relative;
-    margin-top:38px;
+    margin-top:-5px;
     color:white;
     margin-left:3%;
 }
