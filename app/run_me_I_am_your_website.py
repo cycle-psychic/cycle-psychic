@@ -164,9 +164,8 @@ def predict(station_id, time_date):
     drizzle, thunderstorm]]
     scaled_predict = scaler.transform(features)
     prediction = model.predict(scaled_predict)
-    print("PREDICTION:", prediction)
    # return jsonify({"prediction": math.floor(prediction[0])})
-    return math.floor(prediction[0])
+    return math.floor(prediction)
 
 @app.route('/predictall/<datetime>')
 def predictall(datetime):
