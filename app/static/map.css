@@ -9,7 +9,7 @@ html, body {
     padding: 0;
     }
 
- /* The sidebar menu */
+ /* The sidebar menu -- Code adapted from W3Schools and edited*/
 .sidebar {
   height: 100%; /* 100% Full-height */
   width: 50px; /* 0 width - change this with JavaScript */
@@ -19,8 +19,8 @@ html, body {
   left: 0;
   background-color: #111; /* Black*/
   overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 60px; /* Place content 60px from the top */
-  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  padding-top: 10px; /* Place content 60px from the top */
+  transition: 0.4s; /* 0.5 second transition effect to slide in the sidebar */
 }
 
 /* The sidebar links */
@@ -46,7 +46,6 @@ html, body {
     color: white;
     padding: 10px 15px;
     border: none;
-    margin-left:50px;
     transition:margin-left .5s;
 }
 
@@ -72,13 +71,12 @@ html, body {
 
 .openbtn {
     position:absolute;
-    top:45%;
 }
 
 .graphs {
     color:white;
     margin-left:10%;
-    margin-top:70%;
+    margin-top:20%;
 }
 
 .sidebartext {
@@ -86,6 +84,61 @@ html, body {
     margin-left:10%;
 }
 
+#weather {
+    color:white;
+    margin-left:10%;
+}
+
+#weatherElement {
+    position:relative;
+    margin-top:38px;
+    color:white;
+    margin-left:3%;
+}
+
 #nonWeatherElements {
     display:none;
+}
+
+
+#myChart {
+    margin-left:-5%;
+}
+
+/* CSS for the Prediction Form */
+#predictionForm {
+  background-color: #fff;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  width: 300px;
+  height: 36px;
+  position: fixed;
+  top: 16px;
+  right: 50px;
+  z-index: 2;
+  display: none;
+  color: #464646;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+}
+
+#innerForm {
+  padding:8px;
+}
+
+/* CSS for the form fields */
+input[type=date], input[type=time] {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* CSS for the form button */
+input[type=button] {
+  background-color: #464646;
+  color: #e2e2e2;
+  border: none;
+  padding: 5px;
+  margin-top: 5px;
 }
