@@ -2,14 +2,15 @@ from flask import Flask, render_template, jsonify
 import requests
 import mysql.connector
 from sklearn.preprocessing import StandardScaler
+import math
 
 import datetime
 
 app = Flask(__name__)
 
 # # # Load the model and the scaler for predictions
-# # model = pickle.load(open('model.sav', 'rb'))
-# # scaler = pickle.load(open('scaler.sav', 'rb'))
+model = pickle.load(open('model.sav', 'rb'))
+scaler = pickle.load(open('scaler.sav', 'rb'))
 #
 # build engine for databasee
 dbEngine = mysql.connector.connect(
