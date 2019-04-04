@@ -74,7 +74,6 @@ def getStationLocation(station_id):
 
     return jsonify(locationReturn)
 
-@app.route('/predict/<station_id>/<time_date>')
 def predict(station_id, time_date):
     # Required fields: number, hour, minute, main_temp, main_wind_speed,
     # main_rain_volume_1h, main_snow_volume_1h, Monday, Tuesday,
@@ -89,7 +88,30 @@ def predict(station_id, time_date):
     weekday = date_time_obj.weekday()
     hour = date_time_obj.hour
     minute = date_time_obj.minute
-    features = [[int(station_id), weekday, hour, minute]]
+    Monday = 1
+    Tuesday = 0
+    Wednesday = 0
+    Thursday = 0
+    Friday = 0
+    Saturday = 0
+    Sunday = 0
+    main_temp = 0
+    main_wind_speed = 0
+    main_rain_volume_1h = 0
+    main_snow_volume_1h = 0
+    clouds = 1
+    atmosphere = 0
+    snow = 0
+    light_rain = 0
+    rain = 0
+    light_drizzle = 0
+    drizzle = 0
+    thunderstorm = 0
+    features = [[int(station_id), hour, minute,main_temp, main_wind_speed,
+    main_rain_volume_1h, main_snow_volume_1h, Monday, Tuesday,
+    Wednesday, Thursday, Friday, Saturday, Sunday, clouds,
+    atmosphere, snow, light_rain, rain, light_drizzle,
+    drizzle, thunderstorm]]
     scaled_predict = scaler.transform(features)
     prediction = model.predict(scaled_predict)
     print("PREDICTION:", prediction)
