@@ -109,7 +109,6 @@ def avgChartData(station_address):
 
     station_address = station_address
     station_address = station_address.replace("_"," ")
-    print(station_address)
 
     # Holds average bikes organised by hour
     averageByHour = {}
