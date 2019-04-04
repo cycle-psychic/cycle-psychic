@@ -6,7 +6,8 @@
     <meta charset="utf-8">
     <!-- Link to the CSS file for the map -->
     <link rel="stylesheet" type="text/css" href="../static/map.css">
-    <!-- Link to css file for html elements 
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <!-- Link to css file for html elements -->
     <link rel="stylesheet" type="text/css" href="../static/html_js.css">
     <!-- The following line of code loads JQuery from the Google API -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -56,9 +57,22 @@
 
     <!-- div where the map will be displayed -->
     <div id="map"></div> 
-    
-    <!-- div for testing various output -->
-    <div><p id="test"></p></div>     
+
+    <!-- div for the prediction form -->
+    <div id="predictionForm">
+      <div id="innerForm">
+        <form id="predictionFormFields">
+          <input type="datetime-local" name="time"> 
+          <input type="button" value="Predict" onclick="makePrediction()">
+        </form>
+        <div><p id="test2"></p></div>  <!-- test div for debugging-->
+      </div>
+    </div>
+
+    <!-- open the side bar menu -->
+    <div id="main">
+      <button id="openbtn" class="openbtn" onclick="navBar()">&#9776;</button>
+    </div>
     
     <!-- script for side bar and api operations -->
     <script src="../static/html_js.js"></script> 

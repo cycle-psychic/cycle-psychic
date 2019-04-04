@@ -100,6 +100,45 @@ html, body {
     display:none;
 }
 
+
 #myChart {
     margin-left:-5%;
+}
+
+/* CSS for the Prediction Form */
+#predictionForm {
+  background-color: #fff;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  width: 300px;
+  height: 36px;
+  position: fixed;
+  top: 16px;
+  right: 50px;
+  z-index: 2;
+  display: none;
+  color: #464646;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+}
+
+#innerForm {
+  padding:8px;
+}
+
+/* CSS for the form fields */
+input[type=date], input[type=time] {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* CSS for the form button */
+input[type=button] {
+  background-color: #464646;
+  color: #e2e2e2;
+  border: none;
+  padding: 5px;
+  margin-top: 5px;
 }
