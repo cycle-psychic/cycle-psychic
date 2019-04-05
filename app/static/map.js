@@ -40,9 +40,9 @@ var euroSymbolLight = "/static/icons/euro_symbol-light.png";
 var bicycleBlack = "/static/icons/bicycle-black.png";
 var standsBlack = "/static/icons/stands-black.png";
 var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
-var crystalBall = "/static/icons/crystal-ball-purple.png";
-var crystalBallBlack = "/static/icons/crystal-ball-purple-dark.png";
-var crystalBallInverted = "/static/icons/crystal-ball-purple-inverted.png";
+var crystalBall = "/static/icons/crystal-ball.png";
+var crystalBallBlack = "/static/icons/crystal-ball-black.png";
+var crystalBallInverted = "/static/icons/crystal-ball-light.png";
 
 // variable for the Google Map
 var map;  
@@ -448,12 +448,12 @@ function CardFilter() {
 function PredictionButton() {
     // create div for the button image and add CSS
     predictionFilterUI = document.createElement('div');
-    predictionFilterUI.style.backgroundColor = '#feeffe';
+    predictionFilterUI.style.backgroundColor = '#fff';
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
     predictionFilterUI.style.backgroundSize = '32px';
     predictionFilterUI.style.backgroundPosition = 'center';
     predictionFilterUI.style.backgroundRepeat = 'no-repeat';
-    predictionFilterUI.style.border = '2px solid #feeffe';
+    predictionFilterUI.style.border = '2px solid #fff';
     predictionFilterUI.style.borderRadius = '2px';
     predictionFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
     predictionFilterUI.style.cursor = 'pointer';
@@ -757,8 +757,8 @@ function predictionClick() {
     // if prediction mode is on...
     else if (predictionMode) {
         // update button CSS
-        predictionFilterUI.style.backgroundColor = '#feeffe';
-        predictionFilterUI.style.border = '2px solid #feeffe';
+        predictionFilterUI.style.backgroundColor = '#fff';
+        predictionFilterUI.style.border = '2px solid #fff';
         predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
 
         // add listeners to the button
@@ -1129,8 +1129,8 @@ function addPredictiveMarkers(data) {
 // function to invert colours on the predictive button when form is submitted
 function invertPredictiveButton() {
     // update CSS for the predictive button
-    predictionFilterUI.style.backgroundColor = '#692b7a';
-    predictionFilterUI.style.border = '2px solid #692b7a';
+    predictionFilterUI.style.backgroundColor = '#464646';
+    predictionFilterUI.style.border = '2px solid #464646';
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBallInverted + ')';
 
     // remove listeners for the predictive button
