@@ -222,12 +222,11 @@ def predictall(time_date):
         # for each item, get the date and convert
         dt = item.get("dt")
         timestamp = datetime.datetime.utcfromtimestamp(dt)
-        #print(timestamp)
+
         # get the time difference between the input and the date in the file
         time_diff = timestamp - date_time_obj
         time_diff_hours = time_diff.total_seconds()/3600    # get time_diff in hours
-        #print(time_diff)
-        #print(time_diff_hours)
+        
         # if the time difference is less than 3, then use this list item for the weather forecast
         if (0 < time_diff_hours < 3):
             # update found to True
