@@ -3,13 +3,11 @@ import requests
 import mysql.connector
 
 import datetime
+import math
 
 app = Flask(__name__)
 
-# # # Load the model and the scaler for predictions
-# # model = pickle.load(open('model.sav', 'rb'))
-# # scaler = pickle.load(open('scaler.sav', 'rb'))
-#
+
 # build engine for databasee
 dbEngine = mysql.connector.connect(
     host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
@@ -121,49 +119,71 @@ def avgChartData(station_address):
 
     return jsonify(averageByHour)
 
-def predict(station_id, time_date):
-    # Required fields: number, hour, minute, main_temp, main_wind_speed,
-    # main_rain_volume_1h, main_snow_volume_1h, Monday, Tuesday,
-    # Wednesday, Thursday, Friday, Saturday, Sunday, clouds(800 -899),
-    # atmosphere (700-799), snow(600-699), light_rain(500), rain(501-599), light_drizzle(300),
-    # drizzle (301 - 399), thunderstorm (200 - 299)
-    
-    # Assume data and time will come in as ISO 8601 standard
-    # Example: futureDate = (new Date()).toJSON() - "2019-03-23T21:10:58.831Z"
-    # Use the selected station and selected date and time to get prediction
+def predict(station_id, time_date, weather_id, main_temp, main_wind_speed, main_rain_volume_1h, main_snow_volume_1h):
+    '''
+    Function calls the models and scalers for the relevant station.
+    The predicts the number of bikes available for that station. 
+    '''
+    # Load the model and the scaler for predictions
+    with open('./models/model'+str(station_id)+'.sav', 'rb') as file1:
+        model = pickle.load(file1)
+
+    with open('./models/scaler'+str(station_id)+'.sav', 'rb') as file2:
+        scaler = pickle.load(file2)
+
+    # Break apart time and date into weekday, hour and minute
     date_time_obj = datetime.datetime.strptime(time_date, "%Y-%m-%dT%H:%M:%S.%fZ") # changed %z to .%fZ
     weekday = date_time_obj.weekday()
     hour = date_time_obj.hour
     minute = date_time_obj.minute
-    Monday = 1
-    Tuesday = 0
-    Wednesday = 0
-    Thursday = 0
-    Friday = 0
-    Saturday = 0
-    Sunday = 0
-    main_temp = 0
-    main_wind_speed = 0
-    main_rain_volume_1h = 0
-    main_snow_volume_1h = 0
-    clouds = 1
-    atmosphere = 0
-    snow = 0
-    light_rain = 0
-    rain = 0
-    light_drizzle = 0
-    drizzle = 0
-    thunderstorm = 0
+
+    Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday = 0,0,0,0,0,0,0
+    clouds, atmosphere, snow, light_rain, rain, light_drizzle, drizzle, thunderstorm = 0,0,0,0,0,0,0,0
+    
+    # Set day of the week
+    if weekday == 0:
+        Monday = 1
+    elif weekday == 1:
+        Tuesday = 1
+    elif weekday == 2:
+        Wednesday = 1
+    elif weekday == 3:
+        Thursday = 1
+    elif weekday == 4:
+        Friday = 1
+    elif weekday == 5:
+        Saturday = 1
+    elif weekday == 6:
+        Sunday = 1
+
+    # Set weather based on weather id. 
+    if 200 <= weather_id < 300:
+        thunderstorm = 1
+    elif weather_id == 300:
+        light_drizzle = 1
+    elif 300 <= weather_id < 400:
+        drizzle = 1
+    elif weather_id == 500:
+        light_rain = 1
+    elif 500 <= weather_id < 600:
+        rain = 1
+    elif 600 <= weather_id < 700:
+        snow = 1
+    elif 700 <= weather_id < 800:
+        atmosphere = 1
+    elif 800 <= weather_id < 900:
+        clouds = 1
+
+    # Set the features and pass into scaler and model
     features = [[int(station_id), hour, minute,main_temp, main_wind_speed,
     main_rain_volume_1h, main_snow_volume_1h, Monday, Tuesday,
     Wednesday, Thursday, Friday, Saturday, Sunday, clouds,
     atmosphere, snow, light_rain, rain, light_drizzle,
     drizzle, thunderstorm]]
+
     scaled_predict = scaler.transform(features)
     prediction = model.predict(scaled_predict)
-    print("PREDICTION:", prediction)
-   # return jsonify({"prediction": math.floor(prediction[0])})
-    return math.floor(prediction[0])
+    return math.floor(prediction)
 
 @app.route('/predictall/<datetime>')
 def predictall(datetime):
