@@ -38,12 +38,20 @@
                     <select id="station"></select>
                 </form>
             </div>
-            
+
             <!-- side bar elements for graphs -->
-            <div class="graphs">
-                <canvas id="myChart" width="400" height="400"></canvas>                
-                <br><br>
+            <div id="graph">
+                <canvas id="myChart" width="380" height="380"></canvas>                
             </div>  
+            
+            <!-- to change the charts -->
+            <div id="radioButtons">
+                <form action="">
+                  <input type="radio" name="avg" value="avg"> Average
+                  <input type="radio" name="x" value="female"> Other
+                  <input type="radio" name="y" value="other"> Other
+                </form>
+            </div>
             
         </div>
         
