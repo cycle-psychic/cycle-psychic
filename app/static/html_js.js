@@ -54,43 +54,75 @@ $.getJSON(weatherInfo, function (data) {
 });
 
 // Get the station name from drop down menu and send request to avgchart to get data.
-var currentSelectedText = "";
-var graphArray = []
+var currentSelectedText = "Blessington Street";
+buildChart();
+var chartTime = [];
+var chartAvg = [];
+
 $(document).on("change", "#station", function() {
     currentSelectedText = $(this).find("option:selected").text();
-    console.log(currentSelectedText);
     currentSelectedText = currentSelectedText.replace(" ","_");
-    console.log(currentSelectedText);
-    $.getJSON(avgChart+currentSelectedText, function(data) {
-        console.log(data);
-    })
+    buildChart();
 });
 
-var ctx = $('#myChart');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Red'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            fill:false,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
+function buildChart() {
+    var avg = [];
+    var time = [];
+    $.getJSON(avgChart+currentSelectedText, function(data) {
+        for (var i=0; i < Object.keys(data).length; i++) {
+            var zero = "0"; // needed when parsingInt to check key since javascript won't preserver a leading 0
+            if (i <= 9) {
+                var key = zero + i;
+                time.push(key);
+                avg.push(data[key]);
+            } else {
+                time.push(i+"");
+                avg.push(data[i+""]);
+            }
+        }
+        chartTime = avg;
+        chartAvg = time;
+        averageChart(chartTime,chartAvg);
+    })
+}
+
+
+
+function averageChart(time,avg) {
+    $("#myChart").remove();
+    $("#graph").append('<canvas id="myChart" width="380" height="380"></canvas>');
+    var ctx = $('#myChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: avg,
+            datasets: [{
+                label: 'Bikes available',
+                data: time,
+                fill:false,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
             }]
         },
-    }
-});
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Time'
+                      }
+                }]
+            },
+        }
+    });
+}
