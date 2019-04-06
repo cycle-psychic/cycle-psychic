@@ -9,7 +9,7 @@ import datetime
 
 app = Flask(__name__)
 
-# # # Load the model and the scaler for predictions
+# Load the model and the scaler for predictions
 model = pickle.load(open('model.sav', 'rb'))
 scaler = pickle.load(open('scaler.sav', 'rb'))
 #
@@ -21,8 +21,19 @@ dbEngine = mysql.connector.connect(
     database="cyclepsychic",
 )
 
-# prepare to execute statements
 cursor = dbEngine.cursor()
+
+
+def open_connection(query):
+    cursor = dbEngine.cursor()
+    try:
+        # Execute query
+        cursor.execute(query)
+        rows = cursor.fetchall()
+    finally:
+        cursor.close()
+    return rows
+
 
 # OpenWeather API key
 api_key = "cb4ffd84a250fbcb399c9c29cca40597"
@@ -39,8 +50,8 @@ def root():
 @app.route('/dropdown')
 def getStationInfo():
     stations_info = {}
-    cursor.execute("SELECT * from station_information;")
-    rows = cursor.fetchall()
+    query = "SELECT * from station_information;"
+    rows = open_connection(query)
     for row in rows:
         # create object of key:value pairs
         this_station = {}
@@ -89,11 +100,8 @@ def getStationLocation(station_id):
     locationVariable = str(station_id)
     locationQuery = locationSelect + locationVariable
 
-    # execute our query
-    cursor.execute(locationQuery)
-
-    # send the result to our dictionary
-    locationResult = cursor.fetchall()
+    # get results and send the to our dictionary
+    locationResult = open_connection(locationQuery)
     for i in locationResult:
         locationReturn["lat"] = i[0]
         locationReturn["lng"] = i[1]
@@ -103,6 +111,16 @@ def getStationLocation(station_id):
 
 @app.route('/avgchart/<station_address>')
 def avgChartData(station_address):
+    # build engine for databasee
+    dbEngine = mysql.connector.connect(
+        host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
+        user="cyclepsychic",
+        passwd="CyclePsychic123",
+        database="cyclepsychic",
+    )
+
+    cursor = dbEngine.cursor()
+
     # get current date
     date = datetime.datetime.now()
     day = date.strftime("%A")
@@ -112,11 +130,9 @@ def avgChartData(station_address):
 
     # Holds average bikes organised by hour
     averageByHour = {}
-
-    # command to code below
     cursor.execute("SELECT AVG(available_bikes),last_update FROM all_station_info WHERE WEEKDAY(last_update)=\""+day+"\" AND address=\""+station_address+"\" GROUP BY hour(last_update);")
     rows = cursor.fetchall()
-
+    cursor.close()
     for row in rows:
         hour = row[1].strftime("%H")
         averageByHour[hour] = int(round(row[0]))
@@ -176,10 +192,10 @@ def predictall(datetime):
     # declare a dictionary to store station data
     data = {}
     # call the database to get the static information
-    cursor.execute("select distinct s.station_number, s.address, s.latitude, s.longitude, a.bike_stands, a.banking \
+    query = "select distinct s.station_number, s.address, s.latitude, s.longitude, a.bike_stands, a.banking \
     from station_information s, all_station_info a \
-    where s.station_number = a.number;")
-    rows=cursor.fetchall()
+    where s.station_number = a.number;"
+    rows=open_connection(query)
     # loop through each row returned
     for row in rows:
         # create a dictionary for the station
