@@ -775,10 +775,39 @@ function predictionClick() {
         predictionMode = false;
 
         // remove predictive markers
-        
+        for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
+            bikeMarkersCardPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < standMarkersCardPredictive.length; i++) {
+            standMarkersCardPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+            bikeMarkersPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < standMarkersPredictive.length; i++) {
+            standMarkersPredictive[i].setMap(null);
+        }
 
-        // add non-predictive markers
+        // clear the arrays for the non-predictive markers
+        // this is done because the API will be called again to get the most up to date info for the markers
+        // existing markers must be cleared or there will be duplicates in the array
+        bikeMarkers = [];
+        bikeMarkersCard = [];
+        standMarkers = [];
+        standMarkersCard = [];
 
+        // call Dublin Bikes API to get latest data and add relevant markers
+        $.getJSON(urlBikes, null, function(data) {
+            // call the addMarkers function
+            addMarkers(data);
+            // check which filters are on and show relevant markers
+            if (bikeFilterOn) {
+                showMarkers("bike");
+            }
+            else {
+                showMarkers("stand");
+            }
+        });
     }
 }
 
