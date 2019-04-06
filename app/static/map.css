@@ -69,10 +69,12 @@ html, body {
     margin-top:20%;
 }
 
-.graphs {
+#graph {
     color:white;
-    margin-left:10%;
+    margin-left:05%;
     margin-top:20%;
+    margin-bottom:-15%;
+    width:99%;
 }
 
 .sidebartext {
@@ -137,4 +139,10 @@ input[type=button] {
   border: none;
   padding: 5px;
   margin-top: 5px;
+}
+
+#radioButtons {
+    color:white;
+    margin-top:20%;
+    margin-left:5%;
 }
