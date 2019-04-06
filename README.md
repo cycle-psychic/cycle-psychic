@@ -5,7 +5,7 @@ Install Anaconda using anaconda shell script. You will need to agree to the lice
 Run the bootstrap file to set up the environment
 You may need to restart the instance to avoid conda errors
 
-Scraping
+Scraping/ scrape.py
 
 Right click on instance and choose Attach/Replace IAM role from instance settings. Click create new IAM role and create new role for EC2 and select AmazonS3FullAccess to allow access to buckets in S3.
 
@@ -17,7 +17,7 @@ To use this script, schedule this information using crontab -e. For example: to 
 
 The * format represents minute hour day-of-month month day-of-week command. /usr/bin/python was needed to run the cronjob on a Python script. Finally, add the command you want to run which will be the scrape.py file.
 
-Scraped_data_to_rds
+scraped_data_to_rds.py
 
 This file copies any files saved locally to the database. INSERT IGNORE should allow duplicates to be ignored. Ensure that the file locations and connection details are correct before saving the details. This may take some time.
 
@@ -43,3 +43,7 @@ This script inserts all the station information only (without data) and shall be
 run_me_i_am_your_website.py
 
 This script runs the flask application and serves all things front-end! 
+
+model_training.py
+
+This script retrains the machine learning model. The script can be schdeuled to run as frequently as necessary to retrain the model. This should be done using a cronjob.
