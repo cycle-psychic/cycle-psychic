@@ -1,7 +1,7 @@
 from flask import Flask, render_template, jsonify
 import requests
 import mysql.connector
-
+import pickle
 import datetime
 import math
 
@@ -185,13 +185,82 @@ def predict(station_id, time_date, weather_id, main_temp, main_wind_speed, main_
     prediction = model.predict(scaled_predict)
     return math.floor(prediction)
 
-@app.route('/predictall/<datetime>')
-def predictall(datetime):
+def weather_forecast():
+    """This function calls the Openweather API to get a weather forecast. 
+    Data is returned as a JSON file."""
+
+    #call the API using the ID for Dublin City: 7778677 
+    api_endpoint = "http://api.openweathermap.org/data/2.5/forecast?id=7778677&APPID=" + api_key
+
+    # retrieve weather information from OpenWeather API - returns as text file so convert to JSON
+    r = requests.get(url=api_endpoint)
+    data = r.json()
+
+    # return the data
+    return data
+
+@app.route('/predictall/<time_date>')
+def predictall(time_date):
     """This function takes a datetime object as input (should be in ISO 8601 standard format).
+    The function calls the Openweather Forecast API to find weather forecast info for the relevant time.
     The function then calls the database to get some station information: ID, latitude, longitude, stands, card payments.
     It then loops through all stations and requests a prediction using the predict() function.
     Station information is then almagated with the prediction and returned as a JSON object.
     """
+    # convert the input to a datetime object
+    date_time_obj = datetime.datetime.strptime(time_date, "%Y-%m-%dT%H:%M:%S.%fZ")
+    print(date_time_obj)
+
+    # call the weather forecast API
+    weather_data = weather_forecast()
+
+    # intialise variable to check whether relevant weather data has been found in the JSON file
+    found = False
+
+    # loop through the weather data to find the closest time/date to the prediction time/date
+    for item in weather_data["list"]:
+        # for each item, get the date and convert
+        dt = item.get("dt")
+        timestamp = datetime.datetime.utcfromtimestamp(dt)
+
+        # get the time difference between the input and the date in the file
+        time_diff = timestamp - date_time_obj
+        time_diff_hours = time_diff.total_seconds()/3600    # get time_diff in hours
+        
+        # if the time difference is less than 3, then use this list item for the weather forecast
+        if (0 < time_diff_hours < 3):
+            # update found to True
+            found = True
+
+            # extract weather data from the JSON
+            weather_id = item.get("weather")[0].get("id")
+            print("id:", weather_id)
+            temp = item.get("main").get("temp")
+            print("temp:", temp)
+            if "wind" in item:
+                wind_speed = item.get("wind").get("speed")
+            else:
+                wind_speed = 0
+            print("wind speed:", wind_speed)
+            if "rain" in item and "3h" in item["rain"]:
+                    rain_volume = item.get("rain").get("3h")
+            else:
+                rain_volume = 0
+            print("rain volume:", rain_volume)
+            if "snow" in item and "3h" in item["snow"]:
+                snow_volume = item.get("snow").get("3h")
+            else:
+                snow_volume = 0
+            print("snow volume:", snow_volume)
+
+    # after each item has been checked, if relevant data has not been found, assign some default values
+    if (not found):
+        weather_id = 800
+        temp = 283
+        wind_speed = 7.5
+        rain_volume = 0
+        snow_volume = 0
+    
     # declare a dictionary to store station data
     data = {}
     # call the database to get the static information
@@ -216,7 +285,7 @@ def predictall(datetime):
             station["banking"] = "false"
 
         # call predict() to get the prediction for this station
-        prediction = predict(row[0], datetime)
+        prediction = predict(row[0], time_date, weather_id, temp, wind_speed, rain_volume, snow_volume)
 
         # add predicted bike number to the dictionary
         station["available_bikes"] = prediction
