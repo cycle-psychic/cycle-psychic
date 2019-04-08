@@ -8,6 +8,10 @@ const dropDownUrl = ROOT + '/dropdown';
 const weatherInfo = ROOT + '/weather';
 // constructed URL for avgChart
 const avgChart = ROOT + '/avgchart/'
+// URL for bikes for last week at this hour by day
+const bikes1week = ROOT + '/bikes1week/'
+// URL for last 2 weeks this hour
+const bikes2weeks = ROOT + '/bikes2weeks/'
 // get element id
 var dropdown = $('#station');
 
@@ -53,24 +57,27 @@ $.getJSON(weatherInfo, function (data) {
     $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -14px; margin-left:6px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
 });
 
-// Get the station name from drop down menu and send request to avgchart to get data.
+// Set default station for chart requests
 var currentSelectedText = "Blessington Street";
-buildChart();
+buildChart(); // call on page load
+// initialise two arrays that will hold our time and avg bikes at that time
 var chartTime = [];
 var chartAvg = [];
 
+// add a listener to call the function every time our dropdown selection changes
 $(document).on("change", "#station", function() {
     currentSelectedText = $(this).find("option:selected").text();
     currentSelectedText = currentSelectedText.replace(" ","_");
     buildChart();
 });
 
+// function to rebuild the chart with updated average information (i.e. new station selected)
 function buildChart() {
     var avg = [];
     var time = [];
     $.getJSON(avgChart+currentSelectedText, function(data) {
         for (var i=0; i < Object.keys(data).length; i++) {
-            var zero = "0"; // needed when parsingInt to check key since javascript won't preserver a leading 0
+            var zero = "0"; // needed when checking time format 00->09AM to check key since javascript won't preserve a leading 0
             if (i <= 9) {
                 var key = zero + i;
                 time.push(key);
@@ -82,22 +89,69 @@ function buildChart() {
         }
         chartTime = avg;
         chartAvg = time;
-        averageChart(chartTime,chartAvg);
+        chart(chartTime,chartAvg);
     })
 }
 
+// function to build chart from data providing a snapshot of what availability looked like on each day for the last week
+function prevWeek() {
+    var bikesAvailable = [];
+    var day = [];
+    
+    $.getJSON(bikes1week+currentSelectedText, function(data) {
+        for (var i in data) {
+            if (i == "Mon") {
+                day[0] = i;
+                bikesAvailable[0] = data[i]; 
+            } else if (i == "Tue") {
+                day[1] = i;
+                bikesAvailable[1] = data[i];
+            } else if (i == "Wed") {
+                day[2] = i;
+                bikesAvailable[2] = data[i];
+            } else if (i == "Thu") {
+                day[3] = i;
+                bikesAvailable[3] = data[i];
+            } else if (i == "Fri") {
+                day[4] = i;
+                bikesAvailable[4] = data[i];
+            } else if (i == "Sat") {
+                day[5] = i;
+                bikesAvailable[5] = data[i];
+            } else if (i == "Sun") {
+                day[6] = i;
+                bikesAvailable[6] = data[i];
+            }
+        }
+        chart(bikesAvailable,day);
+    })
+}
 
+// function to get and display on a chart the usage / availability data for the past 2 weeks based on the current hour
+function prevTwoWeeks() {
+    var bikesAvailable = [];
+    var date = [];
+    
+    $.getJSON(bikes2weeks+currentSelectedText, function(data) {
+        for (var i in data) {
+            date.push(i);
+            bikesAvailable.push(data[i]);
+        }
+        chart(bikesAvailable,date);
+    })
+}
 
-function averageChart(time,avg) {
+// chart function which builds / rebuilds our charts with new data.
+function chart(time,data) {
     $("#myChart").remove();
     $("#graph").append('<canvas id="myChart" width="380" height="380"></canvas>');
     var ctx = $('#myChart');
     var myChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: avg,
+            labels: data,
             datasets: [{
-                label: 'Bikes available',
+                label: 'Available ',
                 data: time,
                 fill:false,
                 backgroundColor: [
@@ -115,13 +169,13 @@ function averageChart(time,avg) {
                     ticks: {
                         beginAtZero: true
                     }
-                }],
-                xAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Time'
-                      }
-                }]
+                }]//,
+//                xAxes: [{
+//                    scaleLabel: {
+//                        display: true,
+//                        labelString: 'Hour / This hour daily'
+//                      }
+//                }]
             },
         }
     });
