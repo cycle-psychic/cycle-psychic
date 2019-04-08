@@ -47,9 +47,9 @@
             <!-- to change the charts -->
             <div id="radioButtons">
                 <form action="">
-                  <input type="radio" name="avg" value="avg"> Average
-                  <input type="radio" name="x" value="female"> Other
-                  <input type="radio" name="y" value="other"> Other
+                  <input type="radio" name="button" value="avg" onclick="buildChart()" checked>Average by hour <br>
+                  <input type="radio" name="button" value="female" onclick="prevWeek()">This hour / past week <br>
+                  <input type="radio" name="button" value="other" onclick="prevTwoWeeks()">This hour / past 14 days
                 </form>
             </div>
             
