@@ -117,6 +117,9 @@ function initMap() {
         // because bikes should be shown by default
         showMarkers("bike");
     });
+
+    // call the popDateForm function to populate the dropdown in the prediction form
+    popDateForm();
 }
 
 // function for adding markers to the map
@@ -1164,4 +1167,69 @@ function invertPredictiveButton() {
 
     // remove listeners for the predictive button
     removeListeners("predictive");
+}
+
+// function to populate the dropdown in the prediction form
+function popDateForm() {
+    // get the current date
+    var d = new Date(); 
+    // get the month and day of the month
+    var month = d.getMonth();
+    var day = d.getDate();
+    // create array with month names as they should be displayed
+    var months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+    // create array to store values to be put into the dropdown
+    var values = [];
+
+    // check for months with 31 days
+    if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11) {
+        for (var i=0; i < 5; i++) {
+            if (day <= 31) {
+                values.push(day + " " + months[month]);
+                day++;
+            }
+            else {
+                values.push(day % 31 + " " + months[month + 1]);
+                day++;
+            }
+        }
+    }
+    // check for months with 30 days
+    else if (month == 3 || month == 5 || month == 8 || month == 10) {
+        for (var i=0; i < 5; i++) {
+            if (day <= 30) {
+                values.push(day + " " + months[month]);
+                day++;
+            }
+            else {
+                values.push(day % 30 + " " + months[month + 1]);
+                day++;
+            }
+        }
+    }
+    // check if month is feb
+    else if (month == 1) {      // feb - add in leap year logic???
+        for (var i=0; i < 5; i++) {
+            if (day <= 28) {
+                values.push(day + " " + months[month]);
+                day++;
+            }
+            else {
+                values.push(day % 28 + " " + months[month + 1]);
+                day++;
+            }
+        }
+    }
+
+    // declare variable for dropdown html
+    var dropdown = "";
+
+    // add all the values in the array to the dropdown
+    for (var i=0; i < values.length; i++) {
+        dropdown += "<option value=\"" + values[i] + "\">" +  values[i] + "</option>";
+    }
+
+    // push the html into the form
+    document.getElementById("dateDropdown").innerHTML = dropdown;
 }
