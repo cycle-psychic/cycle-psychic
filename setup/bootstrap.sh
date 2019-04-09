@@ -41,3 +41,6 @@ conda install seaborn
 
 conda install scikit-learn
 
+# Pip install mysql-connector-python for cross-platform compatability issues during development.
+pip install mysql-connector-python==8.0.15
+
