@@ -22,12 +22,12 @@ df = pd.read_csv('./bike+weather_to_28_03_19.csv')
 
 
 def train_station(station_df):
-  features = df[['number', 'hour', 'minute',
+  features = station_df[['number', 'hour', 'minute',
               'main_temp', 'main_wind_speed', 'main_rain_volume_1h', 'main_snow_volume_1h',
               'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
               'Sunday', 'clouds', 'atmosphere', 'snow', 'light_rain',
               'rain', 'light_drizzle', 'drizzle', 'thunderstorm']].values
-  targets = df['available_bikes'].values
+  targets = station_df['available_bikes'].values
 
   train_features, test_features, train_targets, test_targets = split_by_position(features, targets)
 
