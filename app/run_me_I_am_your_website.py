@@ -4,12 +4,12 @@ import mysql.connector
 from sklearn.preprocessing import StandardScaler
 import pickle
 import math
-
 import datetime
+from datetime import timedelta
 
 app = Flask(__name__)
 
-# # # Load the model and the scaler for predictions
+# Load the model and the scaler for predictions
 model = pickle.load(open('model.sav', 'rb'))
 scaler = pickle.load(open('scaler.sav', 'rb'))
 #
@@ -21,8 +21,21 @@ dbEngine = mysql.connector.connect(
     database="cyclepsychic",
 )
 
-# prepare to execute statements
 cursor = dbEngine.cursor()
+
+# this function opens a database query for a connection
+def open_connection(query):
+    cursor = dbEngine.cursor()
+    try:
+        # Execute query
+        cursor.execute(query)
+        rows = cursor.fetchall()
+    except TypeError(e):
+        print(e)
+    finally:
+        cursor.close()
+    return rows
+
 
 # OpenWeather API key
 api_key = "cb4ffd84a250fbcb399c9c29cca40597"
@@ -38,9 +51,11 @@ def root():
 
 @app.route('/dropdown')
 def getStationInfo():
+    """ This function populates the dropdown menu based on the database query. It doesn't expect any inputs. """
+
     stations_info = {}
-    cursor.execute("SELECT * from station_information;")
-    rows = cursor.fetchall()
+    query = "SELECT * from station_information;"
+    rows = open_connection(query)
     for row in rows:
         # create object of key:value pairs
         this_station = {}
@@ -60,6 +75,7 @@ def getStationInfo():
 
 @app.route("/weather")
 def getWeather():
+    """ This function gets up to date weather information from the openweather api. No inputs are required. """
     # retrieve weather information from OpenWeather API - returns as text file so convert to JSON
     r = requests.get(url=api_endpoint)
     data = r.json()
@@ -81,6 +97,8 @@ def getWeather():
 
 @app.route('/getlocation/<station_id>')
 def getStationLocation(station_id):
+    """ This function retrives a given station's longitude and latitude from
+        the database and returns it as a JSON object. """
     # store the data to send back to front end
     locationReturn = {}
 
@@ -89,11 +107,8 @@ def getStationLocation(station_id):
     locationVariable = str(station_id)
     locationQuery = locationSelect + locationVariable
 
-    # execute our query
-    cursor.execute(locationQuery)
-
-    # send the result to our dictionary
-    locationResult = cursor.fetchall()
+    # get results and send the to our dictionary
+    locationResult = open_connection(locationQuery)
     for i in locationResult:
         locationReturn["lat"] = i[0]
         locationReturn["lng"] = i[1]
@@ -103,26 +118,140 @@ def getStationLocation(station_id):
 
 @app.route('/avgchart/<station_address>')
 def avgChartData(station_address):
+    """ This function queries the database to get up to date information about the average bike availability for the
+        current hour. It expects the station address to be provided and outputs an average by hour for the current day
+        based on historical average. """
+    # build engine for databasee
+    dbEngine = mysql.connector.connect(
+        host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
+        user="cyclepsychic",
+        passwd="CyclePsychic123",
+        database="cyclepsychic",
+    )
+
+    cursor = dbEngine.cursor()
+
     # get current date
     date = datetime.datetime.now()
     day = date.strftime("%A")
 
     station_address = station_address
     station_address = station_address.replace("_"," ")
-    print(station_address)
 
     # Holds average bikes organised by hour
     averageByHour = {}
-
-    # command to code below
     cursor.execute("SELECT AVG(available_bikes),last_update FROM all_station_info WHERE WEEKDAY(last_update)=\""+day+"\" AND address=\""+station_address+"\" GROUP BY hour(last_update);")
     rows = cursor.fetchall()
-
+    cursor.close()
     for row in rows:
         hour = row[1].strftime("%H")
         averageByHour[hour] = int(round(row[0]))
 
     return jsonify(averageByHour)
+
+@app.route('/bikes1week/<station_address>')
+def bikes_available_1week(station_address):
+    """ This function gets the historical data for the number of bikes available on a given day at the current timeslot.
+        It expects the station address as the input and provides the number of available bikes at the current hour
+        based on the previous Week's data (indexed by day name). """
+
+    # build engine for databasee
+    dbEngine = mysql.connector.connect(
+        host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
+        user="cyclepsychic",
+        passwd="CyclePsychic123",
+        database="cyclepsychic",
+    )
+
+    cursor = dbEngine.cursor()
+
+    # get current date
+    date = datetime.datetime.now()
+    # remove trailing minutes (to check for available bikes during this hour)
+    date = date.replace(minute=0,second=0,microsecond=0)
+    # convert time to hours only
+    hour = date.strftime("%X")
+
+    # add 59 minutes and 59 seconds for SQL query and format it correctly
+    datePlusOneHour = date + timedelta(hours=1) - timedelta(seconds=1)
+    datePlusOneHour = str(datePlusOneHour)
+    datePlusOneHour = datePlusOneHour.split(" ")[1]
+
+    # fix the URL request for a specific station
+    station_address = station_address
+    station_address = station_address.replace("_"," ")
+
+    # build query
+    static_query1 = """ SELECT avg(available_bikes), last_update as Weekday
+                FROM all_station_info 
+                WHERE cast(last_update as time) between \'"""
+    static_query2 = hour + "\' and \'" + str(datePlusOneHour)
+    static_query3 = "\' AND address=\'" + station_address
+    static_query4 = "\' AND YEARWEEK(last_update) = yearweek(NOW() - INTERVAL 1 WEEK) Group by Weekday(last_update);"
+    constructedQuery = static_query1 + static_query2 + static_query3 + static_query4
+
+    # Holds average bikes organised by hour
+    daily_available_bikes = {}
+
+    # execute
+    cursor.execute(constructedQuery)
+    rows = cursor.fetchall()
+    for row in rows:
+        weekday =  row[1].strftime('%a')
+        daily_available_bikes[weekday] = round(row[0])
+    cursor.close()
+    return jsonify(daily_available_bikes)
+
+@app.route('/bikes2weeks/<station_address>')
+def bikes_available_2weeks(station_address):
+    """ This function retrives the bike availability for the previous 14 days at the current hour. It expects the station
+        address as its input and returns the number of bikes available indexed by the date. """
+    # build engine for databasee
+    dbEngine = mysql.connector.connect(
+        host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
+        user="cyclepsychic",
+        passwd="CyclePsychic123",
+        database="cyclepsychic",
+    )
+
+    cursor = dbEngine.cursor()
+
+    # get current date
+    date = datetime.datetime.now()
+    # remove trailing minutes (to check for available bikes during this hour)
+    date = date.replace(minute=0,second=0,microsecond=0)
+    # convert time to hours only
+    hour = date.strftime("%X")
+
+    # add 59 minutes and 59 seconds for SQL query and format it correctly
+    datePlusOneHour = date + timedelta(hours=1) - timedelta(seconds=1)
+    datePlusOneHour = str(datePlusOneHour)
+    datePlusOneHour = datePlusOneHour.split(" ")[1]
+
+    # fix the URL request for a specific station
+    station_address = station_address
+    station_address = station_address.replace("_"," ")
+
+    # build query
+    static_query1 = """ SELECT avg(available_bikes), last_update
+                FROM all_station_info 
+                WHERE cast(last_update as time) between \'"""
+    static_query2 = hour + "\' and \'" + str(datePlusOneHour)
+    static_query3 = "\' AND address=\'" + station_address
+    static_query4 = "\' AND last_update >= now() - INTERVAL 14 DAY Group by CAST(last_update AS DATE);"
+    constructedQuery = static_query1 + static_query2 + static_query3 + static_query4
+
+    # Holds average bikes organised by hour
+    daily_available_bikes = {}
+
+    # execute
+    cursor.execute(constructedQuery)
+    rows = cursor.fetchall()
+    for row in rows:
+        weekday =  row[1].strftime('%x')
+        daily_available_bikes[weekday] = round(row[0])
+    cursor.close()
+    return jsonify(daily_available_bikes)
 
 def predict(station_id, time_date):
     # Required fields: number, hour, minute, main_temp, main_wind_speed,
@@ -177,10 +306,10 @@ def predictall(datetime):
     # declare a dictionary to store station data
     data = {}
     # call the database to get the static information
-    cursor.execute("select distinct s.station_number, s.address, s.latitude, s.longitude, a.bike_stands, a.banking \
+    query = "select distinct s.station_number, s.address, s.latitude, s.longitude, a.bike_stands, a.banking \
     from station_information s, all_station_info a \
-    where s.station_number = a.number;")
-    rows=cursor.fetchall()
+    where s.station_number = a.number;"
+    rows=open_connection(query)
     # loop through each row returned
     for row in rows:
         # create a dictionary for the station
