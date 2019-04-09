@@ -8,3 +8,141 @@ html, body {
     margin: 0;
     padding: 0;
     }
+
+ /* The sidebar menu -- Code adapted from W3Schools and edited*/
+.sidebar {
+  height: 100%; /* 100% Full-height */
+  width: 50px; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Stay on top */
+  top: 0;
+  left: 0;
+  background-color: #111; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 10px; /* Place content 60px from the top */
+  transition: 0.4s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+/* The sidebar links */
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+/* The button used to open the sidebar */
+.openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    transition:margin-left .5s;
+}
+
+.openbtn:hover {
+  background-color: #444;
+}
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main {
+    transition: margin-left .5s;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidebar {padding-top: 15px;}
+  .sidebar a {font-size: 18px;}
+} 
+
+#form {
+    margin-left:6%;
+    margin-top:20%;
+}
+
+#graph {
+    color:white;
+    margin-left:05%;
+    margin-top:20%;
+    margin-bottom:-15%;
+    width:99%;
+}
+
+.sidebartext {
+    color:white;
+    margin-left:10%;
+}
+
+#weather {
+    color:white;
+    margin-left:10%;
+}
+
+#weatherElement {
+    position:relative;
+    margin-top:-5px;
+    color:white;
+    margin-left:3%;
+}
+
+#nonWeatherElements {
+    display:none;
+}
+
+
+#myChart {
+    margin-left:-5%;
+}
+
+/* CSS for the Prediction Form */
+#predictionForm {
+  background-color: #fff;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
+  width: 300px;
+  height: 36px;
+  position: fixed;
+  top: 16px;
+  right: 55px;
+  z-index: 2;
+  display: none;
+  color: #464646;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+}
+
+#innerForm {
+  padding:8px;
+}
+
+/* CSS for the form fields */
+input[type=date], input[type=time] {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+/* CSS for the form button */
+input[type=button] {
+  background-color: #464646;
+  color: #e2e2e2;
+  border: none;
+  padding: 5px;
+  margin-top: 5px;
+}
+
+#radioButtons {
+    color:white;
+    margin-top:20%;
+    margin-left:15%;
+}

@@ -25,5 +25,22 @@ conda install python3
 # Install mysql connector
 conda install -c anaconda mysql-connector-python
 
+# Install jsonify
+conda install jsonify
+
+# Install requirements for data analysis
+conda install pandas
+
+conda install numpy
+
+conda install matplotlib
+
+conda install seaborn
+
+# Install scikit learn for machine learning
+
+conda install scikit-learn
+
 # Pip install mysql-connector-python for cross-platform compatability issues during development.
 pip install mysql-connector-python==8.0.15
+
