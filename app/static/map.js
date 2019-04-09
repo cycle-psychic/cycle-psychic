@@ -42,6 +42,7 @@ var standsBlack = "/static/icons/stands-black.png";
 var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
 var crystalBall = "/static/icons/crystal-ball.png";
 var crystalBallBlack = "/static/icons/crystal-ball-black.png";
+var crystalBallInverted = "/static/icons/crystal-ball-light.png";
 
 // variable for the Google Map
 var map;  
@@ -744,12 +745,69 @@ function cardClick() {
 function predictionClick() {
     // show the predictive form
     var form = document.getElementById("predictionForm");
+    // if prediction mode is not on, hide or show the form
+    if (!predictionMode) {
+        if (form.style.display == "block") {
+            form.style.display = "none";
+        } 
+        else {
+            form.style.display = "block";
+        }
+    }
+    // if prediction mode is on...
+    else if (predictionMode) {
+        // update button CSS
+        predictionFilterUI.style.backgroundColor = '#fff';
+        predictionFilterUI.style.border = '2px solid #fff';
+        predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
 
-    if (form.style.display == "block") {
+        // add listeners to the button
+        addListeners("predictive");
+
+        // hide form
         form.style.display = "none";
-    } 
-    else {
-        form.style.display = "block";
+
+        // clear form fields
+        var predict = document.getElementById("predictionFormFields");
+        predict.reset();
+
+        // set prediction mode to false
+        predictionMode = false;
+
+        // remove predictive markers
+        for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
+            bikeMarkersCardPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < standMarkersCardPredictive.length; i++) {
+            standMarkersCardPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+            bikeMarkersPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < standMarkersPredictive.length; i++) {
+            standMarkersPredictive[i].setMap(null);
+        }
+
+        // clear the arrays for the non-predictive markers
+        // this is done because the API will be called again to get the most up to date info for the markers
+        // existing markers must be cleared or there will be duplicates in the array
+        bikeMarkers = [];
+        bikeMarkersCard = [];
+        standMarkers = [];
+        standMarkersCard = [];
+
+        // call Dublin Bikes API to get latest data and add relevant markers
+        $.getJSON(urlBikes, null, function(data) {
+            // call the addMarkers function
+            addMarkers(data);
+            // check which filters are on and show relevant markers
+            if (bikeFilterOn) {
+                showMarkers("bike");
+            }
+            else {
+                showMarkers("stand");
+            }
+        });
     }
 }
 
@@ -773,8 +831,8 @@ function addListeners(type) {
     }
     else if (type == "predictive") {
         // on hover, change icon colour to black
-        predictionFilterUI.addEventListener('mouseenter', predictiveListenerEnter);
-        predictionFilterUI.addEventListener('mouseleave', predictiveListenerLeave);
+        predictionFilterDiv.addEventListener('mouseenter', predictiveListenerEnter);
+        predictionFilterDiv.addEventListener('mouseleave', predictiveListenerLeave);
     }
 }
 
@@ -795,6 +853,11 @@ function removeListeners(type) {
         // removing listeners will stop icon colour changing on hover
         cardFilterDiv.removeEventListener('mouseenter', cardListenerEnter);
         cardFilterDiv.removeEventListener('mouseleave', cardListenerLeave);
+    }
+    else if (type == "predictive") {
+        // removing listeners will stop icon colour changing on hover
+        predictionFilterDiv.removeEventListener('mouseenter', predictiveListenerEnter);
+        predictionFilterDiv.removeEventListener('mouseleave', predictiveListenerLeave);
     }
 }
 
@@ -850,6 +913,11 @@ function makePrediction() {
     // store the date in the global predictionDate variable
     predictionDate = dateTime;
 
+    // if prediction mode isn't already on, then call function to invert colours on the button
+    if (!predictionMode) {
+        invertPredictiveButton();
+    }
+
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
 
@@ -879,12 +947,6 @@ function makePrediction() {
         else {
             showMarkers("stand");
         }
-
-        // clear the form fields
-        predict.reset();
-
-        // close the form window
-        document.getElementById("predictionForm").style.display = "none";
     });
 }
 
@@ -1092,3 +1154,14 @@ function addPredictiveMarkers(data) {
         }
     });
 }  
+
+// function to invert colours on the predictive button when form is submitted
+function invertPredictiveButton() {
+    // update CSS for the predictive button
+    predictionFilterUI.style.backgroundColor = '#464646';
+    predictionFilterUI.style.border = '2px solid #464646';
+    predictionFilterUI.style.backgroundImage = 'url(' + crystalBallInverted + ')';
+
+    // remove listeners for the predictive button
+    removeListeners("predictive");
+}
