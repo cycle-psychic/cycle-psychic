@@ -945,18 +945,14 @@ function makePrediction() {
     // store the date in the global predictionDate variable (this is used to display the date in pop-up windows)
     predictionDate = dateTime;
 
-    // if prediction mode isn't already on, then call function to invert colours on the button
-    if (!predictionMode) {
-        invertPredictiveButton();
-    }
+    // hide the existing markers
+    hideMarkers("bike");
+    hideMarkers("stand");
 
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
 
     $.getJSON(predictionURL, function (data) {
-        // hide the existing markers
-        hideMarkers("bike");
-        hideMarkers("stand");
 
         // reset the predictive marker arrays to empty
         // this is done so that the number of markers doesn't keep increasing each time a new prediction is requested
@@ -967,6 +963,11 @@ function makePrediction() {
 
         // add predictive markers
         addPredictiveMarkers(data);
+
+        // if prediction mode isn't already on, then call function to invert colours on the button
+        if (!predictionMode) {
+            invertPredictiveButton();
+        }
 
         // update predictionMode variable to true
         predictionMode = true;
