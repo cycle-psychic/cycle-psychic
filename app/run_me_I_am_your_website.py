@@ -381,6 +381,9 @@ def predictall(time_date):
                 snow_volume = 0
             print("Snow Volume:", snow_volume)
 
+            # once weather is found, break out of the loop
+            break
+
     # after each item has been checked, if relevant data has not been found, assign some default values
     if (not found):
         print("Weather Forecast not available. Using default values for Prediction.")
