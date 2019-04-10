@@ -913,7 +913,7 @@ function makePrediction() {
 
     // split time out into hours and minutes	
     var hour = time.slice(0,2);	
-    var min = time.slice(3);
+    var min = time.slice(3,5);
 
     // split the date out into day and month
     var day = parseInt(date.split(" ")[0]);	
