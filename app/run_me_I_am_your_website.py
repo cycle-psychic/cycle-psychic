@@ -357,7 +357,7 @@ def predictall(time_date):
         time_diff_hours = time_diff.total_seconds()/3600    # get time_diff in hours
         
         # if the time difference is less than 3, then use this list item for the weather forecast
-        if (0 < time_diff_hours < 3):
+        if (0 <= time_diff_hours < 3):
             # update found to True
             found = True
 
@@ -384,6 +384,7 @@ def predictall(time_date):
 
     # after each item has been checked, if relevant data has not been found, assign some default values
     if (not found):
+        print("not found")
         weather_id = 800
         temp = 283
         wind_speed = 7.5

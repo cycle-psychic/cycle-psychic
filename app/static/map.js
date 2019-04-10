@@ -908,12 +908,41 @@ function predictiveListenerLeave() {
 function makePrediction() {
     //get values from form fields to pass to subsequent functions
     var predict = document.getElementById("predictionFormFields");
-    var inputDateTime = predict[0].value;
+    var time = predict[0].value;
+    var date = predict[1].value;
+
+    // split time out into hours and minutes	
+    var hour = time.slice(0,2);	
+    var min = time.slice(3);
+
+    // split the date out into day and month
+    var day = parseInt(date.split(" ")[0]);	
+    var inputMonth = date.split(" ")[1];
+
+    // create array with month names as they should be displayed
+    var months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+    // use the array to get the numeric value of the inputted month
+    var month = months.indexOf(inputMonth);
+
+    // get the current date
+    var d = new Date(); 
+    // get the year from the current date
+    if (d.getMonth() == 11 && d.getDate() >= 28) { // if it is 28-31 Dec, we need to be careful about giving the right year 
+        // check what day was received in the form, if it is 4 or less, then add 1 to year
+        // because it means the current date is December but the request is for Jan the next year
+        var year = d.getFullYear() + 1;
+    }
+    else {  // otherwise, just get the current year
+        var year = d.getFullYear();
+    }
+
     // create datetime object 
-    var dateTime = new Date(inputDateTime);
+    var dateTime = new Date(year, month, day, hour, min);
+
     // convert object to ISO 8601 standard for the Flask function
     var dateConverted = new Date(dateTime.getTime() - (dateTime.getTimezoneOffset() * 60000)).toISOString();
-    // store the date in the global predictionDate variable
+    // store the date in the global predictionDate variable (this is used to display the date in pop-up windows)
     predictionDate = dateTime;
 
     // if prediction mode isn't already on, then call function to invert colours on the button
