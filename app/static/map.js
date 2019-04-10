@@ -100,7 +100,7 @@ function initMap() {
     // map will be centred on these co-ordinates when it loads
     center: {lat: 53.3465, lng: -6.268},
     // initial level of zoom when map loads - 15 is street level
-    zoom: 14,
+    zoom: 13.8,
     // turn off some default controls
     mapTypeControl: false,
     fullscreenControl: false
@@ -1173,52 +1173,48 @@ function invertPredictiveButton() {
 function popDateForm() {
     // get the current date
     var d = new Date(); 
-    // get the month and day of the month
+    // get the day, month and year from the date
     var month = d.getMonth();
     var day = d.getDate();
+    var year = d.getFullYear();
     // create array with month names as they should be displayed
     var months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
     // create array to store values to be put into the dropdown
     var values = [];
 
+    // declare variable to store number of days in a month
+    var monthDays = 0;
     // check for months with 31 days
     if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11) {
-        for (var i=0; i < 5; i++) {
-            if (day <= 31) {
-                values.push(day + " " + months[month]);
-                day++;
-            }
-            else {
-                values.push(day % 31 + " " + months[month + 1]);
-                day++;
-            }
-        }
+        monthDays = 31;
     }
     // check for months with 30 days
     else if (month == 3 || month == 5 || month == 8 || month == 10) {
-        for (var i=0; i < 5; i++) {
-            if (day <= 30) {
-                values.push(day + " " + months[month]);
-                day++;
-            }
-            else {
-                values.push(day % 30 + " " + months[month + 1]);
-                day++;
-            }
-        }
+        monthDays = 30;
     }
     // check if month is feb
-    else if (month == 1) {      // feb - add in leap year logic???
-        for (var i=0; i < 5; i++) {
-            if (day <= 28) {
-                values.push(day + " " + months[month]);
-                day++;
-            }
-            else {
-                values.push(day % 28 + " " + months[month + 1]);
-                day++;
-            }
+    else if (month == 1) {  
+        // check if it is a leap year
+        if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+            monthDays = 29;
+        }
+        else {
+            monthDays = 28;
+        }
+    }
+
+    // run the loop five times as we want five days in the dropdown list (including today)
+    for (var i=0; i < 5; i++) {
+        // if the current day is monthDays or less, add it to the values array, then increment the day
+        if (day <= monthDays) {
+            values.push(day + " " + months[month]);
+            day++;
+        }
+        // if the current day is more than monthDays, add its modulus to the values array, then increment the day
+        else {
+            values.push(day % monthDays + " " + months[month + 1]);
+            day++;
         }
     }
 
