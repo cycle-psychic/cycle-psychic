@@ -770,6 +770,17 @@ function predictionClick() {
         // hide form
         form.style.display = "none";
 
+        // update CSS for the prediction form
+        predictionForm = document.getElementById("predictionForm");
+        predictionForm.style.backgroundColor = '#fff';
+        predictionForm.style.border = '2px solid #fff';
+
+        // update CSS for button on prediction form
+        predictionFormButton = document.getElementById("predictionFormButton");
+        predictionFormButton.style.backgroundColor = '#464646';
+        predictionFormButton.style.border = '1px solid #464646';
+        predictionFormButton.style.color = '#e2e2e2';
+
         // clear form fields
         var predict = document.getElementById("predictionFormFields");
         predict.reset();
@@ -1194,6 +1205,17 @@ function invertPredictiveButton() {
     predictionFilterUI.style.backgroundColor = '#464646';
     predictionFilterUI.style.border = '2px solid #464646';
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBallInverted + ')';
+
+    // update CSS for the prediction form
+    predictionForm = document.getElementById("predictionForm");
+    predictionForm.style.backgroundColor = '#464646';
+    predictionForm.style.border = '2px solid #464646';
+
+    // update CSS for button on prediction form
+    predictionFormButton = document.getElementById("predictionFormButton");
+    predictionFormButton.style.backgroundColor = '#e2e2e2';
+    predictionFormButton.style.border = '1px solid #e2e2e2';
+    predictionFormButton.style.color = '#464646';
 
     // remove listeners for the predictive button
     removeListeners("predictive");
