@@ -8,6 +8,10 @@ const dropDownUrl = ROOT + '/dropdown';
 const weatherInfo = ROOT + '/weather';
 // constructed URL for avgChart
 const avgChart = ROOT + '/avgchart/'
+// URL for bikes for last week at this hour by day
+const bikes1week = ROOT + '/bikes1week/'
+// URL for last 2 weeks this hour
+const bikes2weeks = ROOT + '/bikes2weeks/'
 // get element id
 var dropdown = $('#station');
 
@@ -17,13 +21,13 @@ function navBar() {
     if (getWidth.style.width === "250px") {
         document.getElementById("mySidebar").style.width = "50px";
         document.getElementById("main").style.marginLeft = "50px";
-        document.getElementById("openbtn").style.marginLeft = "0px";
+        //document.getElementById("openbtn").style.marginLeft = "0px"; // makes button move with sidebar
         document.getElementById("main").style.marginLeft = "0px";
         $("#nonWeatherElements").fadeOut("fast");
 
     } else {
         document.getElementById("mySidebar").style.width = "250px";
-        document.getElementById("openbtn").style.marginLeft = "75%";
+        //document.getElementById("openbtn").style.marginLeft = "75%";
         $("#nonWeatherElements").fadeIn("slow");
     }
 }
@@ -49,56 +53,130 @@ function goToStation() {
 
 // get current weather information and display it in the DIV element in the sidebar.
 $.getJSON(weatherInfo, function (data) {
-    $("#weatherElement").html("<img style=\"margin-left: -3px; padding:10%;\" src="+data.iconURL+">");
-    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -20px; margin-left:5px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
+    $("#weatherElement").html("<img style=\"margin-left: -3px; padding:1%;\" src="+data.iconURL+">");
+    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -14px; margin-left:6px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
 });
 
-// Get the station name from drop down menu and send request to avgchart to get data.
-var currentSelectedText = "";
+// Set default station for chart requests
+var currentSelectedText = "Blessington Street";
+buildChart(); // call on page load
+// initialise two arrays that will hold our time and avg bikes at that time
+var chartTime = [];
+var chartAvg = [];
 
+// add a listener to call the function every time our dropdown selection changes
 $(document).on("change", "#station", function() {
     currentSelectedText = $(this).find("option:selected").text();
-    console.log(currentSelectedText);
     currentSelectedText = currentSelectedText.replace(" ","_");
-    console.log(currentSelectedText);
-    $.getJSON(avgChart+currentSelectedText, function(data) {
-        console.log(data);
-    })
+    buildChart();
 });
 
+// function to rebuild the chart with updated average information (i.e. new station selected)
+function buildChart() {
+    var avg = [];
+    var time = [];
+    $.getJSON(avgChart+currentSelectedText, function(data) {
+        for (var i=0; i < Object.keys(data).length; i++) {
+            var zero = "0"; // needed when checking time format 00->09AM to check key since javascript won't preserve a leading 0
+            if (i <= 9) {
+                var key = zero + i;
+                time.push(key);
+                avg.push(data[key]);
+            } else {
+                time.push(i+"");
+                avg.push(data[i+""]);
+            }
+        }
+        chartTime = avg;
+        chartAvg = time;
+        chart(chartTime,chartAvg);
+    })
+}
 
-//$.getJSON(getLocation+ID, function(data) {
-//    var latLng = new google.maps.LatLng(data.lat, data.lng);
-//    console.log(latLng);
-//    map.setCenter(latLng);
-//    map.setZoom(17.5);
-//});
+// function to build chart from data providing a snapshot of what availability looked like on each day for the last week
+function prevWeek() {
+    var bikesAvailable = [];
+    var day = [];
+    
+    $.getJSON(bikes1week+currentSelectedText, function(data) {
+        for (var i in data) {
+            if (i == "Mon") {
+                day[0] = i;
+                bikesAvailable[0] = data[i]; 
+            } else if (i == "Tue") {
+                day[1] = i;
+                bikesAvailable[1] = data[i];
+            } else if (i == "Wed") {
+                day[2] = i;
+                bikesAvailable[2] = data[i];
+            } else if (i == "Thu") {
+                day[3] = i;
+                bikesAvailable[3] = data[i];
+            } else if (i == "Fri") {
+                day[4] = i;
+                bikesAvailable[4] = data[i];
+            } else if (i == "Sat") {
+                day[5] = i;
+                bikesAvailable[5] = data[i];
+            } else if (i == "Sun") {
+                day[6] = i;
+                bikesAvailable[6] = data[i];
+            }
+        }
+        chart(bikesAvailable,day);
+    })
+}
 
-var ctx = $('#myChart');
-var myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Red'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            fill:false,
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero: true
-                }
+// function to get and display on a chart the usage / availability data for the past 2 weeks based on the current hour
+function prevTwoWeeks() {
+    var bikesAvailable = [];
+    var date = [];
+    
+    $.getJSON(bikes2weeks+currentSelectedText, function(data) {
+        for (var i in data) {
+            date.push(i);
+            bikesAvailable.push(data[i]);
+        }
+        chart(bikesAvailable,date);
+    })
+}
+
+// chart function which builds / rebuilds our charts with new data.
+function chart(time,data) {
+    $("#myChart").remove();
+    $("#graph").append('<canvas id="myChart" width="380" height="380"></canvas>');
+    var ctx = $('#myChart');
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data,
+            datasets: [{
+                label: 'Available ',
+                data: time,
+                fill:false,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
             }]
         },
-    }
-});
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]//,
+//                xAxes: [{
+//                    scaleLabel: {
+//                        display: true,
+//                        labelString: 'Hour / This hour daily'
+//                      }
+//                }]
+            },
+        }
+    });
+}
