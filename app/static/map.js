@@ -778,8 +778,8 @@ function predictionClick() {
         // update CSS for button on prediction form
         predictionFormButton = document.getElementById("predictionFormButton");
         predictionFormButton.style.backgroundColor = '#464646';
-        predictionFormButton.style.border = '1px solid #464646';
-        predictionFormButton.style.color = '#e2e2e2';
+        predictionFormButton.style.border = '1px solid #606060';
+        predictionFormButton.style.color = '#fff';
 
         // clear form fields
         var predict = document.getElementById("predictionFormFields");
@@ -1213,8 +1213,8 @@ function invertPredictiveButton() {
 
     // update CSS for button on prediction form
     predictionFormButton = document.getElementById("predictionFormButton");
-    predictionFormButton.style.backgroundColor = '#e2e2e2';
-    predictionFormButton.style.border = '1px solid #e2e2e2';
+    predictionFormButton.style.backgroundColor = '#fff';
+    predictionFormButton.style.border = '1px solid #d3d3d3';
     predictionFormButton.style.color = '#464646';
 
     // remove listeners for the predictive button

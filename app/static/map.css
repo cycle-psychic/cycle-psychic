@@ -145,17 +145,22 @@ input[type=time], #dateDropdown {
 /* CSS for the form button */
 input[type=button] {
   background-color: #464646;
-  color: #e2e2e2;
-  border: 1px solid #464646;
+  color: #fff;
+  border: 1px solid #606060;
   border-radius: 2px;
   padding: 5px;
   margin-bottom: 2px;
-  height: 31px;
+  height: 32px;
   width: 70px;
   font-weight: bold;
   font-size: 0.9em;
   outline: none;
   margin-left: 1px;
+}
+
+/* CSS for form button on hover */
+#predictionFormButton:hover {
+  background-color: #606060;
 }
 
 /* Update mouse pointer when hovering over prediction form fields */
