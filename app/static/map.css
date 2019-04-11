@@ -123,7 +123,7 @@ html, body {
 }
 
 #innerForm {
-  padding-top:2.5px; 
+  padding-top:2px; 
 }
 
 /* CSS for the form fields */
@@ -149,12 +149,17 @@ input[type=time], #dateDropdown {
 
 /* CSS for the form button */
 input[type=button] {
+  -webkit-appearance: none;  /* for webkit (safari, chrome) compatibility */
+  -moz-appearance: none; /* for firefox compatibility */
+  appearance: none;
   background-color: #464646;
   color: #fff;
   border: 1px solid #606060;
   border-radius: 2px;
   padding: 5px;
-  /* margin-bottom: 2px; */ */
+  vertical-align: middle; 
+  /* margin-bottom: 2px; */
+  box-sizing: border-box;
   height: 32px;
   width: 70px;
   font-weight: bold;
