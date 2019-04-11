@@ -396,10 +396,11 @@ def predictall(time_date):
     # declare a dictionary to store station data
     data = {}
     # call the database to get the static information
-    query = "select distinct s.station_number, s.address, s.latitude, s.longitude, a.bike_stands, a.banking \
-    from station_information s, all_station_info a \
-    where s.station_number = a.number;"
+    query = "select distinct station_number, address, latitude, longitude, bike_stands, banking \
+    from station_information;"
+    print("before connection & query")
     rows=open_connection(query)
+    print("after connection & query")
     # loop through each row returned
     for row in rows:
         # create a dictionary for the station
@@ -411,7 +412,7 @@ def predictall(time_date):
         station["lng"] = row[3]
         station["bike_stands"] = row[4]
         # check value of "banking" and assign it a true or false value
-        if row[5] == '1':
+        if row[5] == 1:
             station["banking"] = "true"
         else:
             station["banking"] = "false"
