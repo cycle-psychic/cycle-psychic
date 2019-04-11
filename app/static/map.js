@@ -1320,8 +1320,8 @@ function invertPredictiveButton() {
 
     // update CSS for button on prediction form
     predictionFormButton = document.getElementById("predictionFormButton");
-    predictionFormButton.style.backgroundColor = '#fff';
-    predictionFormButton.style.border = '1px solid #d3d3d3';
+    predictionFormButton.style.backgroundColor = '#f2f2f2';
+    predictionFormButton.style.border = '1px solid #ccc';
     predictionFormButton.style.color = '#464646';
 
     // remove listeners for the predictive button
