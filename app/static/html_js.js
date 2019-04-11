@@ -18,7 +18,7 @@ var dropdown = $('#station');
 // This function opens and closes the navigation bar
 function navBar() {
   var getWidth = document.getElementById("mySidebar");
-    if (getWidth.style.width === "250px") {
+    if (getWidth.style.width === "320px") {
         document.getElementById("mySidebar").style.width = "50px";
         document.getElementById("main").style.marginLeft = "50px";
         //document.getElementById("openbtn").style.marginLeft = "0px"; // makes button move with sidebar
@@ -26,7 +26,7 @@ function navBar() {
         $("#nonWeatherElements").fadeOut("fast");
 
     } else {
-        document.getElementById("mySidebar").style.width = "250px";
+        document.getElementById("mySidebar").style.width = "320px";
         //document.getElementById("openbtn").style.marginLeft = "75%";
         $("#nonWeatherElements").fadeIn("slow");
     }
@@ -48,6 +48,8 @@ function goToStation() {
         map.setCenter(latLng);
         map.setZoom(17.5);
     });
+    
+    document.getElementById("avg").checked = true;
 
 }
 
@@ -58,8 +60,7 @@ $.getJSON(weatherInfo, function (data) {
 });
 
 // Set default station for chart requests
-var currentSelectedText = "Blessington Street";
-buildChart(); // call on page load
+var currentSelectedText = "";
 // initialise two arrays that will hold our time and avg bikes at that time
 var chartTime = [];
 var chartAvg = [];
@@ -69,6 +70,7 @@ $(document).on("change", "#station", function() {
     currentSelectedText = $(this).find("option:selected").text();
     currentSelectedText = currentSelectedText.replace(" ","_");
     buildChart();
+    $('#radioButtons').fadeIn('slow');
 });
 
 // function to rebuild the chart with updated average information (i.e. new station selected)
@@ -144,7 +146,7 @@ function prevTwoWeeks() {
 // chart function which builds / rebuilds our charts with new data.
 function chart(time,data) {
     $("#myChart").remove();
-    $("#graph").append('<canvas id="myChart" width="380" height="380"></canvas>');
+    $("#graph").append('<canvas id="myChart" width="280" height="200"></canvas>');
     var ctx = $('#myChart');
     var myChart = new Chart(ctx, {
         type: 'line',
@@ -164,18 +166,29 @@ function chart(time,data) {
             }]
         },
         options: {
+            legend: {
+                labels: {
+                    fontColor: 'black'
+                }
+            },
             scales: {
                 yAxes: [{
                     ticks: {
-                        beginAtZero: true
+                        beginAtZero: true,
+                        fontColor: 'black'
+                    },
+                    gridLines: {
+                        display: false
                     }
-                }]//,
-//                xAxes: [{
-//                    scaleLabel: {
-//                        display: true,
-//                        labelString: 'Hour / This hour daily'
-//                      }
-//                }]
+                }],
+                xAxes: [{
+                    gridLines: {
+                        display: false,
+                      },
+                    ticks: {
+                        fontColor: 'black'
+                    }
+                }]
             },
         }
     });
