@@ -93,7 +93,7 @@ var predictionMode = false;
 // variable to store current prediction date
 var predictionDate;
 
-// variable to store predictive style 
+// variable to store predictive style for map
 // reference: https://snazzymaps.com/style/98/purple-rain
 var predictiveStyle = [
     {
@@ -255,7 +255,7 @@ function addMarkers(data) {
         var cardPayments = data[i].banking;
         // set text to display on pop-up
         if (cardPayments) {  //if card payments are accepted
-            paymentText = "Accepts Credit Card"
+            paymentText = "Credit Card Accepted"
         }
         else {
             paymentText = "Card Not Accepted"
@@ -473,12 +473,11 @@ function BikeFilter() {
     bikeFilterUI.style.width = '36px';
     bikeFilterUI.style.height = '36px';
     bikeFilterUI.style.marginRight = '10px';
-    //bikeFilterUI.style.marginTop = '16px';
     bikeFilterUI.style.marginBottom = '6px';
     bikeFilterUI.style.display = 'flex';
     bikeFilterUI.style.alignContent = 'center';
     bikeFilterUI.style.justifyContent = 'center';
-    //bikeFilterUI.title = '...';
+    bikeFilterUI.style.cursor = 'auto';
     bikeFilterDiv.appendChild(bikeFilterUI);
 
     // On click, display markers showing bike availability
@@ -506,7 +505,7 @@ function StandFilter() {
     standFilterUI.style.display = 'flex';
     standFilterUI.style.alignContent = 'center';
     standFilterUI.style.justifyContent = 'center';
-    //standFilterUI.title = '...';
+    standFilterUI.title = 'Show Stand Info';
     standFilterDiv.appendChild(standFilterUI);
 
     // add listeners for the stand filter button
@@ -538,7 +537,7 @@ function CardFilter() {
     cardFilterUI.style.display = 'flex';
     cardFilterUI.style.alignContent = 'center';
     cardFilterUI.style.justifyContent = 'center';
-    //cardFilterUI.title = '...';
+    cardFilterUI.title = 'Credit Card Filter';
     cardFilterDiv.appendChild(cardFilterUI);
 
     // add listeners for the card filter button
@@ -571,7 +570,7 @@ function PredictionButton() {
     predictionFilterUI.style.display = 'flex';
     predictionFilterUI.style.alignContent = 'center';
     predictionFilterUI.style.justifyContent = 'center';
-    //predictionFilterUI.title = '...';
+    predictionFilterUI.title = 'Get Prediction';
     predictionFilterDiv.appendChild(predictionFilterUI);  // append image div to the main button div
 
     // add listeners for the predictive filter button
@@ -751,11 +750,15 @@ function bikeClick() {
         bikeFilterUI.style.backgroundColor = '#464646';
         bikeFilterUI.style.border = '2px solid #464646';
         bikeFilterUI.style.backgroundImage = 'url(' + bicycleLight + ')';
+        bikeFilterUI.title = '';
+        bikeFilterUI.style.cursor = 'auto';
 
         // update CSS for the stand button
         standFilterUI.style.backgroundColor = '#fff';
         standFilterUI.style.border = '2px solid #fff';
         standFilterUI.style.backgroundImage = 'url(' + stands + ')';
+        standFilterUI.title = 'Show Stand Info';
+        standFilterUI.style.cursor = 'pointer';
 
         // add listeners for the bike filter button
         // this will cause the icon to turn black on hover
@@ -784,11 +787,15 @@ function standClick() {
         standFilterUI.style.backgroundColor = '#464646';
         standFilterUI.style.border = '2px solid #464646';
         standFilterUI.style.backgroundImage = 'url(' + standsLight + ')';
+        standFilterUI.title = '';
+        standFilterUI.style.cursor = 'auto';
 
         // update CSS for the bike button
         bikeFilterUI.style.backgroundColor = '#fff';
         bikeFilterUI.style.border = '2px solid #fff';
         bikeFilterUI.style.backgroundImage = 'url(' + bicycle + ')';
+        bikeFilterUI.title = 'Show Bike Info';
+        bikeFilterUI.style.cursor = 'pointer';
 
         // add listeners for the bike filter button
         // this will cause the icon to turn black on hover
@@ -865,6 +872,7 @@ function predictionClick() {
         predictionFilterUI.style.backgroundColor = '#fff';
         predictionFilterUI.style.border = '2px solid #fff';
         predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
+        predictionFilterUI.title = 'Get Prediction';
 
         // add listeners to the button
         addListeners("predictive");
@@ -1131,7 +1139,7 @@ function addPredictiveMarkers(data) {
         var cardPayments = entry.banking;
         // set text to display on pop-up
         if (cardPayments == "true") {  //if card payments are accepted
-            paymentText = "Accepts Credit Card"
+            paymentText = "Credit Card Accepted"
         }
         else {
             paymentText = "Card Not Accepted"
@@ -1304,6 +1312,7 @@ function invertPredictiveButton() {
     predictionFilterUI.style.backgroundColor = '#464646';
     predictionFilterUI.style.border = '2px solid #464646';
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBallInverted + ')';
+    predictionFilterUI.title = 'Show Real Time Info';
 
     // update CSS for the prediction form
     predictionForm = document.getElementById("predictionForm");
