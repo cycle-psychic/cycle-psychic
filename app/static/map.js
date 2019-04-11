@@ -757,7 +757,7 @@ function bikeClick() {
         standFilterUI.style.backgroundColor = '#fff';
         standFilterUI.style.border = '2px solid #fff';
         standFilterUI.style.backgroundImage = 'url(' + stands + ')';
-        standFilterUI.title = 'Show Stands';
+        standFilterUI.title = 'Show Stand Info';
         standFilterUI.style.cursor = 'pointer';
 
         // add listeners for the bike filter button
