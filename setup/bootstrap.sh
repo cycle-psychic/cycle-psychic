@@ -7,12 +7,6 @@ chmod u+x ../run.py
 chmod u+x ../app/*
 chmod u+x ../scrape/*
 
-# Create an environment
-conda create --name venv3 pandas flask
-
-# Activate environment
-source activate venv3
-
 # Request info from URL - used for scraping.
 conda install requests
 
