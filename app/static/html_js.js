@@ -70,7 +70,6 @@ $(document).on("change", "#station", function() {
     currentSelectedText = $(this).find("option:selected").text();
     currentSelectedText = currentSelectedText.replace(" ","_");
     buildChart();
-    $('#radioButtons').fadeIn('slow');
 });
 
 // function to rebuild the chart with updated average information (i.e. new station selected)
@@ -145,51 +144,57 @@ function prevTwoWeeks() {
 
 // chart function which builds / rebuilds our charts with new data.
 function chart(time,data) {
-    $("#myChart").remove();
-    $("#graph").append('<canvas id="myChart" width="280" height="200"></canvas>');
-    var ctx = $('#myChart');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data,
-            datasets: [{
-                label: 'Available ',
-                data: time,
-                fill:false,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            legend: {
-                labels: {
-                    fontColor: 'black'
-                }
-            },
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                        fontColor: 'black'
-                    },
-                    gridLines: {
-                        display: false
-                    }
-                }],
-                xAxes: [{
-                    gridLines: {
-                        display: false,
-                      },
-                    ticks: {
-                        fontColor: 'black'
-                    }
+    $('#graph').fadeOut(85);
+    $('#radioButtons').fadeOut(85);
+    $('#graph').promise().done(function(){
+        $("#myChart").remove();
+        $("#graph").append('<canvas id="myChart" width="280" height="200"></canvas>');
+        var ctx = $('#myChart');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data,
+                datasets: [{
+                    label: 'Available ',
+                    data: time,
+                    fill:false,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                    ],
+                    borderWidth: 1
                 }]
             },
-        }
+            options: {
+                legend: {
+                    labels: {
+                        fontColor: 'black'
+                    }
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: 'black'
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                          },
+                        ticks: {
+                            fontColor: 'black'
+                        }
+                    }]
+                },
+            }
+        });
+        $('#graph').fadeIn(1300);
+        $('#radioButtons').fadeIn(1300);
     });
 }
