@@ -338,7 +338,6 @@ def predictall(time_date):
     """
     # convert the input to a datetime object
     date_time_obj = datetime.datetime.strptime(time_date, "%Y-%m-%dT%H:%M:%S.%fZ")
-    print(date_time_obj)
 
     # call the weather forecast API
     weather_data = weather_forecast()
@@ -357,33 +356,37 @@ def predictall(time_date):
         time_diff_hours = time_diff.total_seconds()/3600    # get time_diff in hours
         
         # if the time difference is less than 3, then use this list item for the weather forecast
-        if (0 < time_diff_hours < 3):
+        if (0 <= time_diff_hours <= 3):
             # update found to True
             found = True
 
             # extract weather data from the JSON
             weather_id = item.get("weather")[0].get("id")
-            print("id:", weather_id)
+            print("Weather Id:", weather_id)
             temp = item.get("main").get("temp")
-            print("temp:", temp)
+            print("Temp:", temp)
             if "wind" in item:
                 wind_speed = item.get("wind").get("speed")
             else:
                 wind_speed = 0
-            print("wind speed:", wind_speed)
+            print("Wind Speed:", wind_speed)
             if "rain" in item and "3h" in item["rain"]:
                     rain_volume = item.get("rain").get("3h")
             else:
                 rain_volume = 0
-            print("rain volume:", rain_volume)
+            print("Rain Volume:", rain_volume)
             if "snow" in item and "3h" in item["snow"]:
                 snow_volume = item.get("snow").get("3h")
             else:
                 snow_volume = 0
-            print("snow volume:", snow_volume)
+            print("Snow Volume:", snow_volume)
+
+            # once weather is found, break out of the loop
+            break
 
     # after each item has been checked, if relevant data has not been found, assign some default values
     if (not found):
+        print("Weather Forecast not available. Using default values for Prediction.")
         weather_id = 800
         temp = 283
         wind_speed = 7.5
