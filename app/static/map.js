@@ -94,6 +94,7 @@ var predictionMode = false;
 var predictionDate;
 
 // variable to store predictive style 
+// reference: https://snazzymaps.com/style/98/purple-rain
 var predictiveStyle = [
     {
         "featureType": "road",
@@ -254,10 +255,10 @@ function addMarkers(data) {
         var cardPayments = data[i].banking;
         // set text to display on pop-up
         if (cardPayments) {  //if card payments are accepted
-            paymentText = "Credit Card Accepted"
+            paymentText = "Accepts Credit Card"
         }
         else {
-            paymentText = "Credit Card Not Accepted"
+            paymentText = "Card Not Accepted"
         }
 
         // check which icon should be use based on percentage available & payment types
@@ -347,7 +348,7 @@ function addMarkers(data) {
 
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:#464646; width: 220px;">' +
+        var content = '<div style="color:#464646; width: 190px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
             '<table><tr>' +
@@ -1126,10 +1127,10 @@ function addPredictiveMarkers(data) {
         var cardPayments = entry.banking;
         // set text to display on pop-up
         if (cardPayments == "true") {  //if card payments are accepted
-            paymentText = "Credit Card Accepted"
+            paymentText = "Accepts Credit Card"
         }
         else {
-            paymentText = "Credit Card Not Accepted"
+            paymentText = "Card Not Accepted"
         }
 
         // check which icon should be use based on percentage available & payment types
@@ -1222,7 +1223,7 @@ function addPredictiveMarkers(data) {
 
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:#464646; width: 220px;">' +
+        var content = '<div style="color:#464646; width: 190px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
             // '<p style="padding-left:8px; padding-right:8px;">Predicted occupancy for ' + hours + ':' + mins +
