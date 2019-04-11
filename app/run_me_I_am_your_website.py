@@ -398,9 +398,8 @@ def predictall(time_date):
     # call the database to get the static information
     query = "select distinct station_number, address, latitude, longitude, bike_stands, banking \
     from station_information;"
-    print("before connection & query")
     rows=open_connection(query)
-    print("after connection & query")
+
     # loop through each row returned
     for row in rows:
         # create a dictionary for the station

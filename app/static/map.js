@@ -1064,13 +1064,13 @@ function makePrediction() {
     hideMarkers("bike");
     hideMarkers("stand");
 
+    // update the map style
+    map.setOptions({styles: predictiveStyle});
+
     // if prediction mode isn't already on, then call function to invert colours on the button
     if (!predictionMode) {
         invertPredictiveButton();
     }
-
-    // update the map style
-    map.setOptions({styles: predictiveStyle});
 
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
