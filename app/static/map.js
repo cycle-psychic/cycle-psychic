@@ -94,6 +94,7 @@ var predictionMode = false;
 var predictionDate;
 
 // variable to store predictive style 
+// reference: https://snazzymaps.com/style/98/purple-rain
 var predictiveStyle = [
     {
         "featureType": "road",
@@ -254,10 +255,10 @@ function addMarkers(data) {
         var cardPayments = data[i].banking;
         // set text to display on pop-up
         if (cardPayments) {  //if card payments are accepted
-            paymentText = "Credit Card Accepted"
+            paymentText = "Accepts Credit Card"
         }
         else {
-            paymentText = "Credit Card Not Accepted"
+            paymentText = "Card Not Accepted"
         }
 
         // check which icon should be use based on percentage available & payment types
@@ -347,7 +348,7 @@ function addMarkers(data) {
 
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:#464646; width: 220px;">' +
+        var content = '<div style="color:#464646; width: 190px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
             '<table><tr>' +
@@ -1057,8 +1058,12 @@ function makePrediction() {
 
     // convert object to ISO 8601 standard for the Flask function
     var dateConverted = new Date(dateTime.getTime() - (dateTime.getTimezoneOffset() * 60000)).toISOString();
-    // store the date in the global predictionDate variable (this is used to display the date in pop-up windows)
-    predictionDate = dateTime;
+
+    // create an array with day of the week names as they should be displayed
+    var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    // create a string with details of the prediction date (this is used to display the date in pop-up windows)
+    predictionDate = hour + ':' + min + ' ' + daysOfWeek[dateTime.getDay()] + ' ' + day + ' ' + inputMonth;
 
     // hide the existing markers
     hideMarkers("bike");
@@ -1126,10 +1131,10 @@ function addPredictiveMarkers(data) {
         var cardPayments = entry.banking;
         // set text to display on pop-up
         if (cardPayments == "true") {  //if card payments are accepted
-            paymentText = "Credit Card Accepted"
+            paymentText = "Accepts Credit Card"
         }
         else {
-            paymentText = "Credit Card Not Accepted"
+            paymentText = "Card Not Accepted"
         }
 
         // check which icon should be use based on percentage available & payment types
@@ -1209,28 +1214,15 @@ function addPredictiveMarkers(data) {
             anchor: new google.maps.Point(30, 60) // anchor
         };
 
-        // get hours and minutes in the correct format
-        var mins = predictionDate.getMinutes();
-        if (mins < 10) {
-            mins = "0" + mins;
-        }   
-
-        var hours = predictionDate.getHours();
-        if (hours < 10) {
-            hours = "0" + hours;
-        }   
-
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:#464646; width: 220px;">' +
+        var content = '<div style="color:#464646; width: 190px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
-            // '<p style="padding-left:8px; padding-right:8px;">Predicted occupancy for ' + hours + ':' + mins +
-            // ' on ' + predictionDate.toDateString() + '.</p>' +
             '<table><tr>' +
             '<td style="width:40px;">' + 
             '<img src=' + crystalBall + ' style="width:22px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
-            '<td>' + hours + ':' + mins + ' ' + predictionDate.toDateString() + '</td></tr>' +
+            '<td>' + predictionDate + '</td></tr>' +
             '<td style="width:40px;">' + 
             '<img src=' + bicycle + ' style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
             '<td>' + availableBikes + ' Available</td></tr>' +
