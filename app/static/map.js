@@ -93,6 +93,107 @@ var predictionMode = false;
 // variable to store current prediction date
 var predictionDate;
 
+// variable to store predictive style 
+var predictiveStyle = [
+    {
+        "featureType": "road",
+        "stylers": [
+            {
+                "hue": "#5e00ff"
+            },
+            {
+                "saturation": -79
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "stylers": [
+            {
+                "saturation": -78
+            },
+            {
+                "hue": "#6600ff"
+            },
+            {
+                "lightness": -47
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "stylers": [
+            {
+                "lightness": 22
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "stylers": [
+            {
+                "hue": "#6600ff"
+            },
+            {
+                "saturation": -11
+            }
+        ]
+    },
+    {},
+    {},
+    {
+        "featureType": "water",
+        "stylers": [
+            {
+                "saturation": -65
+            },
+            {
+                "hue": "#1900ff"
+            },
+            {
+                "lightness": 8
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "stylers": [
+            {
+                "weight": 1.3
+            },
+            {
+                "lightness": 30
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {
+                "visibility": "simplified"
+            },
+            {
+                "hue": "#5e00ff"
+            },
+            {
+                "saturation": -16
+            }
+        ]
+    },
+    {
+        "featureType": "transit.line",
+        "stylers": [
+            {
+                "saturation": -72
+            }
+        ]
+    },
+    {}
+];
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -810,6 +911,9 @@ function predictionClick() {
         standMarkers = [];
         standMarkersCard = [];
 
+        // change map style back to the default
+        map.setOptions({styles: []});
+
         // call Dublin Bikes API to get latest data and add relevant markers
         $.getJSON(urlBikes, null, function(data) {
             // call the addMarkers function
@@ -960,6 +1064,14 @@ function makePrediction() {
     hideMarkers("bike");
     hideMarkers("stand");
 
+    // if prediction mode isn't already on, then call function to invert colours on the button
+    if (!predictionMode) {
+        invertPredictiveButton();
+    }
+
+    // update the map style
+    map.setOptions({styles: predictiveStyle});
+
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
 
@@ -974,11 +1086,6 @@ function makePrediction() {
 
         // add predictive markers
         addPredictiveMarkers(data);
-
-        // if prediction mode isn't already on, then call function to invert colours on the button
-        if (!predictionMode) {
-            invertPredictiveButton();
-        }
 
         // update predictionMode variable to true
         predictionMode = true;
