@@ -109,11 +109,11 @@ html, body {
   border: 2px solid #fff;
   border-radius: 2px;
   box-shadow: 0 2px 6px rgba(0,0,0,.15);
-  width: 300px;
+  width: 266px;
   height: 36px;
   position: fixed;
   top: 16px;
-  right: 50px;
+  right: 55px;
   z-index: 2;
   display: none;
   color: #464646;
@@ -123,22 +123,61 @@ html, body {
 }
 
 #innerForm {
-  padding:8px;
+  padding-top:2px; 
 }
 
 /* CSS for the form fields */
-input[type=date], input[type=time] {
-  margin-top: 5px;
-  margin-bottom: 5px;
+input[type=time], #dateDropdown {
+  /* margin-top: 5px;
+  margin-bottom: 5px; */
+  -webkit-appearance: none;  /* for webkit (safari, chrome) compatibility */
+  -moz-appearance: none; /* for firefox compatibility */
+  appearance: none;
+  font-family: 'Roboto', sans-serif;
+  color: #464646;
+  background-color: #f2f2f2;
+  padding: 4px 10px;
+  display: inline-block;
+  vertical-align: middle;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  box-sizing: border-box;
+  height: 32px;
+  width: 90px;
+  outline: none;
 }
 
 /* CSS for the form button */
 input[type=button] {
+  -webkit-appearance: none;  /* for webkit (safari, chrome) compatibility */
+  -moz-appearance: none; /* for firefox compatibility */
+  appearance: none;
   background-color: #464646;
-  color: #e2e2e2;
-  border: none;
+  color: #f2f2f2;
+  border: 1px solid #606060;
+  border-radius: 2px;
   padding: 5px;
-  margin-top: 5px;
+  vertical-align: middle; 
+  box-sizing: border-box;
+  height: 32px;
+  width: 70px;
+  font-weight: bold;
+  font-size: 0.9em;
+  outline: none;
+  margin-left: 1px;
+  display: inline-block;
+}
+
+/* CSS for form button on hover */
+#predictionFormButton:hover {
+  background-color: #999999 !important;
+  border: 1px solid #999999 !important;
+  color: #464646 !important;
+}
+
+/* Update mouse pointer when hovering over prediction form fields */
+input[type=time], input[type=button], #dateDropdown {
+  cursor: pointer;
 }
 
 #radioButtons {

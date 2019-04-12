@@ -42,6 +42,7 @@ var standsBlack = "/static/icons/stands-black.png";
 var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
 var crystalBall = "/static/icons/crystal-ball.png";
 var crystalBallBlack = "/static/icons/crystal-ball-black.png";
+var crystalBallInverted = "/static/icons/crystal-ball-light.png";
 
 // variable for the Google Map
 var map;  
@@ -92,6 +93,108 @@ var predictionMode = false;
 // variable to store current prediction date
 var predictionDate;
 
+// variable to store predictive style for map
+// reference: https://snazzymaps.com/style/98/purple-rain
+var predictiveStyle = [
+    {
+        "featureType": "road",
+        "stylers": [
+            {
+                "hue": "#5e00ff"
+            },
+            {
+                "saturation": -79
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "stylers": [
+            {
+                "saturation": -78
+            },
+            {
+                "hue": "#6600ff"
+            },
+            {
+                "lightness": -47
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "stylers": [
+            {
+                "lightness": 22
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "stylers": [
+            {
+                "hue": "#6600ff"
+            },
+            {
+                "saturation": -11
+            }
+        ]
+    },
+    {},
+    {},
+    {
+        "featureType": "water",
+        "stylers": [
+            {
+                "saturation": -65
+            },
+            {
+                "hue": "#1900ff"
+            },
+            {
+                "lightness": 8
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "stylers": [
+            {
+                "weight": 1.3
+            },
+            {
+                "lightness": 30
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {
+                "visibility": "simplified"
+            },
+            {
+                "hue": "#5e00ff"
+            },
+            {
+                "saturation": -16
+            }
+        ]
+    },
+    {
+        "featureType": "transit.line",
+        "stylers": [
+            {
+                "saturation": -72
+            }
+        ]
+    },
+    {}
+];
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -99,7 +202,7 @@ function initMap() {
     // map will be centred on these co-ordinates when it loads
     center: {lat: 53.3465, lng: -6.268},
     // initial level of zoom when map loads - 15 is street level
-    zoom: 14,
+    zoom: 13.8,
     // turn off some default controls
     mapTypeControl: false,
     fullscreenControl: false
@@ -116,6 +219,9 @@ function initMap() {
         // because bikes should be shown by default
         showMarkers("bike");
     });
+
+    // call the popDateForm function to populate the dropdown in the prediction form
+    popDateForm();
 }
 
 // function for adding markers to the map
@@ -152,7 +258,7 @@ function addMarkers(data) {
             paymentText = "Credit Card Accepted"
         }
         else {
-            paymentText = "Credit Card Not Accepted"
+            paymentText = "Card Not Accepted"
         }
 
         // check which icon should be use based on percentage available & payment types
@@ -242,7 +348,7 @@ function addMarkers(data) {
 
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:#464646; width: 220px;">' +
+        var content = '<div style="color:#464646; width: 190px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
             '<table><tr>' +
@@ -367,12 +473,11 @@ function BikeFilter() {
     bikeFilterUI.style.width = '36px';
     bikeFilterUI.style.height = '36px';
     bikeFilterUI.style.marginRight = '10px';
-    //bikeFilterUI.style.marginTop = '16px';
     bikeFilterUI.style.marginBottom = '6px';
     bikeFilterUI.style.display = 'flex';
     bikeFilterUI.style.alignContent = 'center';
     bikeFilterUI.style.justifyContent = 'center';
-    //bikeFilterUI.title = '...';
+    bikeFilterUI.style.cursor = 'auto';
     bikeFilterDiv.appendChild(bikeFilterUI);
 
     // On click, display markers showing bike availability
@@ -400,7 +505,7 @@ function StandFilter() {
     standFilterUI.style.display = 'flex';
     standFilterUI.style.alignContent = 'center';
     standFilterUI.style.justifyContent = 'center';
-    //standFilterUI.title = '...';
+    standFilterUI.title = 'Show Stand Info';
     standFilterDiv.appendChild(standFilterUI);
 
     // add listeners for the stand filter button
@@ -432,7 +537,7 @@ function CardFilter() {
     cardFilterUI.style.display = 'flex';
     cardFilterUI.style.alignContent = 'center';
     cardFilterUI.style.justifyContent = 'center';
-    //cardFilterUI.title = '...';
+    cardFilterUI.title = 'Credit Card Filter';
     cardFilterDiv.appendChild(cardFilterUI);
 
     // add listeners for the card filter button
@@ -465,7 +570,7 @@ function PredictionButton() {
     predictionFilterUI.style.display = 'flex';
     predictionFilterUI.style.alignContent = 'center';
     predictionFilterUI.style.justifyContent = 'center';
-    //predictionFilterUI.title = '...';
+    predictionFilterUI.title = 'Get Prediction';
     predictionFilterDiv.appendChild(predictionFilterUI);  // append image div to the main button div
 
     // add listeners for the predictive filter button
@@ -645,11 +750,15 @@ function bikeClick() {
         bikeFilterUI.style.backgroundColor = '#464646';
         bikeFilterUI.style.border = '2px solid #464646';
         bikeFilterUI.style.backgroundImage = 'url(' + bicycleLight + ')';
+        bikeFilterUI.title = '';
+        bikeFilterUI.style.cursor = 'auto';
 
         // update CSS for the stand button
         standFilterUI.style.backgroundColor = '#fff';
         standFilterUI.style.border = '2px solid #fff';
         standFilterUI.style.backgroundImage = 'url(' + stands + ')';
+        standFilterUI.title = 'Show Stand Info';
+        standFilterUI.style.cursor = 'pointer';
 
         // add listeners for the bike filter button
         // this will cause the icon to turn black on hover
@@ -678,11 +787,15 @@ function standClick() {
         standFilterUI.style.backgroundColor = '#464646';
         standFilterUI.style.border = '2px solid #464646';
         standFilterUI.style.backgroundImage = 'url(' + standsLight + ')';
+        standFilterUI.title = '';
+        standFilterUI.style.cursor = 'auto';
 
         // update CSS for the bike button
         bikeFilterUI.style.backgroundColor = '#fff';
         bikeFilterUI.style.border = '2px solid #fff';
         bikeFilterUI.style.backgroundImage = 'url(' + bicycle + ')';
+        bikeFilterUI.title = 'Show Bike Info';
+        bikeFilterUI.style.cursor = 'pointer';
 
         // add listeners for the bike filter button
         // this will cause the icon to turn black on hover
@@ -744,12 +857,84 @@ function cardClick() {
 function predictionClick() {
     // show the predictive form
     var form = document.getElementById("predictionForm");
+    // if prediction mode is not on, hide or show the form
+    if (!predictionMode) {
+        if (form.style.display == "block") {
+            form.style.display = "none";
+        } 
+        else {
+            form.style.display = "block";
+        }
+    }
+    // if prediction mode is on...
+    else if (predictionMode) {
+        // update button CSS
+        predictionFilterUI.style.backgroundColor = '#fff';
+        predictionFilterUI.style.border = '2px solid #fff';
+        predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
+        predictionFilterUI.title = 'Get Prediction';
 
-    if (form.style.display == "block") {
+        // add listeners to the button
+        addListeners("predictive");
+
+        // hide form
         form.style.display = "none";
-    } 
-    else {
-        form.style.display = "block";
+
+        // update CSS for the prediction form
+        predictionForm = document.getElementById("predictionForm");
+        predictionForm.style.backgroundColor = '#fff';
+        predictionForm.style.border = '2px solid #fff';
+
+        // update CSS for button on prediction form
+        predictionFormButton = document.getElementById("predictionFormButton");
+        predictionFormButton.style.backgroundColor = '#464646';
+        predictionFormButton.style.border = '1px solid #606060';
+        predictionFormButton.style.color = '#fff';
+
+        // clear form fields
+        var predict = document.getElementById("predictionFormFields");
+        predict.reset();
+
+        // set prediction mode to false
+        predictionMode = false;
+
+        // remove predictive markers
+        for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
+            bikeMarkersCardPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < standMarkersCardPredictive.length; i++) {
+            standMarkersCardPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+            bikeMarkersPredictive[i].setMap(null);
+        }
+        for (var i = 0; i < standMarkersPredictive.length; i++) {
+            standMarkersPredictive[i].setMap(null);
+        }
+
+        // clear the arrays for the non-predictive markers
+        // this is done because the API will be called again to get the most up to date info for the markers
+        // existing markers must be cleared or there will be duplicates in the array
+        bikeMarkers = [];
+        bikeMarkersCard = [];
+        standMarkers = [];
+        standMarkersCard = [];
+
+        // change map style back to the default
+        map.setOptions({styles: []});
+
+        // call Dublin Bikes API to get latest data and add relevant markers
+        $.getJSON(urlBikes, null, function(data) {
+            // call the addMarkers function
+            addMarkers(data);
+            // check which filters are on and show relevant markers
+            if (bikeFilterOn) {
+                showMarkers("bike");
+            }
+            else {
+                showMarkers("stand");
+            }
+        });
     }
 }
 
@@ -773,8 +958,8 @@ function addListeners(type) {
     }
     else if (type == "predictive") {
         // on hover, change icon colour to black
-        predictionFilterUI.addEventListener('mouseenter', predictiveListenerEnter);
-        predictionFilterUI.addEventListener('mouseleave', predictiveListenerLeave);
+        predictionFilterDiv.addEventListener('mouseenter', predictiveListenerEnter);
+        predictionFilterDiv.addEventListener('mouseleave', predictiveListenerLeave);
     }
 }
 
@@ -795,6 +980,11 @@ function removeListeners(type) {
         // removing listeners will stop icon colour changing on hover
         cardFilterDiv.removeEventListener('mouseenter', cardListenerEnter);
         cardFilterDiv.removeEventListener('mouseleave', cardListenerLeave);
+    }
+    else if (type == "predictive") {
+        // removing listeners will stop icon colour changing on hover
+        predictionFilterDiv.removeEventListener('mouseenter', predictiveListenerEnter);
+        predictionFilterDiv.removeEventListener('mouseleave', predictiveListenerLeave);
     }
 }
 
@@ -842,21 +1032,63 @@ function predictiveListenerLeave() {
 function makePrediction() {
     //get values from form fields to pass to subsequent functions
     var predict = document.getElementById("predictionFormFields");
-    var inputDateTime = predict[0].value;
+    var time = predict[0].value;
+    var date = predict[1].value;
+
+    // split time out into hours and minutes	
+    var hour = time.slice(0,2);	
+    var min = time.slice(3,5);
+
+    // split the date out into day and month
+    var day = parseInt(date.split(" ")[0]);	
+    var inputMonth = date.split(" ")[1];
+
+    // create array with month names as they should be displayed
+    var months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+    // use the array to get the numeric value of the inputted month
+    var month = months.indexOf(inputMonth);
+
+    // get the current date
+    var d = new Date(); 
+    // get the year from the current date
+    if (d.getMonth() == 11 && d.getDate() >= 28) { // if it is 28-31 Dec, we need to be careful about giving the right year 
+        // check what day was received in the form, if it is 4 or less, then add 1 to year
+        // because it means the current date is December but the request is for Jan the next year
+        var year = d.getFullYear() + 1;
+    }
+    else {  // otherwise, just get the current year
+        var year = d.getFullYear();
+    }
+
     // create datetime object 
-    var dateTime = new Date(inputDateTime);
+    var dateTime = new Date(year, month, day, hour, min);
+
     // convert object to ISO 8601 standard for the Flask function
     var dateConverted = new Date(dateTime.getTime() - (dateTime.getTimezoneOffset() * 60000)).toISOString();
-    // store the date in the global predictionDate variable
-    predictionDate = dateTime;
+
+    // create an array with day of the week names as they should be displayed
+    var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    // create a string with details of the prediction date (this is used to display the date in pop-up windows)
+    predictionDate = hour + ':' + min + ' ' + daysOfWeek[dateTime.getDay()] + ' ' + day + ' ' + inputMonth;
+
+    // hide the existing markers
+    hideMarkers("bike");
+    hideMarkers("stand");
+
+    // update the map style
+    map.setOptions({styles: predictiveStyle});
+
+    // if prediction mode isn't already on, then call function to invert colours on the button
+    if (!predictionMode) {
+        invertPredictiveButton();
+    }
 
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
 
     $.getJSON(predictionURL, function (data) {
-        // hide the existing markers
-        hideMarkers("bike");
-        hideMarkers("stand");
 
         // reset the predictive marker arrays to empty
         // this is done so that the number of markers doesn't keep increasing each time a new prediction is requested
@@ -879,12 +1111,6 @@ function makePrediction() {
         else {
             showMarkers("stand");
         }
-
-        // clear the form fields
-        predict.reset();
-
-        // close the form window
-        document.getElementById("predictionForm").style.display = "none";
     });
 }
 
@@ -916,7 +1142,7 @@ function addPredictiveMarkers(data) {
             paymentText = "Credit Card Accepted"
         }
         else {
-            paymentText = "Credit Card Not Accepted"
+            paymentText = "Card Not Accepted"
         }
 
         // check which icon should be use based on percentage available & payment types
@@ -996,28 +1222,15 @@ function addPredictiveMarkers(data) {
             anchor: new google.maps.Point(30, 60) // anchor
         };
 
-        // get hours and minutes in the correct format
-        var mins = predictionDate.getMinutes();
-        if (mins < 10) {
-            mins = "0" + mins;
-        }   
-
-        var hours = predictionDate.getHours();
-        if (hours < 10) {
-            hours = "0" + hours;
-        }   
-
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:#464646; width: 220px;">' +
+        var content = '<div style="color:#464646; width: 190px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
-            // '<p style="padding-left:8px; padding-right:8px;">Predicted occupancy for ' + hours + ':' + mins +
-            // ' on ' + predictionDate.toDateString() + '.</p>' +
             '<table><tr>' +
             '<td style="width:40px;">' + 
             '<img src=' + crystalBall + ' style="width:22px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
-            '<td>' + hours + ':' + mins + ' ' + predictionDate.toDateString() + '</td></tr>' +
+            '<td>' + predictionDate + '</td></tr>' +
             '<td style="width:40px;">' + 
             '<img src=' + bicycle + ' style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
             '<td>' + availableBikes + ' Available</td></tr>' +
@@ -1092,3 +1305,87 @@ function addPredictiveMarkers(data) {
         }
     });
 }  
+
+// function to invert colours on the predictive button when form is submitted
+function invertPredictiveButton() {
+    // update CSS for the predictive button
+    predictionFilterUI.style.backgroundColor = '#464646';
+    predictionFilterUI.style.border = '2px solid #464646';
+    predictionFilterUI.style.backgroundImage = 'url(' + crystalBallInverted + ')';
+    predictionFilterUI.title = 'Show Real Time Info';
+
+    // update CSS for the prediction form
+    predictionForm = document.getElementById("predictionForm");
+    predictionForm.style.backgroundColor = '#464646';
+    predictionForm.style.border = '2px solid #464646';
+
+    // update CSS for button on prediction form
+    predictionFormButton = document.getElementById("predictionFormButton");
+    predictionFormButton.style.backgroundColor = '#f2f2f2';
+    predictionFormButton.style.border = '1px solid #ccc';
+    predictionFormButton.style.color = '#464646';
+
+    // remove listeners for the predictive button
+    removeListeners("predictive");
+}
+
+// function to populate the dropdown in the prediction form
+function popDateForm() {
+    // get the current date
+    var d = new Date(); 
+    // get the day, month and year from the date
+    var month = d.getMonth();
+    var day = d.getDate();
+    var year = d.getFullYear();
+    // create array with month names as they should be displayed
+    var months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+    // create array to store values to be put into the dropdown
+    var values = [];
+
+    // declare variable to store number of days in a month
+    var monthDays = 0;
+    // check for months with 31 days
+    if (month == 0 || month == 2 || month == 4 || month == 6 || month == 7 || month == 9 || month == 11) {
+        monthDays = 31;
+    }
+    // check for months with 30 days
+    else if (month == 3 || month == 5 || month == 8 || month == 10) {
+        monthDays = 30;
+    }
+    // check if month is feb
+    else if (month == 1) {  
+        // check if it is a leap year
+        if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+            monthDays = 29;
+        }
+        else {
+            monthDays = 28;
+        }
+    }
+
+    // run the loop five times as we want five days in the dropdown list (including today)
+    for (var i=0; i < 5; i++) {
+        // if the current day is monthDays or less, add it to the values array, then increment the day
+        if (day <= monthDays) {
+            values.push(day + " " + months[month]);
+            day++;
+        }
+        // if the current day is more than monthDays, add its modulus to the values array, then increment the day
+        else {
+            values.push(day % monthDays + " " + months[month + 1]);
+            day++;
+        }
+    }
+
+    // declare variable for dropdown html
+    var dropdown = "";
+
+    // add all the values in the array to the dropdown
+    for (var i=0; i < values.length; i++) {
+        dropdown += "<option value=\"" + values[i] + "\">" +  values[i] + "</option>";
+    }
+
+    // push the html into the form
+    document.getElementById("dateDropdown").innerHTML = dropdown;
+}

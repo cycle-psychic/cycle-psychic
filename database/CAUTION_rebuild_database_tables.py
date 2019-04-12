@@ -124,7 +124,7 @@ def recreate():
                 ENGINE = InnoDB
                 DEFAULT CHARACTER SET = utf8mb4
                 COLLATE = utf8mb4_0900_ai_ci;
-
+                
                 CREATE TABLE IF NOT EXISTS `cyclepsychic`.`station_information` (
                   `station_number` INT(11) NOT NULL,
                   `contract_name` VARCHAR(45) NULL DEFAULT NULL,
@@ -136,6 +136,9 @@ def recreate():
                   `banking` INT(11) NULL DEFAULT NULL,
                   PRIMARY KEY (`station_number`))
                 ENGINE = InnoDB;
+                DEFAULT CHARACTER SET = utf8mb4
+                COLLATE = utf8mb4_0900_ai_ci;
+
                 
                 CREATE TABLE IF NOT EXISTS `cyclepsychic`.`station_data` (
                   `data_id` INT(11) NOT NULL AUTO_INCREMENT,

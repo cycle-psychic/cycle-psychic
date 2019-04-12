@@ -30,6 +30,7 @@ for station in bike_stations:
           station.get('address'), station['position'].get('lat'),\
           station['position'].get('lng'),station.get('bike_stands'), station.get('banking'))
   sql = "INSERT IGNORE INTO `station_information` (`station_number`, `contract_name`, `name`, `address`, `latitude`, `longitude`, `bike_stands`, `banking`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+
   cursor.execute(sql, vals)
 
 dbEngine.commit()

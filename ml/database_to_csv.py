@@ -21,7 +21,7 @@ query = "SELECT * FROM cyclepsychic.all_station_info;"
 cursor.execute(query)
 result=cursor.fetchall()
 # Change this to date created
-results = csv.writer(open("results_bikes_to_28_03_19.csv", "w"))
+results = csv.writer(open("results_bikes.csv", "w"))
 
 # Write each row into the csv file
 for row in result:
@@ -33,7 +33,7 @@ query = "SELECT * FROM cyclepsychic.city_weather;"
 cursor.execute(query)
 result=cursor.fetchall()
 # Change this to date created
-results = csv.writer(open("results_weather_to_28_03_19.csv", "w"))
+results = csv.writer(open("results_weather.csv", "w"))
 
 for row in result:
   results.writerow(row)
