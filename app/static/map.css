@@ -17,11 +17,13 @@ html, body {
   z-index: 1; /* Stay on top */
   top: 0;
   left: 0;
-  background-color: #e2e2e2; /* Grey*/
+  background-color: #505050; /* Grey*/
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 5px; /* Place content 60px from the top */
   transition: 0.4s; /* 0.5 second transition effect to slide in the sidebar */
   font-family: 'Roboto', sans-serif;
+  color: #e2e2e2;
+  box-shadow: 0.5px 0 4px 2px #505050; /* Border right */
 }
 
 /* The sidebar links */
@@ -48,10 +50,9 @@ html, body {
     padding: 10px 15px;
     border: none;
     transition:margin-left .5s;
-}
+    outline: none;    
+    box-shadow: -6px 0 7px -5px #505050; 
 
-.openbtn:hover {
-  background-color: #444;
 }
 
 /* Style page content - use this if you want to push the page content to the right when you open the side navigation */
@@ -67,14 +68,16 @@ html, body {
 
 #form {
     margin-left:21.3%;
-    margin-top:8%;
+    margin-top:5.5%;
     margin-bottom:5%;
+    outline: none;
 }
 
 #graph {
     color:white;
     margin-left:11%;
     margin-right:2%;
+    margin-top:10%;
     width:89%;
     height:170px;
     display:none;
@@ -185,11 +188,12 @@ input[type=time], input[type=button], #dateDropdown {
     margin-left:32%;
     font-size:13px;
     display:none;
+    border-right:1px;
 }
 
 #slimSide {
     height:100%;
-    width:4%;
+    width:50px;
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */
     top: 0;
@@ -197,8 +201,19 @@ input[type=time], input[type=button], #dateDropdown {
     background-color: #464646; /* Grey */
     overflow-x: hidden; /* Disable horizontal scroll */
     padding-top: 10px; /* Place content 60px from the top */
+    box-shadow: inset -6px 0 7px -5px #505050; 
+/*    box-shadow: inset 4px 0px 7px -4px #505050;  Border right */
+
 }
 
 #station {
     font-size:12px;
+    outline: none;
+}
+
+
+#legend {
+    position:absolute;
+    bottom:85px;
+    left:120px;
 }
