@@ -70,14 +70,21 @@
     </div>
 
     <!-- div to display overlay in the event of prediction failure -->
-
-    
     <div id="predictionOverlay" onclick="off()">
       <div id="predict" >
       <img src="../static/icons/crystal_ball_purple.png" display = 'none' style="height: 50%; display: block; margin:auto;">
       <h1>Outlook uncertain! 
       </br>There seems to be a crack in the crystal ball. 
       </br>Click the crystal ball to try again</h1>
+      </div>  
+    </div>
+
+    <!-- div to display overlay in the event of Dublin Bikes API failure -->
+    <div id="bikeErrorOverlay">
+      <div id="bikeErrorDiv">
+        <img src="../static/icons/bicycle-error.png">
+        <h1>Oops, we seem to have a puncture! </br>
+        Please refresh the page while we change the tyre.</h1>
       </div>  
     </div>
 
