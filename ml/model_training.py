@@ -95,7 +95,7 @@ def clean_and_merge_data():
   df = df[df.status != 'CLOSED']
 
   # Drop bank holiday - not representative of usage
-  df = df[df.last_update_x != '2019-03-18']
+  df = df[df.date != '1832019']
 
   # Update the hour by 1 after March 31 to account for daylight savings
   df['hour'] = np.where(df['last_update_x'] >= '2019-03-31 01:00', df['hour']+ 1, df['hour'])
