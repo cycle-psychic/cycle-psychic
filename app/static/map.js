@@ -916,77 +916,7 @@ function predictionClick() {
     }
     // if prediction mode is on...
     else if (predictionMode) {
-        // update button CSS
-        predictionFilterUI.style.backgroundColor = '#fff';
-        predictionFilterUI.style.border = '2px solid #fff';
-        predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
-        predictionFilterUI.title = 'Get Prediction';
-
-        // add listeners to the button
-        addListeners("predictive");
-
-        // hide form
-        form.style.display = "none";
-
-        // update CSS for the prediction form
-        predictionForm = document.getElementById("predictionForm");
-        predictionForm.style.backgroundColor = '#fff';
-        predictionForm.style.border = '2px solid #fff';
-
-        // update CSS for button on prediction form
-        predictionFormButton = document.getElementById("predictionFormButton");
-        predictionFormButton.style.backgroundColor = '#464646';
-        predictionFormButton.style.border = '1px solid #606060';
-        predictionFormButton.style.color = '#fff';
-
-        // clear form fields
-        var predict = document.getElementById("predictionFormFields");
-        predict.reset();
-
-        // set prediction mode to false
-        predictionMode = false;
-
-        // remove predictive markers
-        for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
-            bikeMarkersCardPredictive[i].setMap(null);
-        }
-        for (var i = 0; i < standMarkersCardPredictive.length; i++) {
-            standMarkersCardPredictive[i].setMap(null);
-        }
-        for (var i = 0; i < bikeMarkersPredictive.length; i++) {
-            bikeMarkersPredictive[i].setMap(null);
-        }
-        for (var i = 0; i < standMarkersPredictive.length; i++) {
-            standMarkersPredictive[i].setMap(null);
-        }
-
-        // clear the arrays for the non-predictive markers
-        // this is done because the API will be called again to get the most up to date info for the markers
-        // existing markers must be cleared or there will be duplicates in the array
-        bikeMarkers = [];
-        bikeMarkersCard = [];
-        standMarkers = [];
-        standMarkersCard = [];
-
-        // change map style back to the default
-        map.setOptions({styles: []});
-
-        // call Dublin Bikes API to get latest data and add relevant markers
-        $.getJSON(urlBikesAPI, null, function(data) {
-            // call the addMarkers function
-            addMarkers(data);
-            // check which filters are on and show relevant markers
-            if (bikeFilterOn) {
-                showMarkers("bike");
-            }
-            else {
-                showMarkers("stand");
-            }
-        })
-        // if the call to the Dublin Bikes API fails, then display an error message to the user
-        .fail(function() {
-            bikeError();
-        });
+        realTime();
     }
 }
 
@@ -1469,4 +1399,79 @@ function popDateForm() {
 // function to display error message when Dublin Bikes API call fails
 function bikeError() {
     document.getElementById("bikeErrorOverlay").style.display = "block";
+}
+
+// function to switch back to real time mode
+function realTime() {
+    // update button CSS
+    predictionFilterUI.style.backgroundColor = '#fff';
+    predictionFilterUI.style.border = '2px solid #fff';
+    predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
+    predictionFilterUI.title = 'Get Prediction';
+
+    // add listeners to the button
+    addListeners("predictive");
+
+    // hide form
+    form.style.display = "none";
+
+    // update CSS for the prediction form
+    predictionForm = document.getElementById("predictionForm");
+    predictionForm.style.backgroundColor = '#fff';
+    predictionForm.style.border = '2px solid #fff';
+
+    // update CSS for button on prediction form
+    predictionFormButton = document.getElementById("predictionFormButton");
+    predictionFormButton.style.backgroundColor = '#464646';
+    predictionFormButton.style.border = '1px solid #606060';
+    predictionFormButton.style.color = '#fff';
+
+    // clear form fields
+    var predict = document.getElementById("predictionFormFields");
+    predict.reset();
+
+    // set prediction mode to false
+    predictionMode = false;
+
+    // remove predictive markers
+    for (var i = 0; i < bikeMarkersCardPredictive.length; i++) {
+        bikeMarkersCardPredictive[i].setMap(null);
+    }
+    for (var i = 0; i < standMarkersCardPredictive.length; i++) {
+        standMarkersCardPredictive[i].setMap(null);
+    }
+    for (var i = 0; i < bikeMarkersPredictive.length; i++) {
+        bikeMarkersPredictive[i].setMap(null);
+    }
+    for (var i = 0; i < standMarkersPredictive.length; i++) {
+        standMarkersPredictive[i].setMap(null);
+    }
+
+    // clear the arrays for the non-predictive markers
+    // this is done because the API will be called again to get the most up to date info for the markers
+    // existing markers must be cleared or there will be duplicates in the array
+    bikeMarkers = [];
+    bikeMarkersCard = [];
+    standMarkers = [];
+    standMarkersCard = [];
+
+    // change map style back to the default
+    map.setOptions({styles: []});
+
+    // call Dublin Bikes API to get latest data and add relevant markers
+    $.getJSON(urlBikesAPI, null, function(data) {
+        // call the addMarkers function
+        addMarkers(data);
+        // check which filters are on and show relevant markers
+        if (bikeFilterOn) {
+            showMarkers("bike");
+        }
+        else {
+            showMarkers("stand");
+        }
+    })
+    // if the call to the Dublin Bikes API fails, then display an error message to the user
+    .fail(function() {
+        bikeError();
+    });
 }
