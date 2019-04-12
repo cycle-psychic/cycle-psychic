@@ -25,10 +25,25 @@ function navBar() {
         document.getElementById("main").style.marginLeft = "0px";
         $("#nonWeatherElements").fadeOut("fast");
 
+        // also update CSS for the info button & add listeners
+        infoFilterUI.style.backgroundColor = '#fff';
+        infoFilterUI.style.border = '2px solid #fff';
+        infoFilterUI.style.backgroundImage = 'url(' + infoSymbol + ')';
+
+        addListeners("info");
+
+
     } else {
         document.getElementById("mySidebar").style.width = "320px";
         //document.getElementById("openbtn").style.marginLeft = "75%";
         $("#nonWeatherElements").fadeIn("slow");
+
+        // also update CSS for the info button & remove listeners
+        infoFilterUI.style.backgroundColor = '#464646';
+        infoFilterUI.style.border = '2px solid #464646';
+        infoFilterUI.style.backgroundImage = 'url(' + infoSymbolInverted + ')';
+
+        removeListeners("info");
     }
 }
 

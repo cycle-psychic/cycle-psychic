@@ -43,6 +43,9 @@ var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
 var crystalBall = "/static/icons/crystal-ball.png";
 var crystalBallBlack = "/static/icons/crystal-ball-black.png";
 var crystalBallInverted = "/static/icons/crystal-ball-light.png";
+var infoSymbol = "/static/icons/info_symbol_invert.png";
+var infoSymbolBlack = "/static/icons/info_symbol_black.png";
+var infoSymbolInverted = "/static/icons/info_symbol.png";
 
 // variable for the Google Map
 var map;  
@@ -81,6 +84,9 @@ var predictionFilterUI;
 var predictionFormDiv;
 var predictionForm;
 var predictionFormUI;
+var infoFilterDiv;
+var infoFilter;
+var infoFilterUI;
 
 // declare variables to track which filter is on
 // bike filter is on by default, stand and card filters are off by default
@@ -453,11 +459,17 @@ function addButtons() {
     // call the PredictionButton function to create the button
     predictionFilter = new PredictionButton();
 
+    // create a div to hold the button for the info button
+    infoFilterDiv = document.createElement('div');
+    // call the InfoFilter function to create the button
+    infoFilter = new InfoFilter();
+
     // set positions for the buttons
     map.controls[google.maps.ControlPosition.TOP_RIGHT].push(predictionFilterDiv);
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(bikeFilterDiv);  
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(standFilterDiv);
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(cardFilterDiv);
+    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(infoFilterDiv);
 }
 
 // function for creating the bike filter button
@@ -550,6 +562,38 @@ function CardFilter() {
 
     // On click, filter to show only stations that accept card
     cardFilterUI.addEventListener('click', cardClick);
+}
+
+// function for creating the info button
+function InfoFilter() {
+    // Set CSS for the button
+    infoFilterUI = document.createElement('div');
+    infoFilterUI.style.backgroundColor = '#fff';
+    infoFilterUI.style.backgroundImage = 'url(' + infoSymbol + ')';
+    infoFilterUI.style.backgroundSize = '35px';
+    infoFilterUI.style.backgroundPosition = 'center';
+    infoFilterUI.style.backgroundRepeat = 'no-repeat';
+    infoFilterUI.style.border = '2px solid #fff';
+    infoFilterUI.style.borderRadius = '2px';
+    infoFilterUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.15)';
+    infoFilterUI.style.cursor = 'pointer';
+    infoFilterUI.style.textAlign = 'center';
+    infoFilterUI.style.width = '36px';
+    infoFilterUI.style.height = '36px';
+    infoFilterUI.style.marginRight = '10px';
+    infoFilterUI.style.marginBottom = '6px';
+    infoFilterUI.style.display = 'flex';
+    infoFilterUI.style.alignContent = 'center';
+    infoFilterUI.style.justifyContent = 'center';
+    infoFilterUI.title = 'Information';
+    infoFilterDiv.appendChild(infoFilterUI);
+
+    // add listeners for the info button
+    // this will cause the icon to turn black on hover
+    addListeners("info");
+
+    // On click, call the function to open/close the navbar
+    infoFilterUI.addEventListener('click', navBar);
 }
 
 // function for creating the prediction button
@@ -969,6 +1013,11 @@ function addListeners(type) {
         predictionFilterDiv.addEventListener('mouseenter', predictiveListenerEnter);
         predictionFilterDiv.addEventListener('mouseleave', predictiveListenerLeave);
     }
+    else if (type == "info") {
+        // on hover, change icon colour to black
+        infoFilterDiv.addEventListener('mouseenter', infoListenerEnter);
+        infoFilterDiv.addEventListener('mouseleave', infoListenerLeave);
+    }
 }
 
 // function for removing listeners from the buttons
@@ -993,6 +1042,11 @@ function removeListeners(type) {
         // removing listeners will stop icon colour changing on hover
         predictionFilterDiv.removeEventListener('mouseenter', predictiveListenerEnter);
         predictionFilterDiv.removeEventListener('mouseleave', predictiveListenerLeave);
+    }
+    else if (type == "info") {
+        // removing listeners will stop icon colour changing on hover
+        infoFilterDiv.removeEventListener('mouseenter', infoListenerEnter);
+        infoFilterDiv.removeEventListener('mouseleave', infoListenerLeave);
     }
 }
 
@@ -1024,6 +1078,16 @@ function cardListenerEnter() {
 // function that defines what happens when a card button listener is added
 function cardListenerLeave() {
     cardFilterUI.style.backgroundImage = 'url(' + euroSymbol + ')';
+}
+
+// function that defines what happens when an info button listener is added
+function infoListenerEnter() {
+    infoFilterUI.style.backgroundImage = 'url(' + infoSymbolBlack + ')';
+}
+
+// function that defines what happens when an info button listener is added
+function infoListenerLeave() {
+    infoFilterUI.style.backgroundImage = 'url(' + infoSymbol + ')';
 }
 
 // function that defines what happens when a predictive button listener is added
@@ -1120,6 +1184,7 @@ function makePrediction() {
             showMarkers("stand");
         }
     })
+    // if the API call fails, show the error message for predictions
     .fail(function() {
         on();
     });
