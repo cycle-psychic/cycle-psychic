@@ -1413,6 +1413,7 @@ function realTime() {
     addListeners("predictive");
 
     // hide form
+    var form = document.getElementById("predictionForm");
     form.style.display = "none";
 
     // update CSS for the prediction form
