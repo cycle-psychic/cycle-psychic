@@ -1387,7 +1387,7 @@ function popDateForm() {
         }
         // if the current day is more than monthDays, add its modulus to the values array, then increment the day
         else {
-            values.push(day % monthDays + " " + months[month + 1]);
+            values.push(day % monthDays + " " + months[(month + 1) % 12]); // mod 12 is needed in case the month is Dec
             day++;
         }
     }
