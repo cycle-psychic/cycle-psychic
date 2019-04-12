@@ -1135,7 +1135,15 @@ function addPredictiveMarkers(data) {
         // get the occupancy info for each station
         var totalStands = entry.bike_stands;
         var availableBikes = entry.available_bikes;
+        // if availableBikes is less than zero, change it to zero
+        if (availableBikes < 0) {
+            availableBikes = 0;
+        }
         var availableStands = entry.available_bike_stands;
+        // if availableStands is less than zero, change it to zero
+        if (availableStands < 0) {
+            availableStands = 0;
+        }
 
         // calculate the percentage of available bikes & stands
         var percentAvailable = (availableBikes/totalStands)*100;
