@@ -183,9 +183,9 @@ input[type=time], input[type=button], #dateDropdown {
   cursor: pointer;
 }
 
-
+/* CSS for overlay when the prediction can't be accessed */
 #predictionOverlay {
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
@@ -199,22 +199,28 @@ input[type=time], input[type=button], #dateDropdown {
   display: none;
 }
 
+/* CSS for prediction error div with image and text */
 #predict {
-  display:block;
-  width: 100%;
-  height: 100%;
   position: absolute;
-  top: 50%;
+  width: 100%;
+  height: 55%;
+  top: 48%;
   left:50%;
   transform:translate(-50%, -50%);
 }
+#predict img{
+  height: 80%;
+  display: block;
+  margin: auto;
+  /* border: 2px solid purple; */
+}
 
 #predict h1{
-  display: relative;
+  height: 20%;
   font-family: 'Roboto', sans-serif;
   font-weight: 900;
   color: #464646;
-  font-size: 2em;
+  font-size: 1.6em;
   text-align: center;
 }
 
@@ -246,11 +252,34 @@ input[type=time], input[type=button], #dateDropdown {
     outline: none;
 }
 
-
+/* CSS for legend to explain site functionality */
 #legend {
-    position:absolute;
-    bottom:85px;
-    left:120px;
+  float: right;
+  width: 80%;
+  position: absolute;
+  padding-bottom: 10px;
+  bottom: 10px;
+  left: 19%;
+}
+
+#legend span{
+  font-size: 12px;
+  display: inline-block;
+  padding-bottom: 20px;
+  padding-right: 10px;
+}
+
+#legend img{
+  float: left;
+  height: auto;
+  width: 40px;
+  display: inline-block;
+  vertical-align: top;
+  padding-right: 10px;
+}
+
+#legend h3 {
+  font-size: 14px;
 }
 
 /* CSS for the overlay that's displayed with Dublin Bike API errors */
@@ -262,7 +291,7 @@ input[type=time], input[type=button], #dateDropdown {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(242, 242, 242, 0.4);
+  background: rgba(242, 242, 242, 0.7);
   z-index: 2;
   cursor: auto;
   display: none;
