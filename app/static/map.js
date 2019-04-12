@@ -48,8 +48,7 @@ var crystalBallInverted = "/static/icons/crystal-ball-light.png";
 var map;  
 
 // url for the Dublin Bikes API
-// var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
-var urlBikes = "https"
+var urlBikesAPI = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
 
 // global variable to track open pop-ups
 // set to false initially until a pop-up is opened
@@ -216,7 +215,7 @@ function initMap() {
     popDateForm();
 
     // call the Dublin Bikes API directly using JQuery
-    $.getJSON(urlBikes, null, function(data) {
+    $.getJSON(urlBikesAPI, null, function(data) {
         // call the addMarkers function
         addMarkers(data);
         // call the showMarkers function with "bike" as input
@@ -929,7 +928,7 @@ function predictionClick() {
         map.setOptions({styles: []});
 
         // call Dublin Bikes API to get latest data and add relevant markers
-        $.getJSON(urlBikes, null, function(data) {
+        $.getJSON(urlBikesAPI, null, function(data) {
             // call the addMarkers function
             addMarkers(data);
             // check which filters are on and show relevant markers
@@ -939,6 +938,10 @@ function predictionClick() {
             else {
                 showMarkers("stand");
             }
+        })
+        // if the call to the Dublin Bikes API fails, then display an error message to the user
+        .fail(function() {
+            bikeError();
         });
     }
 }
@@ -1116,6 +1119,9 @@ function makePrediction() {
         else {
             showMarkers("stand");
         }
+    })
+    .fail(function() {
+        on();
     });
 }
 
