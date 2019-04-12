@@ -20,13 +20,16 @@
     <!-- sidebar div -->  
     <div id="mySidebar" class="sidebar">
         
-         <!-- open the side bar menu -->
-        <div id="main">
-          <button id="openbtn" class="openbtn" onclick="navBar()">&#9776;</button>
-        </div>
-        
-        <!-- side bar element for weather information -->
-        <div id="weatherElement">
+        <div id="slimSide">
+            
+            <!-- open the side bar menu -->
+            <div id="main">
+              <button id="openbtn" class="openbtn" onclick="navBar()">&#9776;</button>
+            </div>
+
+            <!-- side bar element for weather information -->
+            <div id="weatherElement"></div>
+            
         </div>
         
         <!-- This div holds all NON-weather sidebar elements -->
@@ -35,19 +38,21 @@
             <!-- form element for users to select the station they want -->
             <div id="form">
                 <form id="selectStation" onchange="goToStation()">
-                    <select id="station"></select>
+                    <select id="station">
+                        <option value="0">Select station to see trend</option>
+                    </select>
                 </form>
             </div>
 
             <!-- side bar elements for graphs -->
             <div id="graph">
-                <canvas id="myChart" width="380" height="380"></canvas>                
+                <canvas id="myChart" width="280" height="200"></canvas>                
             </div>  
             
             <!-- to change the charts -->
             <div id="radioButtons">
                 <form action="">
-                  <input type="radio" name="button" value="avg" onclick="buildChart()" checked>Average by hour <br>
+                  <input type="radio" name="button" id="avg" value="avg" onclick="buildChart()" checked>Average by hour <br>
                   <input type="radio" name="button" value="female" onclick="prevWeek()">This hour / past week <br>
                   <input type="radio" name="button" value="other" onclick="prevTwoWeeks()">This hour / past 14 days
                 </form>
@@ -98,11 +103,6 @@
         <div><p id="test2"></p></div>  <!-- test div for debugging-->
       </div>
     </div>
-
-    <!-- open the side bar menu -->
-    <!-- <div id="main">
-      <button id="openbtn" class="openbtn" onclick="navBar()">&#9776;</button>
-    </div> -->
     
     <!-- script for side bar and api operations -->
     <script src="../static/html_js.js"></script> 

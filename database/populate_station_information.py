@@ -27,9 +27,10 @@ cursor = dbEngine.cursor()
 # place the results into the DB station_information table
 for station in bike_stations:
   vals = (station.get('number'), station.get('contract_name'), station.get('name'),\
-          station.get('address'), station['position'].get('lat'), \
-          station['position'].get('lng'))
-  sql = "INSERT IGNORE INTO `station_information` (`station_number`, `contract_name`, `name`, `address`, `latitude`, `longitude`) VALUES (%s,%s,%s,%s,%s,%s);"
+          station.get('address'), station['position'].get('lat'),\
+          station['position'].get('lng'),station.get('bike_stands'), station.get('banking'))
+  sql = "INSERT IGNORE INTO `station_information` (`station_number`, `contract_name`, `name`, `address`, `latitude`, `longitude`, `bike_stands`, `banking`) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"
+
   cursor.execute(sql, vals)
 
 dbEngine.commit()

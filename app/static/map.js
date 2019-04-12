@@ -93,6 +93,108 @@ var predictionMode = false;
 // variable to store current prediction date
 var predictionDate;
 
+// variable to store predictive style for map
+// reference: https://snazzymaps.com/style/98/purple-rain
+var predictiveStyle = [
+    {
+        "featureType": "road",
+        "stylers": [
+            {
+                "hue": "#5e00ff"
+            },
+            {
+                "saturation": -79
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "stylers": [
+            {
+                "saturation": -78
+            },
+            {
+                "hue": "#6600ff"
+            },
+            {
+                "lightness": -47
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "stylers": [
+            {
+                "lightness": 22
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "stylers": [
+            {
+                "hue": "#6600ff"
+            },
+            {
+                "saturation": -11
+            }
+        ]
+    },
+    {},
+    {},
+    {
+        "featureType": "water",
+        "stylers": [
+            {
+                "saturation": -65
+            },
+            {
+                "hue": "#1900ff"
+            },
+            {
+                "lightness": 8
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "stylers": [
+            {
+                "weight": 1.3
+            },
+            {
+                "lightness": 30
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "stylers": [
+            {
+                "visibility": "simplified"
+            },
+            {
+                "hue": "#5e00ff"
+            },
+            {
+                "saturation": -16
+            }
+        ]
+    },
+    {
+        "featureType": "transit.line",
+        "stylers": [
+            {
+                "saturation": -72
+            }
+        ]
+    },
+    {}
+];
+
 // function that initialises the map
 function initMap() {   
     // create the map
@@ -156,7 +258,7 @@ function addMarkers(data) {
             paymentText = "Credit Card Accepted"
         }
         else {
-            paymentText = "Credit Card Not Accepted"
+            paymentText = "Card Not Accepted"
         }
 
         // check which icon should be use based on percentage available & payment types
@@ -246,7 +348,7 @@ function addMarkers(data) {
 
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:#464646; width: 220px;">' +
+        var content = '<div style="color:#464646; width: 190px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
             '<table><tr>' +
@@ -371,12 +473,11 @@ function BikeFilter() {
     bikeFilterUI.style.width = '36px';
     bikeFilterUI.style.height = '36px';
     bikeFilterUI.style.marginRight = '10px';
-    //bikeFilterUI.style.marginTop = '16px';
     bikeFilterUI.style.marginBottom = '6px';
     bikeFilterUI.style.display = 'flex';
     bikeFilterUI.style.alignContent = 'center';
     bikeFilterUI.style.justifyContent = 'center';
-    //bikeFilterUI.title = '...';
+    bikeFilterUI.style.cursor = 'auto';
     bikeFilterDiv.appendChild(bikeFilterUI);
 
     // On click, display markers showing bike availability
@@ -404,7 +505,7 @@ function StandFilter() {
     standFilterUI.style.display = 'flex';
     standFilterUI.style.alignContent = 'center';
     standFilterUI.style.justifyContent = 'center';
-    //standFilterUI.title = '...';
+    standFilterUI.title = 'Show Stand Info';
     standFilterDiv.appendChild(standFilterUI);
 
     // add listeners for the stand filter button
@@ -436,7 +537,7 @@ function CardFilter() {
     cardFilterUI.style.display = 'flex';
     cardFilterUI.style.alignContent = 'center';
     cardFilterUI.style.justifyContent = 'center';
-    //cardFilterUI.title = '...';
+    cardFilterUI.title = 'Credit Card Filter';
     cardFilterDiv.appendChild(cardFilterUI);
 
     // add listeners for the card filter button
@@ -469,7 +570,7 @@ function PredictionButton() {
     predictionFilterUI.style.display = 'flex';
     predictionFilterUI.style.alignContent = 'center';
     predictionFilterUI.style.justifyContent = 'center';
-    //predictionFilterUI.title = '...';
+    predictionFilterUI.title = 'Get Prediction';
     predictionFilterDiv.appendChild(predictionFilterUI);  // append image div to the main button div
 
     // add listeners for the predictive filter button
@@ -649,11 +750,15 @@ function bikeClick() {
         bikeFilterUI.style.backgroundColor = '#464646';
         bikeFilterUI.style.border = '2px solid #464646';
         bikeFilterUI.style.backgroundImage = 'url(' + bicycleLight + ')';
+        bikeFilterUI.title = '';
+        bikeFilterUI.style.cursor = 'auto';
 
         // update CSS for the stand button
         standFilterUI.style.backgroundColor = '#fff';
         standFilterUI.style.border = '2px solid #fff';
         standFilterUI.style.backgroundImage = 'url(' + stands + ')';
+        standFilterUI.title = 'Show Stand Info';
+        standFilterUI.style.cursor = 'pointer';
 
         // add listeners for the bike filter button
         // this will cause the icon to turn black on hover
@@ -682,11 +787,15 @@ function standClick() {
         standFilterUI.style.backgroundColor = '#464646';
         standFilterUI.style.border = '2px solid #464646';
         standFilterUI.style.backgroundImage = 'url(' + standsLight + ')';
+        standFilterUI.title = '';
+        standFilterUI.style.cursor = 'auto';
 
         // update CSS for the bike button
         bikeFilterUI.style.backgroundColor = '#fff';
         bikeFilterUI.style.border = '2px solid #fff';
         bikeFilterUI.style.backgroundImage = 'url(' + bicycle + ')';
+        bikeFilterUI.title = 'Show Bike Info';
+        bikeFilterUI.style.cursor = 'pointer';
 
         // add listeners for the bike filter button
         // this will cause the icon to turn black on hover
@@ -763,6 +872,7 @@ function predictionClick() {
         predictionFilterUI.style.backgroundColor = '#fff';
         predictionFilterUI.style.border = '2px solid #fff';
         predictionFilterUI.style.backgroundImage = 'url(' + crystalBall + ')';
+        predictionFilterUI.title = 'Get Prediction';
 
         // add listeners to the button
         addListeners("predictive");
@@ -809,6 +919,9 @@ function predictionClick() {
         bikeMarkersCard = [];
         standMarkers = [];
         standMarkersCard = [];
+
+        // change map style back to the default
+        map.setOptions({styles: []});
 
         // call Dublin Bikes API to get latest data and add relevant markers
         $.getJSON(urlBikes, null, function(data) {
@@ -953,12 +1066,24 @@ function makePrediction() {
 
     // convert object to ISO 8601 standard for the Flask function
     var dateConverted = new Date(dateTime.getTime() - (dateTime.getTimezoneOffset() * 60000)).toISOString();
-    // store the date in the global predictionDate variable (this is used to display the date in pop-up windows)
-    predictionDate = dateTime;
+
+    // create an array with day of the week names as they should be displayed
+    var daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+    // create a string with details of the prediction date (this is used to display the date in pop-up windows)
+    predictionDate = hour + ':' + min + ' ' + daysOfWeek[dateTime.getDay()] + ' ' + day + ' ' + inputMonth;
 
     // hide the existing markers
     hideMarkers("bike");
     hideMarkers("stand");
+
+    // update the map style
+    map.setOptions({styles: predictiveStyle});
+
+    // if prediction mode isn't already on, then call function to invert colours on the button
+    if (!predictionMode) {
+        invertPredictiveButton();
+    }
 
     // call Flask function with the relevant date and time
     var predictionURL = ROOT + '/predictall/' + dateConverted;
@@ -974,11 +1099,6 @@ function makePrediction() {
 
         // add predictive markers
         addPredictiveMarkers(data);
-
-        // if prediction mode isn't already on, then call function to invert colours on the button
-        if (!predictionMode) {
-            invertPredictiveButton();
-        }
 
         // update predictionMode variable to true
         predictionMode = true;
@@ -1022,7 +1142,7 @@ function addPredictiveMarkers(data) {
             paymentText = "Credit Card Accepted"
         }
         else {
-            paymentText = "Credit Card Not Accepted"
+            paymentText = "Card Not Accepted"
         }
 
         // check which icon should be use based on percentage available & payment types
@@ -1102,28 +1222,15 @@ function addPredictiveMarkers(data) {
             anchor: new google.maps.Point(30, 60) // anchor
         };
 
-        // get hours and minutes in the correct format
-        var mins = predictionDate.getMinutes();
-        if (mins < 10) {
-            mins = "0" + mins;
-        }   
-
-        var hours = predictionDate.getHours();
-        if (hours < 10) {
-            hours = "0" + hours;
-        }   
-
         // create a variable to hold the content for the pop-up window
         // this will be the same for both types of markers
-        var content = '<div style="color:#464646; width: 220px;">' +
+        var content = '<div style="color:#464646; width: 190px;">' +
             '<h1 style="font-size:120%; text-align:center; padding: 5px 8px 3px;">' + stationName + '</h1>' +
             '<div style="font-weight: bold; padding-bottom: 10px;">' + 
-            // '<p style="padding-left:8px; padding-right:8px;">Predicted occupancy for ' + hours + ':' + mins +
-            // ' on ' + predictionDate.toDateString() + '.</p>' +
             '<table><tr>' +
             '<td style="width:40px;">' + 
             '<img src=' + crystalBall + ' style="width:22px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
-            '<td>' + hours + ':' + mins + ' ' + predictionDate.toDateString() + '</td></tr>' +
+            '<td>' + predictionDate + '</td></tr>' +
             '<td style="width:40px;">' + 
             '<img src=' + bicycle + ' style="width:35px; vertical-align:middle; display:block; margin-left:auto; margin-right:auto;"></td>' + 
             '<td>' + availableBikes + ' Available</td></tr>' +
@@ -1205,6 +1312,7 @@ function invertPredictiveButton() {
     predictionFilterUI.style.backgroundColor = '#464646';
     predictionFilterUI.style.border = '2px solid #464646';
     predictionFilterUI.style.backgroundImage = 'url(' + crystalBallInverted + ')';
+    predictionFilterUI.title = 'Show Real Time Info';
 
     // update CSS for the prediction form
     predictionForm = document.getElementById("predictionForm");
@@ -1213,8 +1321,8 @@ function invertPredictiveButton() {
 
     // update CSS for button on prediction form
     predictionFormButton = document.getElementById("predictionFormButton");
-    predictionFormButton.style.backgroundColor = '#fff';
-    predictionFormButton.style.border = '1px solid #d3d3d3';
+    predictionFormButton.style.backgroundColor = '#f2f2f2';
+    predictionFormButton.style.border = '1px solid #ccc';
     predictionFormButton.style.color = '#464646';
 
     // remove listeners for the predictive button
