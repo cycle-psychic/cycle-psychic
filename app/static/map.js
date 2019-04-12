@@ -48,7 +48,8 @@ var crystalBallInverted = "/static/icons/crystal-ball-light.png";
 var map;  
 
 // url for the Dublin Bikes API
-var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
+// var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
+var urlBikes = "https"
 
 // global variable to track open pop-ups
 // set to false initially until a pop-up is opened
@@ -211,6 +212,9 @@ function initMap() {
     //call the addButtons function to add buttons to the map
     addButtons();
 
+    // call the popDateForm function to populate the dropdown in the prediction form
+    popDateForm();
+
     // call the Dublin Bikes API directly using JQuery
     $.getJSON(urlBikes, null, function(data) {
         // call the addMarkers function
@@ -218,10 +222,11 @@ function initMap() {
         // call the showMarkers function with "bike" as input
         // because bikes should be shown by default
         showMarkers("bike");
+    })
+    // if the call to the Dublin Bikes API fails, then display an error message to the user
+    .fail(function() {
+        bikeError();
     });
-
-    // call the popDateForm function to populate the dropdown in the prediction form
-    popDateForm();
 }
 
 // function for adding markers to the map
@@ -1388,4 +1393,9 @@ function popDateForm() {
 
     // push the html into the form
     document.getElementById("dateDropdown").innerHTML = dropdown;
+}
+
+// function to display error message when Dublin Bikes API call fails
+function bikeError() {
+    document.getElementById("bikeErrorOverlay").style.display = "block";
 }
