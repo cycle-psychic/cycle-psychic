@@ -17,10 +17,11 @@ html, body {
   z-index: 1; /* Stay on top */
   top: 0;
   left: 0;
-  background-color: #111; /* Black*/
+  background-color: #e2e2e2; /* Grey*/
   overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 10px; /* Place content 60px from the top */
+  padding-top: 5px; /* Place content 60px from the top */
   transition: 0.4s; /* 0.5 second transition effect to slide in the sidebar */
+  font-family: 'Roboto', sans-serif;
 }
 
 /* The sidebar links */
@@ -28,7 +29,7 @@ html, body {
   padding: 8px 8px 8px 32px;
   text-decoration: none;
   font-size: 25px;
-  color: #818181;
+  color: #464646;
   display: block;
   transition: 0.3s;
 }
@@ -42,7 +43,7 @@ html, body {
 .openbtn {
     font-size: 20px;
     cursor: pointer;
-    background-color: #111;
+    background-color: #464646;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -65,16 +66,18 @@ html, body {
 } 
 
 #form {
-    margin-left:6%;
-    margin-top:20%;
+    margin-left:21.3%;
+    margin-top:8%;
+    margin-bottom:5%;
 }
 
 #graph {
     color:white;
-    margin-left:05%;
-    margin-top:20%;
-    margin-bottom:-15%;
-    width:99%;
+    margin-left:11%;
+    margin-right:2%;
+    width:89%;
+    height:170px;
+    display:none;
 }
 
 .sidebartext {
@@ -96,12 +99,9 @@ html, body {
 
 #nonWeatherElements {
     display:none;
+    margin-left:5.6%;
 }
 
-
-#myChart {
-    margin-left:-5%;
-}
 
 /* CSS for the Prediction Form */
 #predictionForm {
@@ -181,7 +181,24 @@ input[type=time], input[type=button], #dateDropdown {
 }
 
 #radioButtons {
-    color:white;
-    margin-top:20%;
-    margin-left:15%;
+    margin-top:5%;
+    margin-left:32%;
+    font-size:13px;
+    display:none;
+}
+
+#slimSide {
+    height:100%;
+    width:4%;
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color: #464646; /* Grey */
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 10px; /* Place content 60px from the top */
+}
+
+#station {
+    font-size:12px;
 }

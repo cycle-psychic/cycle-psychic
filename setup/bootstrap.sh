@@ -7,34 +7,20 @@ chmod u+x ../run.py
 chmod u+x ../app/*
 chmod u+x ../scrape/*
 
-# Request info from URL - used for scraping.
-conda install requests
-
-# Boto3 allows for interaction with Python between Amazon Web Services
-conda install boto3
-
 # Install Python3
 conda install python3
 
-# Install mysql connector
-conda install -c anaconda mysql-connector-python
-
-# Install jsonify
-conda install jsonify
-
 # Install requirements for data analysis
-conda install pandas
-
-conda install numpy
-
-conda install matplotlib
-
 conda install seaborn
 
-# Install scikit learn for machine learning
+# Install packages from requirements
+conda install --yes --file requirements.txt
 
-conda install scikit-learn
+# update sci-kit learn
+conda update scikit-learn
 
-# Pip install mysql-connector-python for cross-platform compatability issues during development.
-pip install mysql-connector-python==8.0.15
+# upgrade pip
+pip install --upgrade pip
 
+# install mysql connector 
+pip install mysql-connector-python
