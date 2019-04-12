@@ -48,8 +48,7 @@ var crystalBallInverted = "/static/icons/crystal-ball-light.png";
 var map;  
 
 // url for the Dublin Bikes API
-// var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
-var urlBikes = "https"
+var urlBikes = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=fd4562884252e255617667387120a3a9ea10a259";
 
 // global variable to track open pop-ups
 // set to false initially until a pop-up is opened
