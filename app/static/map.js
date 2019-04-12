@@ -43,9 +43,9 @@ var euroSymbolBlack = "/static/icons/euro_symbol-black.png";
 var crystalBall = "/static/icons/crystal-ball.png";
 var crystalBallBlack = "/static/icons/crystal-ball-black.png";
 var crystalBallInverted = "/static/icons/crystal-ball-light.png";
-var infoSymbol = "/static/icons/info_symbol.png";
+var infoSymbol = "/static/icons/info_symbol_invert.png";
 var infoSymbolBlack = "/static/icons/info_symbol_black.png";
-var infoSymbolInverted = "/static/icons/info_symbol_invert.png";
+var infoSymbolInverted = "/static/icons/info_symbol.png";
 
 // variable for the Google Map
 var map;  
@@ -89,11 +89,10 @@ var infoFilter;
 var infoFilterUI;
 
 // declare variables to track which filter is on
-// bike filter is on by default, stand, card and info filters are off by default
+// bike filter is on by default, stand and card filters are off by default
 var bikeFilterOn = true;
 var standFilterOn = false;
 var cardFilterOn = false;
-var infoFilterOn = false;
 // prediction mode is off by default
 var predictionMode = false;
 
@@ -593,8 +592,8 @@ function InfoFilter() {
     // this will cause the icon to turn black on hover
     addListeners("info");
 
-    // On click, filter to show only stations that accept card
-   // cardFilterUI.addEventListener('click', cardClick);
+    // On click, call the function to open/close the navbar
+    infoFilterUI.addEventListener('click', navBar);
 }
 
 // function for creating the prediction button
@@ -1043,6 +1042,11 @@ function removeListeners(type) {
         // removing listeners will stop icon colour changing on hover
         predictionFilterDiv.removeEventListener('mouseenter', predictiveListenerEnter);
         predictionFilterDiv.removeEventListener('mouseleave', predictiveListenerLeave);
+    }
+    else if (type == "info") {
+        // removing listeners will stop icon colour changing on hover
+        infoFilterDiv.removeEventListener('mouseenter', infoListenerEnter);
+        infoFilterDiv.removeEventListener('mouseleave', infoListenerLeave);
     }
 }
 
