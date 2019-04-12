@@ -155,7 +155,7 @@ function chart(time,data) {
             data: {
                 labels: data,
                 datasets: [{
-                    label: 'Available ',
+                    label: 'Available bikes',
                     data: time,
                     pointBackgroundColor: 'black',
                     fill:false,
@@ -163,7 +163,7 @@ function chart(time,data) {
                         'rgba(255, 99, 132, 0.2)',
                     ],
                     borderColor: [
-                        'rgba(255, 99, 132, 1)',
+                        '#8bb08a',
                     ],
                     borderWidth: 1
                 }]
@@ -171,7 +171,7 @@ function chart(time,data) {
             options: {
                 legend: {
                     labels: {
-                        fontColor: 'black'
+                        fontColor: 'black',
                     }
                 },
                 scales: {
