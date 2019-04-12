@@ -938,6 +938,10 @@ function predictionClick() {
             else {
                 showMarkers("stand");
             }
+        })
+        // if the call to the Dublin Bikes API fails, then display an error message to the user
+        .fail(function() {
+            bikeError();
         });
     }
 }
