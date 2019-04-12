@@ -157,6 +157,7 @@ function chart(time,data) {
                 datasets: [{
                     label: 'Available ',
                     data: time,
+                    pointBackgroundColor: 'black',
                     fill:false,
                     backgroundColor: [
                         'rgba(255, 99, 132, 0.2)',

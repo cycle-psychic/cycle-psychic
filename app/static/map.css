@@ -17,12 +17,11 @@ html, body {
   z-index: 1; /* Stay on top */
   top: 0;
   left: 0;
-  background-color: #727272; /* Grey*/
+  background-color: #e2e2e2; /* Grey*/
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 5px; /* Place content 60px from the top */
   transition: 0.4s; /* 0.5 second transition effect to slide in the sidebar */
   font-family: 'Roboto', sans-serif;
-
 }
 
 /* The sidebar links */
@@ -74,7 +73,7 @@ html, body {
 
 #graph {
     color:white;
-    margin-left:10%;
+    margin-left:11%;
     margin-right:2%;
     width:89%;
     height:170px;
@@ -143,7 +142,6 @@ input[type=button] {
 }
 
 #radioButtons {
-    color:white;
     margin-top:5%;
     margin-left:32%;
     font-size:13px;
@@ -152,7 +150,7 @@ input[type=button] {
 
 #slimSide {
     height:100%;
-    width:4.6%;
+    width:4%;
     position: fixed; /* Stay in place */
     z-index: 1; /* Stay on top */
     top: 0;
