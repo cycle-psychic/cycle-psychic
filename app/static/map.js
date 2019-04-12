@@ -1119,6 +1119,9 @@ function makePrediction() {
         else {
             showMarkers("stand");
         }
+    })
+    .fail(function() {
+        on();
     });
 }
 

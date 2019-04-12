@@ -117,7 +117,7 @@ html, body {
   position: fixed;
   top: 16px;
   right: 55px;
-  z-index: 2;
+  z-index: 1;
   display: none;
   color: #464646;
   text-align: center;
