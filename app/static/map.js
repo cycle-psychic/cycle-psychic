@@ -1506,18 +1506,29 @@ function showPop(stationId) {
     var popup;
     var content;
 
-    // get the relevant marker and pop-up from the dictionary
-    if (bikeFilter) {
-        marker = bikeMarkerRef[stationId][0];
-        popup = bikeMarkerRef[stationId][1];
-        content = bikeMarkerRef[stationId][2];
+    // check if prediction mode is off
+    if (!predictionMode) {
+        // check if the bike filter is on
+        if (bikeFilterOn) {
+            // get the relevant marker and pop-up from the dictionary
+            marker = bikeMarkerRef[stationId][0];
+            popup = bikeMarkerRef[stationId][1];
+            content = bikeMarkerRef[stationId][2];
+        }
+        // check if the stand filter is on
+        else if (standFilterOn) {
+            // get the relevant marker and pop-up from the dictionary
+            marker = standMarkerRef[stationId][0];
+            popup = standMarkerRef[stationId][1];
+            content = standMarkerRef[stationId][2];
+        }
     }
-    else if (standFilter) {
-        marker = standMarkerRef[stationId][0];
-        popup = standMarkerRef[stationId][1];
-        content = standMarkerRef[stationId][2];
+    // if prediction mode is on
+    else {
+        ;
     }
 
+    // if there's a previous pop-up open, then close it
     if (prevPopup) {
         prevPopup.close();
     }
