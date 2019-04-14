@@ -24,6 +24,7 @@ function navBar() {
         //document.getElementById("openbtn").style.marginLeft = "0px"; // makes button move with sidebar
         document.getElementById("main").style.marginLeft = "0px";
         $("#nonWeatherElements").fadeOut("fast");
+        $("#legend").fadeOut("fast");
 
         // also update CSS for the info button & add listeners
         infoFilterUI.style.backgroundColor = '#fff';
@@ -37,6 +38,7 @@ function navBar() {
         document.getElementById("mySidebar").style.width = "320px";
         //document.getElementById("openbtn").style.marginLeft = "75%";
         $("#nonWeatherElements").fadeIn("slow");
+        $("#legend").fadeIn(1300);
 
         // also update CSS for the info button & remove listeners
         infoFilterUI.style.backgroundColor = '#464646';
@@ -182,7 +184,7 @@ function prevTwoWeeks() {
 function chart(time,data) {
     $('#graph').fadeOut(85);
     $('#radioButtons').fadeOut(85);
-    $('#graph').promise().done(function(){
+    $('#graph').promise().done(function(){ // wait until transition finished before loading new graph
         $("#myChart").remove();
         $("#graph").append('<canvas id="myChart" width="280" height="200"></canvas>');
         var ctx = $('#myChart');
@@ -193,10 +195,10 @@ function chart(time,data) {
                 datasets: [{
                     label: 'Available bikes',
                     data: time,
-                    pointBackgroundColor: 'black',
+                    pointBackgroundColor: '#e2e2e2',
                     fill:false,
                     backgroundColor: [
-                        'rgba(255, 99, 132, 0.2)',
+                        '#8bb08a',
                     ],
                     borderColor: [
                         '#8bb08a',
@@ -207,14 +209,17 @@ function chart(time,data) {
             options: {
                 legend: {
                     labels: {
-                        fontColor: 'black',
+                        fontColor: '#e2e2e2',
+                        fontSize: 10,
+                        boxWidth:25,
+                        padding: 10,
                     }
                 },
                 scales: {
                     yAxes: [{
                         ticks: {
                             beginAtZero: true,
-                            fontColor: 'black'
+                            fontColor: '#e2e2e2'
                         },
                         gridLines: {
                             display: false
@@ -225,7 +230,7 @@ function chart(time,data) {
                             display: false,
                           },
                         ticks: {
-                            fontColor: 'black'
+                            fontColor: '#e2e2e2'
                         }
                     }]
                 },
