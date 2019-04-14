@@ -92,7 +92,7 @@ function goToStation() {
 // get current weather information and display it in the DIV element in the sidebar.
 $.getJSON(weatherInfo, function (data) {
     $("#weatherElement").html("<img style=\"margin-left: -3px; padding:1%;\" src="+data.iconURL+">");
-    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -14px; margin-left:6px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
+    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -14px; margin-left:6px; position: absolute;\" >" + data.Temperature + " &#176;C" + "</p");
 });
 
 // Set default station for chart requests
