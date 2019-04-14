@@ -57,6 +57,14 @@ var urlBikesAPI = "https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiK
 // set to false initially until a pop-up is opened
 var prevPopup = false;
 
+// create dictionaries to hold pop-ups for different markers - one for bikes and one for stands
+// these will be used to open pop-ups when a station is selected from the dropdown
+var bikeMarkerRef = {};
+var standMarkerRef = {};
+// create dictionaries for prediction mode as well
+var bikeMarkerPredictRef = {};
+var standMarkerPredictRef = {};
+
 // set up arrays to store markers
 // these will be used later to add/remove markers from the map
 var bikeMarkers = [];
@@ -252,6 +260,9 @@ function addMarkers(data) {
         // always the same as the station name but has correct capitalisation
         var stationName = data[i].address;
 
+        // get the station id - for pop-up when dropdown selected
+        var stationId = data[i].number;
+
         // get the occupancy info for each station
         var totalStands = data[i].bike_stands;
         var availableBikes = data[i].available_bikes;
@@ -383,6 +394,9 @@ function addMarkers(data) {
             title: stationName //this will show the station name when user hovers over marker
         });
 
+        // add the bike marker to the relevant dict
+        bikeMarkerRef[stationId] = [bikeMarker, popup, content]
+
         // generate a marker object for the station for stands
         var standMarker = new google.maps.Marker({
             position: latLng,  
@@ -390,6 +404,9 @@ function addMarkers(data) {
             icon: standIcon,  
             title: stationName //this will show the station name when user hovers over marker
         });
+
+        // add the stand marker to the relevant dict
+        standMarkerRef[stationId] = [standMarker, popup, content]
 
         // add a listener to each type of marker that displays the pop-up on click
         google.maps.event.addListener(bikeMarker,'click', (function(bikeMarker, content, popup){ 
@@ -1132,6 +1149,9 @@ function addPredictiveMarkers(data) {
         // get the station address - for the pop-up
         var stationName = entry.address;
 
+        // get the station id - for pop-up when dropdown selected
+        var stationId = entry.id;
+
         // get the occupancy info for each station
         var totalStands = entry.bike_stands;
         var availableBikes = entry.available_bikes;
@@ -1266,6 +1286,9 @@ function addPredictiveMarkers(data) {
             title: stationName //this will show the station name when user hovers over marker
         });
 
+        // add the bike marker to the relevant dict
+        bikeMarkerPredictRef[stationId] = [bikeMarker, popup, content]
+
         // generate a marker object for the station for stands
         var standMarker = new google.maps.Marker({
             position: latLng,  
@@ -1273,6 +1296,9 @@ function addPredictiveMarkers(data) {
             icon: standIcon,  
             title: stationName //this will show the station name when user hovers over marker
         });
+
+        // add the stand marker to the relevant dict
+        standMarkerPredictRef[stationId] = [standMarker, popup, content]
 
         // add a listener to each type of marker that displays the pop-up on click
         google.maps.event.addListener(bikeMarker,'click', (function(bikeMarker, content, popup){ 
@@ -1483,4 +1509,59 @@ function realTime() {
     .fail(function() {
         bikeError();
     });
+}
+
+// function to show pop-up when station selected from dropdown
+function showPop(stationId) {
+    // declare local variables for marker, pop-up and content
+    var marker;
+    var popup;
+    var content;
+
+    // check if prediction mode is off
+    if (!predictionMode) {
+        // check if the bike filter is on
+        if (bikeFilterOn) {
+            // get the relevant marker and pop-up from the dictionary
+            marker = bikeMarkerRef[stationId][0];
+            popup = bikeMarkerRef[stationId][1];
+            content = bikeMarkerRef[stationId][2];
+        }
+        // check if the stand filter is on
+        else if (standFilterOn) {
+            // get the relevant marker and pop-up from the dictionary
+            marker = standMarkerRef[stationId][0];
+            popup = standMarkerRef[stationId][1];
+            content = standMarkerRef[stationId][2];
+        }
+    }
+    // if prediction mode is on
+    else {
+        // check if the bike filter is on
+        if (bikeFilterOn) {
+            // get the relevant marker and pop-up from the dictionary
+            marker = bikeMarkerPredictRef[stationId][0];
+            popup = bikeMarkerPredictRef[stationId][1];
+            content = bikeMarkerPredictRef[stationId][2];
+        }
+        // check if the stand filter is on
+        else if (standFilterOn) {
+            // get the relevant marker and pop-up from the dictionary
+            marker = standMarkerPredictRef[stationId][0];
+            popup = standMarkerPredictRef[stationId][1];
+            content = standMarkerPredictRef[stationId][2];
+        }
+    }
+
+    // if there's a previous pop-up open, then close it
+    if (prevPopup) {
+        prevPopup.close();
+    }
+
+    // assign the current pop-up to the PrevPopup variable
+    prevPopup = popup;
+
+    // set the content and open the popup
+    popup.setContent(content);
+    popup.open(map,marker);
 }

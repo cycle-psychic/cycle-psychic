@@ -59,11 +59,32 @@ function goToStation() {
     var ID = document.getElementById('station').value;
 
     $.getJSON(getLocation+ID, function(data) {
-        var latLng = new google.maps.LatLng(data.lat, data.lng);
+        var latLng = new google.maps.LatLng(data.lat + 0.0008, data.lng);
         map.setCenter(latLng);
-        map.setZoom(17.5);
+        map.setZoom(16.2);
+
+        // check if the card filter is on, and turn it off if so
+        if (cardFilterOn) {
+            // update CSS for card button
+            cardFilterUI.style.backgroundColor = '#fff';
+            cardFilterUI.style.border = '2px solid #fff';
+            cardFilterUI.style.backgroundImage = 'url(' + euroSymbol + ')';
+
+            // add listeners for the card filter button
+            // this will cause the icon to turn black on hover
+            addListeners("card");
+
+            // show stations that don't accept card (bike or stand markers depending on which filter is selected)
+            showMarkers("card");
+
+            // update the variable that tracks the filter
+            cardFilterOn = false;
+        }
+
+        // show the pop-up
+        showPop(ID);
     });
-    
+
     document.getElementById("avg").checked = true;
 
 }
