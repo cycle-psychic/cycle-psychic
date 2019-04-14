@@ -75,10 +75,10 @@ html, body {
 
 #graph {
     color:white;
-    margin-left:11%;
-    margin-right:2%;
-    margin-top:10%;
-    width:89%;
+    margin-left:13%;
+    margin-right:3%;
+    margin-top:8%;
+    width:82.5%;
     height:170px;
     display:none;
 }
@@ -225,7 +225,7 @@ input[type=time], input[type=button], #dateDropdown {
 }
 
 #radioButtons {
-    margin-top:5%;
+    margin-top:2.5%;
     margin-left:32%;
     font-size:13px;
     display:none;
@@ -260,6 +260,7 @@ input[type=time], input[type=button], #dateDropdown {
   padding-bottom: 10px;
   bottom: 10px;
   left: 19%;
+  display:none;
 }
 
 #legend span{
