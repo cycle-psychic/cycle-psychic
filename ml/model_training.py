@@ -5,9 +5,10 @@ import numpy as np
 import datetime
 import math
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import ExtraTreesRegressor
+from sklearn.ensemble import GradientBoostingRegressor
 import pickle
 import time
+import os
 
 def save_to_csv():
   '''
@@ -93,6 +94,13 @@ def clean_and_merge_data():
   # Drop all rows where the value is closed
   df = df[df.status != 'CLOSED']
 
+  # Drop bank holiday - not representative of usage
+  df = df[df.date != '1832019']
+
+  # Update the hour by 1 after March 31 to account for daylight savings
+  df['hour'] = np.where(df['last_update_x'] >= '2019-03-31 01:00', df['hour']+ 1, df['hour'])
+  df['hour'] = np.where(df['hour'] == 24, 0, df['hour'])
+
   # Drop unneeded columns
   df.drop(['name', 'address', 'contract_name', 'lng', 'lat', 
          'available_bike_stands', 'last_update_x', 'last_update_y',
@@ -161,7 +169,7 @@ def train_station(station_df):
   scaler.fit(train_features)
   scaled_train_features = scaler.transform(train_features)
 
-  estimator = ExtraTreesRegressor()
+  estimator = GradientBoostingRegressor()
   estimator.fit(scaled_train_features, train_targets)
 
   return scaler, estimator

@@ -18,17 +18,34 @@ var dropdown = $('#station');
 // This function opens and closes the navigation bar
 function navBar() {
   var getWidth = document.getElementById("mySidebar");
-    if (getWidth.style.width === "250px") {
+    if (getWidth.style.width === "320px") {
         document.getElementById("mySidebar").style.width = "50px";
         document.getElementById("main").style.marginLeft = "50px";
         //document.getElementById("openbtn").style.marginLeft = "0px"; // makes button move with sidebar
         document.getElementById("main").style.marginLeft = "0px";
         $("#nonWeatherElements").fadeOut("fast");
+        $("#legend").fadeOut("fast");
+
+        // also update CSS for the info button & add listeners
+        infoFilterUI.style.backgroundColor = '#fff';
+        infoFilterUI.style.border = '2px solid #fff';
+        infoFilterUI.style.backgroundImage = 'url(' + infoSymbol + ')';
+
+        addListeners("info");
+
 
     } else {
-        document.getElementById("mySidebar").style.width = "250px";
+        document.getElementById("mySidebar").style.width = "320px";
         //document.getElementById("openbtn").style.marginLeft = "75%";
         $("#nonWeatherElements").fadeIn("slow");
+        $("#legend").fadeIn(1300);
+
+        // also update CSS for the info button & remove listeners
+        infoFilterUI.style.backgroundColor = '#464646';
+        infoFilterUI.style.border = '2px solid #464646';
+        infoFilterUI.style.backgroundImage = 'url(' + infoSymbolInverted + ')';
+
+        removeListeners("info");
     }
 }
 
@@ -44,22 +61,44 @@ function goToStation() {
     var ID = document.getElementById('station').value;
 
     $.getJSON(getLocation+ID, function(data) {
-        var latLng = new google.maps.LatLng(data.lat, data.lng);
+        var latLng = new google.maps.LatLng(data.lat + 0.0008, data.lng);
         map.setCenter(latLng);
-        map.setZoom(17.5);
+        map.setZoom(16.2);
+
+        // check if the card filter is on, and turn it off if so
+        if (cardFilterOn) {
+            // update CSS for card button
+            cardFilterUI.style.backgroundColor = '#fff';
+            cardFilterUI.style.border = '2px solid #fff';
+            cardFilterUI.style.backgroundImage = 'url(' + euroSymbol + ')';
+
+            // add listeners for the card filter button
+            // this will cause the icon to turn black on hover
+            addListeners("card");
+
+            // show stations that don't accept card (bike or stand markers depending on which filter is selected)
+            showMarkers("card");
+
+            // update the variable that tracks the filter
+            cardFilterOn = false;
+        }
+
+        // show the pop-up
+        showPop(ID);
     });
+
+    document.getElementById("avg").checked = true;
 
 }
 
 // get current weather information and display it in the DIV element in the sidebar.
 $.getJSON(weatherInfo, function (data) {
     $("#weatherElement").html("<img style=\"margin-left: -3px; padding:1%;\" src="+data.iconURL+">");
-    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -14px; margin-left:6px; position: absolute;\" >" + data.Temperature + " &#8451 " + "</p");
+    $("#weatherElement").append("<p id=\"summary\" style=\"margin-top: -14px; margin-left:6px; position: absolute;\" >" + data.Temperature + " &#176;C" + "</p");
 });
 
 // Set default station for chart requests
-var currentSelectedText = "Blessington Street";
-buildChart(); // call on page load
+var currentSelectedText = "";
 // initialise two arrays that will hold our time and avg bikes at that time
 var chartTime = [];
 var chartAvg = [];
@@ -143,40 +182,61 @@ function prevTwoWeeks() {
 
 // chart function which builds / rebuilds our charts with new data.
 function chart(time,data) {
-    $("#myChart").remove();
-    $("#graph").append('<canvas id="myChart" width="380" height="380"></canvas>');
-    var ctx = $('#myChart');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data,
-            datasets: [{
-                label: 'Available ',
-                data: time,
-                fill:false,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]//,
-//                xAxes: [{
-//                    scaleLabel: {
-//                        display: true,
-//                        labelString: 'Hour / This hour daily'
-//                      }
-//                }]
+    $('#graph').fadeOut(85);
+    $('#radioButtons').fadeOut(85);
+    $('#graph').promise().done(function(){ // wait until transition finished before loading new graph
+        $("#myChart").remove();
+        $("#graph").append('<canvas id="myChart" width="280" height="200"></canvas>');
+        var ctx = $('#myChart');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data,
+                datasets: [{
+                    label: 'Available bikes',
+                    data: time,
+                    pointBackgroundColor: '#e2e2e2',
+                    fill:false,
+                    backgroundColor: [
+                        '#8bb08a',
+                    ],
+                    borderColor: [
+                        '#8bb08a',
+                    ],
+                    borderWidth: 1
+                }]
             },
-        }
+            options: {
+                legend: {
+                    labels: {
+                        fontColor: '#e2e2e2',
+                        fontSize: 10,
+                        boxWidth:25,
+                        padding: 10,
+                    }
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#e2e2e2'
+                        },
+                        gridLines: {
+                            display: false
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: {
+                            display: false,
+                          },
+                        ticks: {
+                            fontColor: '#e2e2e2'
+                        }
+                    }]
+                },
+            }
+        });
+        $('#graph').fadeIn(1300);
+        $('#radioButtons').fadeIn(1300);
     });
 }
