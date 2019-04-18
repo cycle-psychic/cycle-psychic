@@ -260,11 +260,14 @@ def predict(station_id, time_date, weather_id, main_temp, main_wind_speed, main_
     with open('./models/scaler'+str(station_id)+'.sav', 'rb') as file2:
         scaler = pickle.load(file2)
     
-    date_time_obj = datetime.datetime.strptime(time_date, "%Y-%m-%dT%H:%M:%S.%fZ") # changed %z to .%fZ
+    # Convert the date to a date time and extract the weekday, hour and minute
+    date_time_obj = datetime.datetime.strptime(time_date, "%Y-%m-%dT%H:%M:%S.%fZ")
     weekday = date_time_obj.weekday()
     hour = date_time_obj.hour
     minute = date_time_obj.minute
 
+    # Set a default value for the day of week and weather
+    # The correct day and weather is set to one when called by predict function
     Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday = 0,0,0,0,0,0,0
     clouds, atmosphere, snow, light_rain, rain, light_drizzle, drizzle, thunderstorm = 0,0,0,0,0,0,0,0
     
@@ -310,8 +313,9 @@ def predict(station_id, time_date, weather_id, main_temp, main_wind_speed, main_
     drizzle, thunderstorm]]
 
     scaled_predict = scaler.transform(features)
+    # Predict the outcome
     prediction = model.predict(scaled_predict)
-
+    # Return the prediction as an integer. 
     return math.floor(prediction)
 
 def weather_forecast():

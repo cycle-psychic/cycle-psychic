@@ -145,6 +145,7 @@ def clean_and_merge_data():
 
 def split_by_position(features, targets):
     """
+    Split the data linearly into:
     train 0.80
     test 0.20
     """
@@ -156,27 +157,34 @@ def split_by_position(features, targets):
     return train_features, test_features, train_targets, test_targets
 
 def train_station(station_df):
+  # Extract the features from which to make a prediciton
   features = station_df[['number', 'hour', 'minute',
               'main_temp', 'main_wind_speed', 'main_rain_volume_1h', 'main_snow_volume_1h',
               'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
               'Sunday', 'clouds', 'atmosphere', 'snow', 'light_rain',
               'rain', 'light_drizzle', 'drizzle', 'thunderstorm']].values
+  # Set the target value
   targets = station_df['available_bikes'].values
 
+  # Split the test and training data
   train_features, test_features, train_targets, test_targets = split_by_position(features, targets)
 
+  # Scale the train features
   scaler = StandardScaler()
   scaler.fit(train_features)
   scaled_train_features = scaler.transform(train_features)
 
+  # Use the scikit learn model to train the features
   estimator = GradientBoostingRegressor()
   estimator.fit(scaled_train_features, train_targets)
 
   return scaler, estimator
 
-#then = time.time()
+# then = time.time()
+
 save_to_csv()
 clean_and_merge_data()
+# For all stations read in the csv and apply the scaler and model
 for station in range (2,116):
   if station != 20:  
     print('Training station: ' , str(station))
@@ -188,5 +196,5 @@ for station in range (2,116):
     filename_scaler = '../app/models/scaler'+str(station)+'.sav'
     pickle.dump(estimator, open(filename_est, 'wb'))
     pickle.dump(scaler, open(filename_scaler, 'wb'))
-#now = time.time()
-#print("It took:", now-then, "seconds")
+# now = time.time()
+# print("It took:", now-then, "seconds")
