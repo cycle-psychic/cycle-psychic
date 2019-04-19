@@ -25,7 +25,7 @@ def open_connection(query):
         # Execute query
         cursor.execute(query)
         rows = cursor.fetchall()
-    except TypeError(e):
+    except TypeError as e:
         print(e)
     finally:
         cursor.close()
