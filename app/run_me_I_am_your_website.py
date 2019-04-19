@@ -1,10 +1,11 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, send_from_directory
 import requests
 import mysql.connector
 import pickle
 import datetime
 import math
 from datetime import timedelta
+import os
 
 app = Flask(__name__)
 
@@ -17,6 +18,10 @@ dbEngine = mysql.connector.connect(
 )
 
 cursor = dbEngine.cursor()
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico')
 
 # this function opens a database query for a connection
 def open_connection(query):
