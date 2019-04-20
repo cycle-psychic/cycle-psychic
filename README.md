@@ -47,3 +47,14 @@ This script runs the flask application and serves all things front-end!
 model_training.py
 
 This script retrains the machine learning model. The script can be schdeuled to run as frequently as necessary to retrain the model. This should be done using a cronjob.
+
+Reboot the server:
+
+ssh into EC2 instance. 
+List the current active sessions to get the id with *screen -ls*
+Kill the session with *screen -X -S sessionID quit*
+Make changes to the code as you want
+When ready to reboot the program, type *screen* and press space to continue
+When in the screen session, type the following command to run the server and output to terminal and log file python run_me_I_am_your_website.py 2>&1 | tee websiteLog.txt &
+To detach yourself from the session, press CTRL+A then CTRL+D (not sure if it's the same on MAC)
+Then you should be able to quit the server without killing the process
