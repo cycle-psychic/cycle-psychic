@@ -17,8 +17,9 @@ dbEngine = mysql.connector.connect(
     database="cyclepsychic",
 )
 
-cursor = dbEngine.cursor()
+rowsCache = []
 
+# add favicon for website
 @app.route('/favicon.ico')
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'),'favicon.ico')
@@ -140,9 +141,14 @@ def avgChartData(station_address):
 
     # Holds average bikes organised by hour
     averageByHour = {}
-    cursor.execute("SELECT AVG(available_bikes),last_update FROM all_station_info WHERE WEEKDAY(last_update)=\""+day+"\" AND address=\""+station_address+"\" GROUP BY hour(last_update);")
-    rows = cursor.fetchall()
-    cursor.close()
+    try: 
+        cursor.execute("SELECT AVG(available_bikes),last_update FROM all_station_info WHERE WEEKDAY(last_update)=\""+day+"\" AND address=\""+station_address+"\" GROUP BY hour(last_update);")
+        rows = cursor.fetchall()
+    except TypeError as e:
+        print(e)
+    finally:  
+        cursor.close()
+
     for row in rows:
         hour = row[1].strftime("%H")
         averageByHour[hour] = int(round(row[0]))
@@ -194,12 +200,17 @@ def bikes_available_1week(station_address):
     daily_available_bikes = {}
 
     # execute
-    cursor.execute(constructedQuery)
-    rows = cursor.fetchall()
+    try:
+        cursor.execute(constructedQuery)
+        rows = cursor.fetchall()
+    except TypeError as e:
+        print(e)
+    finally:
+        cursor.close()
     for row in rows:
         weekday =  row[1].strftime('%a')
         daily_available_bikes[weekday] = round(row[0])
-    cursor.close()
+    
     return jsonify(daily_available_bikes)
 
 @app.route('/bikes2weeks/<station_address>')
@@ -245,12 +256,18 @@ def bikes_available_2weeks(station_address):
     daily_available_bikes = {}
 
     # execute
-    cursor.execute(constructedQuery)
-    rows = cursor.fetchall()
+    try:
+        cursor.execute(constructedQuery)
+        rows = cursor.fetchall()
+    except TypeError as e:
+        print (e)
+    finally:
+        cursor.close()
+        
     for row in rows:
         weekday =  row[1].strftime('%x')
         daily_available_bikes[weekday] = round(row[0])
-    cursor.close()
+    
     return jsonify(daily_available_bikes)
 
 def predict(station_id, time_date, weather_id, main_temp, main_wind_speed, main_rain_volume_1h, main_snow_volume_1h):
@@ -337,6 +354,7 @@ def weather_forecast():
     # return the data
     return data
 
+
 @app.route('/predictall/<time_date>')
 def predictall(time_date):
     """This function takes a datetime object as input (should be in ISO 8601 standard format).
@@ -407,10 +425,14 @@ def predictall(time_date):
     # call the database to get the static information
     query = "select distinct station_number, address, latitude, longitude, bike_stands, banking \
     from station_information;"
-    rows=open_connection(query)
-
+    global rowsCache
+    if len(rowsCache) == 0:
+        print("Retrieving bike stations")
+        rowsCache=open_connection(query)
+    else:
+        print("Using cache for bike stations")
     # loop through each row returned
-    for row in rows:
+    for row in rowsCache:
         # create a dictionary for the station
         station = {}
         # add static data to the dictionary
