@@ -18,6 +18,7 @@ dbEngine = mysql.connector.connect(
 )
 
 rowsCache = []
+dropdownCache = {}
 
 # add favicon for website
 @app.route('/favicon.ico')
@@ -53,9 +54,17 @@ def root():
 @app.route('/dropdown')
 def getStationInfo():
     """ This function populates the dropdown menu based on the database query. It doesn't expect any inputs. """
-
-    stations_info = {}
+    
     query = "SELECT * from station_information;"
+    # Set global variable to cache the static bike info
+    global dropdownCache
+    #If the dropdown list is empty call the DB to populate it
+    if len(dropdownCache) == 0:
+        print("Retrieving bike stations")
+        rowsCache=open_connection(query)
+    else:
+        print("Using cache for bike stations")
+    
     rows = open_connection(query)
     for row in rows:
         # create object of key:value pairs
@@ -69,9 +78,9 @@ def getStationInfo():
         this_station["Address"] = row[3]
         this_station["Latitude"] = row[4]
         this_station["Longitude"] = row[5]
-        stations_info[station_id] = this_station
+        dropdownCache[station_id] = this_station
 
-    return jsonify(stations_info)
+    return jsonify(dropdownCache)
 
 
 @app.route("/weather")
