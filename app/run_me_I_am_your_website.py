@@ -61,12 +61,13 @@ def getStationInfo():
     #If the dropdown list is empty call the DB to populate it
     if len(dropdownCache) == 0:
         print("Retrieving bike stations")
-        rowsCache=open_connection(query)
+        dropdownCache=open_connection(query)
     else:
         print("Using cache for bike stations")
     
-    rows = open_connection(query)
-    for row in rows:
+    stations_info = {}
+
+    for row in dropdownCache:
         # create object of key:value pairs
         this_station = {}
 
@@ -78,9 +79,9 @@ def getStationInfo():
         this_station["Address"] = row[3]
         this_station["Latitude"] = row[4]
         this_station["Longitude"] = row[5]
-        dropdownCache[station_id] = this_station
+        stations_info[station_id] = this_station
 
-    return jsonify(dropdownCache)
+    return jsonify(stations_info)
 
 
 @app.route("/weather")
@@ -131,15 +132,6 @@ def avgChartData(station_address):
     """ This function queries the database to get up to date information about the average bike availability for the
         current hour. It expects the station address to be provided and outputs an average by hour for the current day
         based on historical average. """
-    # build engine for databasee
-    dbEngine = mysql.connector.connect(
-        host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
-        user="cyclepsychic",
-        passwd="CyclePsychic123",
-        database="cyclepsychic",
-    )
-
-    cursor = dbEngine.cursor()
 
     # get current date
     date = datetime.datetime.now()
@@ -151,6 +143,15 @@ def avgChartData(station_address):
     # Holds average bikes organised by hour
     averageByHour = {}
     try: 
+        # build engine for databasee
+        dbEngine = mysql.connector.connect(
+            host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
+            user="cyclepsychic",
+            passwd="CyclePsychic123",
+            database="cyclepsychic",
+        )
+
+        cursor = dbEngine.cursor()
         cursor.execute("SELECT AVG(available_bikes),last_update FROM all_station_info WHERE WEEKDAY(last_update)=\""+day+"\" AND address=\""+station_address+"\" GROUP BY hour(last_update);")
         rows = cursor.fetchall()
     except TypeError as e:
@@ -169,16 +170,6 @@ def bikes_available_1week(station_address):
     """ This function gets the historical data for the number of bikes available on a given day at the current timeslot.
         It expects the station address as the input and provides the number of available bikes at the current hour
         based on the previous Week's data (indexed by day name). """
-
-    # build engine for databasee
-    dbEngine = mysql.connector.connect(
-        host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
-        user="cyclepsychic",
-        passwd="CyclePsychic123",
-        database="cyclepsychic",
-    )
-
-    cursor = dbEngine.cursor()
 
     # get current date
     date = datetime.datetime.now()
@@ -210,6 +201,15 @@ def bikes_available_1week(station_address):
 
     # execute
     try:
+            # build engine for databasee
+        dbEngine = mysql.connector.connect(
+            host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
+            user="cyclepsychic",
+            passwd="CyclePsychic123",
+            database="cyclepsychic",
+        )
+
+        cursor = dbEngine.cursor()
         cursor.execute(constructedQuery)
         rows = cursor.fetchall()
     except TypeError as e:
@@ -226,15 +226,6 @@ def bikes_available_1week(station_address):
 def bikes_available_2weeks(station_address):
     """ This function retrives the bike availability for the previous 14 days at the current hour. It expects the station
         address as its input and returns the number of bikes available indexed by the date. """
-    # build engine for databasee
-    dbEngine = mysql.connector.connect(
-        host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
-        user="cyclepsychic",
-        passwd="CyclePsychic123",
-        database="cyclepsychic",
-    )
-
-    cursor = dbEngine.cursor()
 
     # get current date
     date = datetime.datetime.now()
@@ -266,6 +257,15 @@ def bikes_available_2weeks(station_address):
 
     # execute
     try:
+        # build engine for databasee
+        dbEngine = mysql.connector.connect(
+            host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
+            user="cyclepsychic",
+            passwd="CyclePsychic123",
+            database="cyclepsychic",
+        )
+
+        cursor = dbEngine.cursor()
         cursor.execute(constructedQuery)
         rows = cursor.fetchall()
     except TypeError as e:
