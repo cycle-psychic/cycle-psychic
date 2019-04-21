@@ -9,14 +9,6 @@ import os
 
 app = Flask(__name__)
 
-# build engine for databasee
-dbEngine = mysql.connector.connect(
-    host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
-    user="cyclepsychic",
-    passwd="CyclePsychic123",
-    database="cyclepsychic",
-)
-
 rowsCache = []
 dropdownCache = {}
 
@@ -27,10 +19,22 @@ def favicon():
 
 # this function opens a database query for a connection
 def open_connection(query):
+
+
+    # build engine for databasee
+    dbEngine = mysql.connector.connect(
+        host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
+        user="cyclepsychic",
+        passwd="CyclePsychic123",
+        database="cyclepsychic",
+    )
+    # Initiate the cursor
     cursor = dbEngine.cursor()
+
     try:
         # Execute query
         cursor.execute(query)
+        #get the results
         rows = cursor.fetchall()
     except TypeError as e:
         print(e)
@@ -142,22 +146,9 @@ def avgChartData(station_address):
 
     # Holds average bikes organised by hour
     averageByHour = {}
-    try: 
-        # build engine for databasee
-        dbEngine = mysql.connector.connect(
-            host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
-            user="cyclepsychic",
-            passwd="CyclePsychic123",
-            database="cyclepsychic",
-        )
 
-        cursor = dbEngine.cursor()
-        cursor.execute("SELECT AVG(available_bikes),last_update FROM all_station_info WHERE WEEKDAY(last_update)=\""+day+"\" AND address=\""+station_address+"\" GROUP BY hour(last_update);")
-        rows = cursor.fetchall()
-    except TypeError as e:
-        print(e)
-    finally:  
-        cursor.close()
+    query = "SELECT AVG(available_bikes),last_update FROM all_station_info WHERE WEEKDAY(last_update)=\""+day+"\" AND address=\""+station_address+"\" GROUP BY hour(last_update);"
+    rows = open_connection(query)
 
     for row in rows:
         hour = row[1].strftime("%H")
@@ -199,23 +190,8 @@ def bikes_available_1week(station_address):
     # Holds average bikes organised by hour
     daily_available_bikes = {}
 
-    # execute
-    try:
-            # build engine for databasee
-        dbEngine = mysql.connector.connect(
-            host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
-            user="cyclepsychic",
-            passwd="CyclePsychic123",
-            database="cyclepsychic",
-        )
+    rows = open_connection(constructedQuery)
 
-        cursor = dbEngine.cursor()
-        cursor.execute(constructedQuery)
-        rows = cursor.fetchall()
-    except TypeError as e:
-        print(e)
-    finally:
-        cursor.close()
     for row in rows:
         weekday =  row[1].strftime('%a')
         daily_available_bikes[weekday] = round(row[0])
@@ -255,23 +231,7 @@ def bikes_available_2weeks(station_address):
     # Holds average bikes organised by hour
     daily_available_bikes = {}
 
-    # execute
-    try:
-        # build engine for databasee
-        dbEngine = mysql.connector.connect(
-            host="cyclepsychic.c7jha7i6ueuc.eu-west-1.rds.amazonaws.com",
-            user="cyclepsychic",
-            passwd="CyclePsychic123",
-            database="cyclepsychic",
-        )
-
-        cursor = dbEngine.cursor()
-        cursor.execute(constructedQuery)
-        rows = cursor.fetchall()
-    except TypeError as e:
-        print (e)
-    finally:
-        cursor.close()
+    rows = open_connection(constructedQuery)
         
     for row in rows:
         weekday =  row[1].strftime('%x')
