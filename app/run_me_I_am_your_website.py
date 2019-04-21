@@ -40,6 +40,7 @@ def open_connection(query):
         print(e)
     finally:
         cursor.close()
+        dbEngine.disconnect()
     return rows
 
 
